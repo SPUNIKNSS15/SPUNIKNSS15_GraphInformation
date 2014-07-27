@@ -9711,6 +9711,9 @@
       <GraphClass id="gc_786" type="probe">
 	 <graphclass>gc_80</graphclass>
 	 <ref>ref_1335</ref>
+         <algo name="Recognition" complexity="P" bounds="O(VE)">
+            <ref>ref_1681</ref>
+         </algo>
       </GraphClass>
 
       <GraphClass id="gc_787" type="probe">
@@ -10084,6 +10087,9 @@
 	 <ref>ref_1355</ref>
 	 <algo name="Recognition" complexity="P" bounds="O(V^3)">
 	    <ref>ref_1355</ref>
+	 </algo>
+	 <algo name="Recognition" complexity="P" bounds="O(VE)">
+	    <ref>ref_1679</ref>
 	 </algo>
       </GraphClass>
 
@@ -15438,6 +15444,40 @@
          </algo>
       </GraphClass>
 
+      <GraphClass id="gc_1228" type="probe">
+         <graphclass>gc_298</graphclass>
+         <ref>ref_1680</ref>
+         <algo name="Recognition" complexity="Lin">
+            <ref>ref_1680</ref>
+         </algo>
+      </GraphClass>
+
+      <GraphClass id="gc_1229" type="probe">
+         <name>probe bipartite distance-hereditary</name>
+	 <graphclass>gc_77</graphclass>
+	 <ref>ref_1681</ref>
+         <algo name="Recognition" complexity="P" bounds="O(VE)">
+            <ref>ref_1681</ref>
+         </algo>
+      </GraphClass>
+
+      <GraphClass id="gc_1230" type="intersect">
+         <graphclass>gc_80</graphclass>
+         <graphclass>gc_72</graphclass>
+         <ref>ref_1682</ref>
+         <algo name="Recognition" complexity="Lin">
+            <ref>ref_1682</ref>
+         </algo>
+      </GraphClass>
+
+      <GraphClass id="gc_1231" type="forbidden">
+         <smallgraph>net</smallgraph>
+         <smallgraph>domino</smallgraph>
+         <smallgraph>gem</smallgraph>
+         <smallgraph>hole</smallgraph>
+         <smallgraph>house</smallgraph>
+      </GraphClass>
+
       
 
 
@@ -17546,6 +17586,8 @@
       <incl super="gc_43" sub="gc_1223" proper="y"> <ref>def</ref> </incl>
       <incl super="gc_43" sub="gc_1224" proper="y"> <ref>def</ref> </incl>
       <incl super="gc_49" sub="gc_419" confidence="unpublished"> <ref>ref_1673</ref> </incl>
+      <incl super="gc_699" sub="gc_80"> <ref>ref_1683</ref> </incl>
+      <equ gc1="gc_1230" gc2="gc_1231"> <ref>basederived</ref> </equ>
 
 
 
@@ -17625,6 +17667,7 @@
       <equ gc1="gc_1055" gc2="gc_1056"> <ref>forbidden</ref> </equ>
       <equ gc1="gc_1067" gc2="gc_1068"> <ref>forbidden</ref> </equ>
       <equ gc1="gc_1175" gc2="gc_1176"> <ref>forbidden</ref> </equ>
+      <equ gc1="gc_565" gc2="gc_1228"> <ref>def</ref> </equ>
       <!-- End sanityCheckSCC inclusions -->
    </Inclusions>
 </ISGCI>
