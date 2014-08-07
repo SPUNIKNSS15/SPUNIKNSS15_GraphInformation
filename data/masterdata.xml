@@ -400,8 +400,7 @@
       </note>
    </Problem>
 
-   <Problem name="Graph isomorphism">
-      <sparse/>
+   <Problem name="Graph isomorphism" complement="Graph isomorphism">
       <note>
 	 <table>
 	 <tr>
@@ -812,6 +811,9 @@
 	 <algo name="Feedback vertex set" complexity="P" bounds="O(VE)">
 	    <ref>ref_1576</ref>
 	 </algo>
+         <algo name="Graph isomorphism" complexity="Lin">
+            <ref>ref_234</ref>
+         </algo>
       </GraphClass>
 
       <GraphClass id="gc_24" type="forbidden">
@@ -963,6 +965,9 @@
 	 </algo>
          <algo name="Independent dominating set" complexity="Lin">
             <ref>ref_1669</ref>
+         </algo>
+         <algo name="Graph isomorphism" complexity="GIC">
+            <ref>ref_1688</ref>
          </algo>
       </GraphClass>
 
@@ -1128,6 +1133,9 @@
 	 <algo name="Maximum bisection" complexity="NPC">
 	    <ref>ref_1628</ref>
 	 </algo>
+         <algo name="Graph isomorphism" complexity="Lin">
+            <ref>ref_1684</ref>
+         </algo>
       </GraphClass>
 
       <GraphClass id="gc_44" type="base">
@@ -1670,6 +1678,9 @@
 	 <algo name="Feedback vertex set" complexity="P">
 	    <ref>ref_1583</ref>
 	 </algo>
+         <algo name="Graph isomorphism" complexity="GIC">
+            <ref>ref_1689</ref>
+         </algo>
       </GraphClass>
 
       <GraphClass id="gc_80" type="base">
@@ -2245,6 +2256,9 @@
          <algo name="Weighted independent dominating set" complexity="P">
             <ref>ref_374</ref>
          </algo>
+         <algo name="Graph isomorphism" complexity="GIC">
+            <ref>ref_1689</ref>
+         </algo>
       </GraphClass>
 
       <GraphClass id="gc_126" type="intersect">
@@ -2726,6 +2740,9 @@
 	 </algo>
 	 <algo name="Maximum cut" complexity="P" bounds="O(V^2)">
 	    <ref>ref_1629</ref>
+	 </algo>
+	 <algo name="Graph isomorphism" complexity="P">
+	    <ref>ref_251</ref>
 	 </algo>
       </GraphClass>
 
@@ -3373,6 +3390,9 @@
 	    <ref>ref_25</ref>
 	    <ref>ref_120</ref>
 	 </algo>
+         <algo name="Graph isomorphism" complexity="P">
+            <ref>ref_1685</ref>
+         </algo>
       </GraphClass>
 
       <GraphClass id="gc_200" type="intersect">
@@ -3748,6 +3768,9 @@
 	 <algo name="Weighted feedback vertex set" complexity="Lin">
 	    <ref>ref_1577</ref>
 	 </algo>
+         <algo name="Graph isomorphism" complexity="Lin">
+            <ref>ref_127</ref>
+         </algo>
       </GraphClass>
 
       <GraphClass id="gc_235" type="intersect">
@@ -3921,6 +3944,9 @@
 	 </algo>
          <algo name="Maximum cut" complexity="P">
             <ref>ref_1678</ref>
+         </algo>
+         <algo name="Graph isomorphism" complexity="GIC">
+            <ref>ref_1688</ref>
          </algo>
       </GraphClass>
 
@@ -4444,6 +4470,10 @@
 	 <note name="see-also">
 	    <graphclass>gc_339</graphclass>
 	 </note>
+	 <algo name="Graph isomorphism" complexity="P">
+	    <ref>ref_1686</ref>
+	    <ref>ref_1687</ref>
+	 </algo>
       </GraphClass>
 
       <GraphClass id="gc_292" type="base">
@@ -4672,6 +4702,9 @@
 	    <ref>ref_25</ref>
 	    <ref>ref_120</ref>
 	 </algo>
+         <algo name="Graph isomorphism" complexity="P">
+            <ref>ref_1685</ref>
+         </algo>
       </GraphClass>
 
       <GraphClass id="gc_311" type="base">
@@ -4991,6 +5024,10 @@
 	    <ref>ref_387</ref>
 	    <ref>ref_1024</ref>
 	 </algo>
+	 <algo name="Graph isomorphism" complexity="P">
+	    <ref>ref_1686</ref>
+	    <ref>ref_1687</ref>
+	 </algo>
       </GraphClass>
 
       <GraphClass id="gc_340" type="complement">
@@ -5029,6 +5066,9 @@
 	 <algo name="Clique cover" complexity="Lin">
 	    <ref>ref_1641</ref>
 	 </algo>
+         <algo name="Graph isomorphism" complexity="Lin">
+            <ref>ref_6</ref>
+         </algo>
       </GraphClass>
 
       <GraphClass id="gc_343" type="forbidden">
@@ -7683,6 +7723,9 @@
 	    <ref>ref_25</ref>
 	    <ref>ref_120</ref>
 	 </algo>
+         <algo name="Graph isomorphism" complexity="P">
+            <ref>ref_1685</ref>
+         </algo>
       </GraphClass>
 
       <GraphClass id="gc_597" type="forbidden">
@@ -13604,6 +13647,9 @@
          <algo name="Recognition" complexity="Lin">
             <ref>trivial</ref>
          </algo>
+         <algo name="Graph isomorphism" complexity="GIC">
+            <ref>ref_1688</ref>
+         </algo>
       </GraphClass>
 
       <GraphClass id="gc_1100" type="base">
@@ -13633,6 +13679,9 @@
          <algo name="Recognition" complexity="Lin">
             <ref>trivial</ref>
          </algo>
+         <algo name="Graph isomorphism" complexity="GIC">
+            <ref>ref_1688</ref>
+         </algo>
       </GraphClass>
 
       <GraphClass id="gc_1101" type="base">
@@ -13656,6 +13705,9 @@
 	 <algo name="Recognition" complexity="Lin">
 	    <ref>trivial</ref>
 	 </algo>
+         <algo name="Graph isomorphism" complexity="GIC">
+            <ref>ref_1688</ref>
+         </algo>
       </GraphClass>
 
       <GraphClass id="gc_1102" type="intersect">
@@ -13711,6 +13763,9 @@
 	 <algo name="Recognition" complexity="Lin">
 	    <ref>trivial</ref>
 	 </algo>
+         <algo name="Graph isomorphism" complexity="GIC">
+            <ref>ref_1688</ref>
+         </algo>
       </GraphClass>
 
       <GraphClass id="gc_1105" type="base">
@@ -13733,6 +13788,9 @@
 	 </algo>
          <algo name="Recognition" complexity="Lin">
             <ref>trivial</ref>
+         </algo>
+         <algo name="Graph isomorphism" complexity="GIC">
+            <ref>ref_1688</ref>
          </algo>
       </GraphClass>
 
@@ -15476,6 +15534,23 @@
          <smallgraph>gem</smallgraph>
          <smallgraph>hole</smallgraph>
          <smallgraph>house</smallgraph>
+      </GraphClass>
+
+      <GraphClass id="gc_1232" type="forbidden">
+         <smallgraph>claw</smallgraph>
+         <smallgraph>diamond</smallgraph>
+         <smallgraph>C_4</smallgraph>
+         <algo name="Graph isomorphism" complexity="GIC">
+            <ref>ref_1690</ref>
+         </algo>
+      </GraphClass>
+
+      <GraphClass id="gc_1233" type="forbidden">
+         <smallgraph>co-gem</smallgraph>
+         <smallgraph>K_4</smallgraph>
+         <algo name="Graph isomorphism" complexity="GIC">
+            <ref>ref_1690</ref>
+         </algo>
       </GraphClass>
 
       

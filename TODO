@@ -1,3 +1,5 @@
+special rule for GI problem [1690]. Similar results exist for other problems.
+
 B_k_SVG \not\subset SEG and 3-DIR\not\subset B_1-VPG [1639]
 
 Forbidden directed subgraphs, e.g [1632,1633,1634]

@@ -14915,6 +14915,68 @@
       </bib>
    </Ref>
 
+   <Ref id="ref_1684">
+      <bib>
+         <authors>J. Hopcroft, J. Wong</authors>
+         <title>Linear time algorithm for the isomorphism of planar graphs</title>
+	 <rest>Proceedings of the Sixth Annual ACM Symposium on Theory of Computing, 172-184 (1974)</rest>
+         <doi>10.1145/800119.803896</doi>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1685">
+      <bib>
+         <authors>H. Bodlaender</authors>
+         <title>Polynomial algorithms for graph isomorphism and chromatic index on partial k-trees</title>
+	 <rest>J. Algorithms 11 No.4 631-643 (1990)</rest>
+         <doi>10.1016/0196-6774(90)90013-5</doi>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1686">
+      <bib>
+         <authors>I.S. Filotti, J.N. Mayer</authors>
+         <title>A Polynomial-time Algorithm for Determining the Isomorphism of Graphs of Fixed Genus</title>
+	 <rest>Proceedings of the Twelfth Annual ACM Symposium on Theory of Computing STOC'80 236-243 (1980)</rest>
+         <doi>10.1145/800141.804671</doi>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1687">
+      <bib>
+         <authors>G. Miller</authors>
+         <title>Isomorphism testing for graphs of bounded genus</title>
+	 <rest>Proceedings of the Twelfth Annual ACM Symposium on Theory of Computing STOC'80 225-235 (1980)</rest>
+         <doi>10.1145/800141.804670</doi>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1688">
+      <bib>
+         <authors>V.N. Zemlyachenko, N.M. Korneenko, R.I. Tyshkevich</authors>
+         <title>Graph isomorphism problem</title>
+	 <rest>J. of Soviet Mathematics 29 No.4 1426-1481</rest>
+         <doi>10.1007/BF02104746</doi>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1689">
+      <bib>
+         <authors>R. Uehara, S. Toda, T. Nagoya</authors>
+         <title>Graph isomorphism completenes for chordal bipartite graphs and strongly chordal graphs</title>
+	 <rest>Discrete Appl. Math. 145 No.3 479-482</rest>
+         <doi>10.1016/j.dam.2004.06.008</doi>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1690">
+      <bib>
+         <authors>S. Kratsch, P. Schweitzer</authors>
+         <title>Graph Isomorphism for Graph Classes Characterized by Two Forbidden Induced Subgraphs</title>
+	 <rest>Proceedings of WG 2012, Lecture Notes in Computer Science 7551, 34-45 (2012)</rest>
+      </bib>
+   </Ref>
+
 
 
 </REFS>
