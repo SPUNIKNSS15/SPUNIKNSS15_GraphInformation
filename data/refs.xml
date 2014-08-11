@@ -14977,6 +14977,15 @@
       </bib>
    </Ref>
 
+   <Ref id="ref_1691">
+      <bib>
+         <authors>E.M. Luks</authors>
+         <title>Isomorphism of graphs of bounded valence can be tested in polynomial time</title>
+	 <rest>Journal of Computer and System Sciences 25 42-65 (1982)</rest>
+         <doi>10.1016/0022-0000(82)90009-5</doi>
+      </bib>
+   </Ref>
+
 
 
 </REFS>
