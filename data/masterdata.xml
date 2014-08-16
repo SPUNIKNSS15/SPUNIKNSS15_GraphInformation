@@ -1417,6 +1417,9 @@
 	 <algo name="Recognition" complexity="P" bounds="O(E^{(a+1)/2})">
 	    <ref>ref_673</ref>
 	 </algo>
+         <algo name="Weighted independent dominating set" complexity="P">
+            <note>On <graphclass>gc_549</graphclass> graphs, the Independent set and Independent domininating set problems are equivalent.</note>
+         </algo>
       </GraphClass>
 
       <GraphClass id="gc_63" type="intersect">
