@@ -27744,6 +27744,7 @@
 
 <fakefamily name="star_{i,j,k}">
    <alias name="triad"/>
+   <alias name="spider_{i,j,k}"/>
    <link address="stars"/>
    <expl>
       <p>
@@ -27753,7 +27754,8 @@
       <smallgraph>star_{1,2,3}</smallgraph>,
       <smallgraph>fork</smallgraph>,
       <smallgraph>claw</smallgraph>.
-      This can be generalized to an unspecified number of leaves of course.
+      The generalisation to an unspecified number of leaves are known as
+      spiders.
       </p>
    </expl>
 </fakefamily>
