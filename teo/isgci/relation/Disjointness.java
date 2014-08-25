@@ -15,7 +15,7 @@ import teo.isgci.gc.GraphClass;
 /**
  * Records disjointness of two classes.
  */
-public class Disjointness extends AbstractRelation {
+public class Disjointness extends CommutativeRelation {
     public Disjointness(GraphClass gc1, GraphClass gc2) {
         super(gc1, gc2);
     }

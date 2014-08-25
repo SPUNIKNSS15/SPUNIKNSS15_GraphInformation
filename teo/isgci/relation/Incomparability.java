@@ -15,7 +15,7 @@ import teo.isgci.gc.GraphClass;
 /**
  * Records incomparability of two classes.
  */
-public class Incomparability extends AbstractRelation {
+public class Incomparability extends CommutativeRelation {
 
     public Incomparability(GraphClass gc1, GraphClass gc2) {
         super(gc1, gc2);
