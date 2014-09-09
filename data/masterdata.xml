@@ -15544,6 +15544,23 @@
          </algo>
       </GraphClass>
 
+      <GraphClass id="gc_1234" type="forbidden">
+         <smallgraph>claw</smallgraph>
+         <smallgraph>P_6</smallgraph>
+         <ref>ref_1692</ref>
+         <ref>ref_1693</ref>
+         <algo name="Hamiltonian cycle" complexity="Lin">
+            <ref>ref_1694</ref>
+         </algo>
+      </GraphClass>
+
+      <GraphClass id="gc_1235" type="intersect">
+         <graphclass>gc_1234</graphclass>
+         <graphclass>gc_771</graphclass>
+         <ref>ref_1692</ref>
+         <ref>ref_1693</ref>
+      </GraphClass>
+
       
 
 
@@ -17654,6 +17671,8 @@
       <incl super="gc_49" sub="gc_419" confidence="unpublished"> <ref>ref_1673</ref> </incl>
       <incl super="gc_699" sub="gc_80"> <ref>ref_1683</ref> </incl>
       <equ gc1="gc_1230" gc2="gc_1231"> <ref>basederived</ref> </equ>
+      <incl super="gc_771" sub="gc_1092" proper="y"> <ref>def</ref> </incl>
+      <incl super="gc_1092" sub="gc_1235" proper="y"> <ref>ref_1692</ref> <ref>ref_1693</ref> </incl>
 
 
 

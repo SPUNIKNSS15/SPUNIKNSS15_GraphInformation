@@ -14986,6 +14986,29 @@
       </bib>
    </Ref>
 
+   <Ref id="ref_1692">
+      <bib>
+         <authors>H.J. Broersma, H.J. Veldman</authors>
+         <title>Restrictions on induced subgraphs ensuring Hamiltonicity or pancyclicity of $K_{1,3}$-free graphs</title>
+	 <rest>Contemporary methods in graph theory, BI-Wiss.-Verl. 181-194 (199)</rest>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1693">
+      <bib>
+         <authors>R. Faudree, E. Flandrin, Z. Ryjacek</authors>
+         <title>Claw-free graphs - a survey</title>
+	 <rest>Discrete Math. 164 87-147 (1997)</rest>
+         <doi>10.1016/S0012-365X(96)00045-3</doi>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1694">
+      <note>Since every 2-connected (<smallgraph>P_6</smallgraph>,<smallgraph>claw</smallgraph>)-free graph is hamiltonian and every hamiltonian graph is 2-connected, it is straightforward to check whether a (<smallgraph>P_6</smallgraph>,<smallgraph>claw</smallgraph>)-free graph has a Hamiltonian cycle. (Communicated by S.-i. Oum)
+      </note>
+   </Ref>
+
+
 
 
 </REFS>
