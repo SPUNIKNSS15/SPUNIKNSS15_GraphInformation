@@ -4714,7 +4714,7 @@
          <name>short--chorded</name>
 	 <hereditary type="induced-hereditary"/>
 	 <note name="definition">
-	 A graph is <graphclass>gc_311</graphclass> if every odd hole has a short chord, i.e. a chord joining two vertices of distance 2 in the cycle.
+	 A graph is <graphclass>gc_311</graphclass> if every odd cycle has a short chord, i.e. a chord joining two vertices of distance 2 in the cycle.
 	 </note>
 	 <ref>ref_744</ref>
       </GraphClass>
