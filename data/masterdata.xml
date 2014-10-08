@@ -13082,7 +13082,12 @@
 	 A graph is <graphclass>gc_1059</graphclass> if it is isomorphic to its complement.
 	 </note>
 	 <ref>ref_1542</ref>
-	 <algo name="Recognition" complexity="GIC"/>
+	 <algo name="Recognition" complexity="GIC">
+            <ref>ref_1696</ref>
+         </algo>
+         <algo name="Graph isomorphism" complexity="GIC">
+            <ref>ref_1696</ref>
+         </algo>
       </GraphClass>
 
       <GraphClass id="gc_1060" type="base">
