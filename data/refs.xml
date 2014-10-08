@@ -15008,6 +15008,15 @@
       </note>
    </Ref>
 
+   <!-- TO RENUMBER FROM ref_1717 onwards after merging parameters -->
+   <Ref id="ref_1695">
+      <bib>
+         <authors>K.S. Booth, C.J. Colbourn</authors>
+         <title>Problems polynomially equivalent to graph isomorphism</title>
+	 <rest>Technical report CS-77-04, Computer science department, University of Waterloo (1979)</rest>
+      </bib>
+   </Ref>
+
 
 
 

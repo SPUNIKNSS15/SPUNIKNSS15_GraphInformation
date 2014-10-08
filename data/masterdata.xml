@@ -1039,6 +1039,9 @@
 	 <algo name="Maximum cut" complexity="NPC">
 	    <ref>ref_1629</ref>
 	 </algo>
+         <algo name="Graph isomorphism" complexity="GIC">
+            <ref>ref_1695</ref>
+         </algo>
       </GraphClass>
 
       <GraphClass id="gc_40" type="base">
