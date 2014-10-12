@@ -2060,7 +2060,7 @@
 	 A graph is a <graphclass>gc_108</graphclass> if every edge is part of at most one cycle.
 	 </note>
 	 <note>
-	 They can be constructed from trees by replacing every edge by a cycle of arbitrary size; the cycles have at most one vertex in common.
+	 Every <graphclass>gc_108</graphclass> can be constructed from some <graphclass>gc_342</graphclass> by selecting a (not necessarily proper) subset $S$ of edges of the <graphclass>gc_342</graphclass> and replacing every edge in $S$ by a cycle of arbitrary size; the cycles have at most one vertex in common.
 	 </note>
 	 <note name="see-also">
 	    <graphclass>gc_93</graphclass>
