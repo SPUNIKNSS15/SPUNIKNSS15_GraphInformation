@@ -15008,8 +15008,9 @@
       </note>
    </Ref>
 
-   <!-- TO RENUMBER FROM ref_1717 onwards after merging parameters -->
-   <Ref id="ref_1695">
+   <!-- INSERT 1695-1716 FROM PARAMETERS HERE -->
+
+   <Ref id="ref_1717">
       <bib>
          <authors>K.S. Booth, C.J. Colbourn</authors>
          <title>Problems polynomially equivalent to graph isomorphism</title>
@@ -15017,13 +15018,59 @@
       </bib>
    </Ref>
 
-   <Ref id="ref_1696">
+   <Ref id="ref_1718">
       <bib>
          <authors>M.J. Colbourn, C.J. Colbourn</authors>
          <title>Graph isomorphism and self-complementary graphs</title>
 	 <rest>SIGACT News 10 Nr. 1:25-29 (1978)</rest>
       </bib>
    </Ref>
+
+   <Ref id="ref_1719">
+      <bib>
+         <authors>F. R. K. Chung</authors>
+         <title>On the Cutwidth and the Topological Bandwidth of a Tree</title>
+	 <rest>SIAM. J. on Algebraic and Discrete Methods 6 No.2, 268-277 (1983)</rest>
+	 <doi>10.1137/0606026</doi>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1720">
+      <bib>
+         <authors>P. D. Seymour, R. Thomas</authors>
+         <title>Call routing and the ratcatcher</title>
+	 <rest>Combinatorica 14 No.2, 217-241 (1994)</rest>
+	 <doi>10.1007/BF01215352</doi>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1721">
+      <bib>
+         <authors>D. R. Lick, A. T. White</authors>
+         <title>k-degenerate graphs</title>
+	 <rest>Canad. J. Math. 22 No.5, 1082-1096 (1970)</rest>
+	 <doi>10.4153/CJM-1970-125-1</doi>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1722">
+      <bib>
+         <authors>J. Nesetril, P. O. de Mendez</authors>
+         <title>Tree-depth, subgraph coloring and homomorphism bounds</title>
+	 <rest>European Journal of Combinatorics 27 No.6, 1022-1041 (2006)</rest>
+	 <doi>10.1016/j.ejc.2005.01.010</doi>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1723">
+      <bib>
+         <authors>Sang-il Oum, P. Seymour</authors>
+         <title>Approximating clique-width and branch-width</title>
+	 <rest>Journal of Combinatorial Theory, Series B 96 No.4, 514-528 (2006)</rest>
+	 <doi>10.1016/j.jctb.2005.10.006</doi>
+      </bib>
+   </Ref>
+
 
 
 

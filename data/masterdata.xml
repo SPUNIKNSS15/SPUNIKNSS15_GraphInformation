@@ -1040,7 +1040,7 @@
 	    <ref>ref_1629</ref>
 	 </algo>
          <algo name="Graph isomorphism" complexity="GIC">
-            <ref>ref_1695</ref>
+            <ref>ref_1717</ref>
          </algo>
       </GraphClass>
 
@@ -13083,10 +13083,10 @@
 	 </note>
 	 <ref>ref_1542</ref>
 	 <algo name="Recognition" complexity="GIC">
-            <ref>ref_1696</ref>
+            <ref>ref_1718</ref>
          </algo>
          <algo name="Graph isomorphism" complexity="GIC">
-            <ref>ref_1696</ref>
+            <ref>ref_1718</ref>
          </algo>
       </GraphClass>
 
