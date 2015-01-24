@@ -104,7 +104,7 @@
 
    <Problem name="Weighted independent dominating set" dir="undirected">
       <from name="Cliquewidth expression"/>
-      <sparse/>
+      <!-- <sparse/> -->
       <note>
 	 <table>
 	 <tr>
@@ -124,7 +124,7 @@
 
    <Problem name="Independent dominating set" dir="undirected">
       <from name="Weighted independent dominating set"/>
-      <sparse/>
+      <!-- <sparse/> -->
       <note>
 	 <table>
 	 <tr>
@@ -1420,9 +1420,6 @@
 	 <algo name="Recognition" complexity="P" bounds="O(E^{(a+1)/2})">
 	    <ref>ref_673</ref>
 	 </algo>
-         <algo name="Weighted independent dominating set" complexity="P">
-            <note>On <graphclass>gc_549</graphclass> graphs, the Independent set and Independent domininating set problems are equivalent.</note>
-         </algo>
       </GraphClass>
 
       <GraphClass id="gc_63" type="intersect">
@@ -3953,6 +3950,9 @@
          </algo>
          <algo name="Graph isomorphism" complexity="GIC">
             <ref>ref_1688</ref>
+         </algo>
+         <algo name="Independent dominating set" complexity="NPC">
+            <note>On <graphclass>gc_549</graphclass> graphs, the Domination and Independent dominating set problems are equivalent.</note>
          </algo>
       </GraphClass>
 
