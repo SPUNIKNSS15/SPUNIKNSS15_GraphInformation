@@ -566,7 +566,7 @@
       ISGCI contains a result for the current class.</i></p>
       <table style="table-layout:fixed">
          <tr>
-         <td style="width:17em"/>
+         <td style="width:19em"/>
          <td style="width:15em"/>
          <td style="width:7em"/>
          <td/>
