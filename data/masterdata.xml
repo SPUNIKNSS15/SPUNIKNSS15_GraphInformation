@@ -2181,10 +2181,10 @@
       <GraphClass id="gc_122" type="base">
          <name>perfect elimination bipartite</name>
 	 <note name="definition">
-	 An edge (u,v) in a <graphclass>gc_69</graphclass> graph is called bisimplicial if N(u)\cup N(v) induces a <smallgraph>biclique</smallgraph> in B.<br/>
-	 For an edge ordering e<sub>1</sub>...e<sub>k</sub> let S<sub>i</sub> be the set of endpoints of e<sub>1</sub>...e<sub>i</sub>.<br/>
-	 e<sub>1</sub>...e<sub>k</sub> is a perfect edge elimination ordering for a <graphclass>gc_69</graphclass> graph B=(V,E) if B[V\S<sub>k</sub>] has no edges, and each edge e<sub>i</sub> is bisimplicial in B[V\S<sub>i</sub>].<br/>
-	 B is <graphclass>gc_122</graphclass> if it admits a perfect edge elimination ordering.
+	 An edge $(u,v)$ in a <graphclass>gc_69</graphclass> graph $B$ is called bisimplicial if $N(u)\cup N(v)$ induces a <smallgraph>biclique</smallgraph> in $B$.<br/>
+	 For an edge ordering $e_1\dots e_k$ let $S_i$ be the set of endpoints of $e_1\dots e_i$ and $S_0=\emptyset$.<br/>
+	 $e_1\dots e_k$ is a perfect edge elimination ordering for a <graphclass>gc_69</graphclass> graph $B=(V,E)$ if $B[V\setminus S_k]$ has no edges, and each edge $e_i$ is bisimplicial in $B[V\setminus S_{i-1}]$.<br/>
+	 $B$ is <graphclass>gc_122</graphclass> if it admits a perfect edge elimination ordering.
 	 </note>
 	 <note name="see-also">
 	    <graphclass>gc_32</graphclass>
@@ -2196,6 +2196,9 @@
 	 </algo>
          <algo name="Recognition" complexity="P" bounds="O(V^3/\log V)">
             <ref>ref_1644</ref>
+         </algo>
+         <algo name="Feedback vertex set" complexity="NPC">
+            <ref>ref_1725</ref>
          </algo>
       </GraphClass>
 
@@ -2418,10 +2421,7 @@
 	    <graphclass>gc_132</graphclass>
 	 </note>
 	 <note name="open-problem">
-	 Characterize <graphclass>gc_133</graphclass> graphs by forbidden induced subgraphs <ref>ref_1404</ref>.
-	 </note>
-	 <note name="open-problem">
-	 Give an algorithm for finding a certificate for a graph not to be a <graphclass>gc_133</graphclass> graph <ref>ref_1404</ref>.
+	 Characterize <graphclass>gc_133</graphclass> graphs by forbidden induced subgraphs <ref>ref_1404</ref>. A forbidden structure characterisation in the form of mutually avoiding walks is given in <ref>ref_1724</ref>.
 	 </note>
 	 <note name="open-problem">
 	 Characterize <graphclass>gc_133</graphclass> graphs that admit a model where the arcs have to most two sizes <ref>ref_1404</ref>.
@@ -2435,6 +2435,7 @@
 	 <ref>ref_1038</ref>
 	 <ref>ref_1043</ref>
 	 <ref>ref_1404</ref>
+	 <ref>ref_1724</ref>
          <algo name="Independent set" complexity="Linear" bounds="O(n)">
             <ref>ref_1105</ref>
             <ref>ref_1106</ref>
@@ -2449,6 +2450,9 @@
          </algo>
 	 <algo name="Recognition" complexity="Lin">
 	    <ref>ref_1219</ref>
+	 </algo>
+	 <algo name="Recognition" complexity="P">
+	    <ref>ref_1724</ref>
 	 </algo>
 	 <algo name="Treewidth" complexity="P">
 	    <ref>ref_119</ref>
@@ -14639,7 +14643,7 @@
 	 Let $r_1,..r_d$ be given integers and let $V$ be the set of vectors $a_1,..,a_d$ with $0\le a_i\lt r_i$. Let $E$ be the set of pairs of tuples that have Hamming distance 1. Then $G=(V,E)$ is a <graphclass>gc_1163</graphclass> graph.
 	 </note>
 	 <note name="definition">
-	 A graph is a <graphclass>gc_1162</graphclass> graph if it is the Cartesian product of $d$ (not necessarily isomorphic) <smallgraph>complete graph</smallgraph>s.
+	 A graph is a <graphclass>gc_1163</graphclass> graph if it is the Cartesian product of $d$ (not necessarily isomorphic) <smallgraph>complete graph</smallgraph>s.
 	 </note>
 	 <note name="see-also">
 	    <graphclass>gc_1162</graphclass>
@@ -15569,6 +15573,18 @@
          <ref>ref_1693</ref>
       </GraphClass>
 
+      <GraphClass id="gc_1236" type="forbidden">
+         <smallgraph>C_{n+4} \cup K_1</smallgraph>
+         <smallgraph>S_3</smallgraph>
+         <smallgraph>W_4</smallgraph>
+         <smallgraph>net</smallgraph>
+         <smallgraph>claw</smallgraph>
+         <smallgraph>\co{C_6}</smallgraph>
+         <smallgraph>W_5</smallgraph>
+         <note>
+         This class is defined by a simplified list of forbidden subgraphs of <graphclass>gc_890</graphclass>
+         </note>
+      </GraphClass>
       
 
 
@@ -17761,6 +17777,7 @@
       <equ gc1="gc_1067" gc2="gc_1068"> <ref>forbidden</ref> </equ>
       <equ gc1="gc_1175" gc2="gc_1176"> <ref>forbidden</ref> </equ>
       <equ gc1="gc_565" gc2="gc_1228"> <ref>def</ref> </equ>
+      <equ gc1="gc_1236" gc2="gc_890"> <ref>def</ref> </equ>
       <!-- End sanityCheckSCC inclusions -->
    </Inclusions>
 </ISGCI>

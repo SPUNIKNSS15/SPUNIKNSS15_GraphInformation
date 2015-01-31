@@ -15071,6 +15071,25 @@
       </bib>
    </Ref>
 
+   <Ref id="ref_1724">
+      <bib>
+         <authors>M. Francis, P. Hell, J. Stacho</authors>
+         <title>Forbidden structure characterization of circular-arc graphs and a certifying recognition algorithm</title>
+	 <rest>Submitted (2014)</rest>
+	 <note>Available on <a href="http://arxiv.org/abs/1408.2639">arXiv</a>.</note>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1725">
+      <bib>
+         <authors>T. Liu</authors>
+         <title>Restricted Bipartite Graphs: Comparison and Hardness Results</title>
+	 <rest>Algorithmic Aspects in Information and Management (AAIM 2014) LNCS 8546, 241-252 (2014)</rest>
+         <doi>10.1007/978-3-319-07956-1_22</doi>
+      </bib>
+   </Ref>
+
+
 
 
 
