@@ -2198,7 +2198,7 @@
             <ref>ref_1644</ref>
          </algo>
          <algo name="Feedback vertex set" complexity="NPC">
-            <ref>ref_1725</ref>
+            <ref>ref_1729</ref>
          </algo>
       </GraphClass>
 
@@ -2421,7 +2421,7 @@
 	    <graphclass>gc_132</graphclass>
 	 </note>
 	 <note name="open-problem">
-	 Characterize <graphclass>gc_133</graphclass> graphs by forbidden induced subgraphs <ref>ref_1404</ref>. A forbidden structure characterisation in the form of mutually avoiding walks is given in <ref>ref_1724</ref>.
+	 Characterize <graphclass>gc_133</graphclass> graphs by forbidden induced subgraphs <ref>ref_1404</ref>. A forbidden structure characterisation in the form of mutually avoiding walks is given in <ref>ref_1728</ref>.
 	 </note>
 	 <note name="open-problem">
 	 Characterize <graphclass>gc_133</graphclass> graphs that admit a model where the arcs have to most two sizes <ref>ref_1404</ref>.
@@ -2435,7 +2435,7 @@
 	 <ref>ref_1038</ref>
 	 <ref>ref_1043</ref>
 	 <ref>ref_1404</ref>
-	 <ref>ref_1724</ref>
+	 <ref>ref_1728</ref>
          <algo name="Independent set" complexity="Linear" bounds="O(n)">
             <ref>ref_1105</ref>
             <ref>ref_1106</ref>
@@ -2452,7 +2452,7 @@
 	    <ref>ref_1219</ref>
 	 </algo>
 	 <algo name="Recognition" complexity="P">
-	    <ref>ref_1724</ref>
+	    <ref>ref_1728</ref>
 	 </algo>
 	 <algo name="Treewidth" complexity="P">
 	    <ref>ref_119</ref>
