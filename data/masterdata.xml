@@ -1887,9 +1887,6 @@
 	 A graph is a <graphclass>gc_93</graphclass> graph if it is connected and every block (maximal 2-connected component) is a clique.
 	 </note>
 	 <note name="definition">
-	 A graph is a <graphclass>gc_93</graphclass> graph if it can be constructed from a <graphclass>gc_342</graphclass> by replacing every edge by a clique of arbitrary size; the cliques have at most one vertex in common.
-	 </note>
-	 <note name="definition">
 	 A graph is a <graphclass>gc_93</graphclass> graph if for every four vertices u,v,w,x the larger two of the distance sums<br/>
 	 d(u,v)+ d(w,x)<br/>
 	 d(u,w)+ d(v,x)<br/>
@@ -2055,9 +2052,6 @@
 	 <hereditary type="induced-hereditary"/>
 	 <note name="definition">
 	 A graph is a <graphclass>gc_108</graphclass> if every edge is part of at most one cycle.
-	 </note>
-	 <note>
-	 Every <graphclass>gc_108</graphclass> can be constructed from some <graphclass>gc_342</graphclass> by selecting a (not necessarily proper) subset $S$ of edges of the <graphclass>gc_342</graphclass> and replacing every edge in $S$ by a cycle of arbitrary size; the cycles have at most one vertex in common.
 	 </note>
 	 <note name="see-also">
 	    <graphclass>gc_93</graphclass>
