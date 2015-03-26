@@ -1169,7 +1169,11 @@ public class XMLWriter extends XMLFilterImpl
                 write("&lt;");
                 break;
             case '>':
-                write("&gt;");
+                if (isAttVal) {
+                    write('>');
+                } else {
+                    write("&gt;");
+                }
                 break;
             case '\"':
                 if (isAttVal) {

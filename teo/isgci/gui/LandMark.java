@@ -132,7 +132,7 @@ public class LandMark {
             throws java.net.MalformedURLException {
         Resolver loader = new ISGCIResolver(
                 "file:"+System.getProperty("user.dir")+"/");
-        ISGCIReader gcr = new ISGCIReader(graph, problems);
+        ISGCIReader gcr = new ISGCIReader(graph, problems, null);
         XMLParser xml=new XMLParser(loader.openInputSource(file),
                 gcr, loader.getEntityResolver(), new NoteFilter());
         xml.parse();

@@ -14,11 +14,16 @@
 <xsl:output method="html" indent="no" encoding="utf-8"/>
 <xsl:strip-space elements="*"/>
 <xsl:key name="graphclass" match="GraphClass" use="@id"/>
-<xsl:key name="problem" match="Problem" use="@name"/>
-<xsl:key name="childproblem" match="Problem" use="from/@name"/>
+<xsl:key name="seenby" match="GraphClass" use="graphclass|(note//graphclass)"/>
 <xsl:key name="outedges" match="incl" use="@super"/>
 <xsl:key name="inedges" match="incl" use="@sub"/>
-<xsl:key name="seenby" match="GraphClass" use="graphclass|(note//graphclass)"/>
+<xsl:key name="param_name" match="Parameter" use="@name"/>
+<xsl:key name="param_id" match="Parameter" use="@id"/>
+<xsl:key name="paramseenby" match="Parameter" use="graphparameter|(note//graphparameter)"/>
+<xsl:key name="paramoutedges" match="parrelation[@rel='>=' or @rel='>']" use="@param1"/>
+<xsl:key name="paraminedges" match="parrelation[@rel='>=' or @rel='>']" use="@param2"/>
+<xsl:key name="problem" match="Problem" use="@name"/>
+<xsl:key name="childproblem" match="Problem" use="from/@name"/>
 <xsl:key name="reference" match="REFS/Ref" use="@id"/>
 
 <!--
@@ -36,6 +41,19 @@
    <xsl:sequence select="$set"/>
 </xsl:function>
 
+
+<!--
+  - Return the Parameter node for the given id.
+ -->
+<xsl:function name="teo:parameter">
+   <xsl:param name="gc"/>
+   <xsl:variable name="set" select="key('param_id', $gc, $theroot)"/>
+   <xsl:if test="not($set)">
+      <xsl:message>Parameter <xsl:value-of select="$gc"/> not found.</xsl:message>
+   </xsl:if>
+   <xsl:sequence select="$set"/>
+</xsl:function>
+
 <!--
   - Return a sort key for a graphclass given by id.
   - The key sorts graphclasses in document order.
@@ -46,11 +64,21 @@
          key('graphclass', $gc, $theroot)/preceding-sibling::GraphClass )"/>
 </xsl:function>
 
+<!--
+  - Return a sort key for a graphparameter given by id.
+  - The key sorts graphparameters in document order.
+ -->
+<xsl:function name="teo:graphparameter_sortkey" as="xs:integer">
+   <xsl:param name="gc"/>
+   <xsl:sequence select="count(
+         key('param_id', $gc, $theroot)/preceding-sibling::Parameter )"/>
+</xsl:function>
+
 <xsl:include href="lib.xsl"/>
 
 <!--
-  - Return the long complexity name for the given problem and full.xml
-  - complexity name.
+  - Return the long complexity/bounded name for the given problem and full.xml
+  - complexity/bounded name.
  -->
 <xsl:function name="teo:longcomplexity">
    <xsl:param name="problem"/>
@@ -58,29 +86,43 @@
    <xsl:sequence select="
       if ($complexity = 'Unknown')
       then 'Unknown to ISGCI'
-      else if ($problem = 'Cliquewidth expression' and
-            $complexity = 'NP-complete')
-      then 'Unbounded or NP-complete'
       else $complexity"/>
 </xsl:function>
 
 <!--
-  - Return the colour #rrggbb (string) for the given complexity string
+  - Return the colour #rrggbb (string) for the given complexity/bounded string
   -->
 <xsl:function name="teo:complexitycolour">
    <xsl:param name="complexity"/>
    <xsl:sequence select="
       if ($complexity = 'NP-complete' or $complexity = 'coNP-complete' or
-         $complexity = 'NP-hard' or $complexity = 'Unbounded')
+         $complexity = 'NP-hard' or
+         $complexity = 'paraNP-complete' or $complexity='paraNP-hard' or
+         $complexity = 'Unbounded')
       then '#800000'
-      else if ($complexity = 'GI-complete')
+      else if ($complexity = 'GI-complete' or $complexity = 'W-hard')
       then '#CC8080'
-      else if ($complexity = 'Polynomial')
+      else if ($complexity = 'XP')
+      then '#A0A000'
+      else if ($complexity = 'Polynomial' or $complexity = 'FPT')
       then '#008000'
-      else if ($complexity = 'Linear' or $complexity = 'Bounded')
+      else if ($complexity = 'Linear' or $complexity='FPT-Linear' or
+         $complexity = 'Bounded')
       then '#00CC00'
       else ''"/>
 </xsl:function>
+
+<!--
+  - Generate a table row with the column layout for complexities.
+  -->
+<xsl:template name="teo:complexitylayout">
+   <tr>
+      <td style="width:19em"/>
+      <td style="width:15em"/>
+      <td style="width:7em"/>
+      <td/>
+   </tr>
+</xsl:template>
 
 
 <!-- ISGCI homepage -->
@@ -114,6 +156,8 @@
    <xsl:apply-templates select="GraphClasses"/>
    <!-- Create problem pages -->
    <xsl:apply-templates select="Problem[not(sparse)]"/>
+   <!-- Create parameter pages -->
+   <xsl:apply-templates select="Parameters/Parameter"/>
 
    <!-- Create classic classes include file -->
    <xsl:result-document href="classics.inc" method="html"
@@ -125,6 +169,14 @@
    <xsl:result-document href="problems.inc" method="html"
          encoding="utf-8">
       <xsl:apply-templates select="Problem[not(sparse)]" mode="collect">
+         <xsl:sort select="@name"/>
+      </xsl:apply-templates>
+   </xsl:result-document>
+
+   <!-- Create parameters include file -->
+   <xsl:result-document href="parameters.inc" method="html"
+         encoding="utf-8">
+      <xsl:apply-templates select="Parameters/Parameter" mode="collect">
          <xsl:sort select="@name"/>
       </xsl:apply-templates>
    </xsl:result-document>
@@ -171,7 +223,8 @@
          set0('superdetails', 'superbutton', true, false);
          set0('subdetails', 'subbutton', true, false);
          set0('mapdetails', 'mapbutton', true, false);
-         <xsl:apply-templates select="Problem" mode="showall"/>
+         <xsl:apply-templates select="Problem|Parameters/Parameter"
+               mode="showall"/>
       }
       function hideall() {
          set0('equdetails', 'equbutton', false, false);
@@ -179,7 +232,8 @@
          set0('superdetails', 'superbutton', false, false);
          set0('subdetails', 'subbutton', false, false);
          set0('mapdetails', 'mapbutton', false, false);
-         <xsl:apply-templates select="Problem" mode="hideall"/>
+         <xsl:apply-templates select="Problem|Parameters/Parameter"
+               mode="hideall"/>
       }
    </xsl:result-document>
 </xsl:template>
@@ -222,6 +276,7 @@
             <li class="title">This class</li>
             <li><a href="#definition">Definition</a></li>
             <li><a href="#inclusions">Inclusions</a></li>
+            <li><a href="#paramssummary">Parameters</a></li>
             <li><a href="#problemssummary">Problems</a></li>
             <li><a href="javascript:showall()">[+]Details</a></li>
             <li><a href="javascript:hideall()">[-]Hide details</a></li>
@@ -561,18 +616,48 @@
          </div>
       </xsl:if>
 
+      <h2 id="paramssummary">Parameters</h2>
+      <table style="table-layout:fixed">
+         <xsl:call-template name="teo:complexitylayout"/>
+         <xsl:apply-templates select="parameter" mode="summary">
+            <xsl:sort select="@name"/>
+         </xsl:apply-templates>
+      </table>
+
       <h2 id="problemssummary">Problems</h2>
       <p><i>Problems in italics have no summary page and are only listed when
       ISGCI contains a result for the current class.</i></p>
+
+      <h4>Parameter decomposition</h4>
       <table style="table-layout:fixed">
-         <tr>
-         <td style="width:19em"/>
-         <td style="width:15em"/>
-         <td style="width:7em"/>
-         <td/>
-         </tr>
-         <xsl:apply-templates select="problem[@complexity ne 'Unknown' or 
-               not(key('problem', @name)/sparse)]" mode="summary">
+         <xsl:call-template name="teo:complexitylayout"/>
+         <xsl:apply-templates select="problem[
+               ends-with(@name, 'decomposition') and (
+               @complexity ne 'Unknown' or 
+               not(key('problem', @name)/sparse))]" mode="summary">
+            <xsl:sort select="@name"/>
+         </xsl:apply-templates>
+      </table>
+
+      <h4>Unweighted problems</h4>
+      <table style="table-layout:fixed">
+         <xsl:call-template name="teo:complexitylayout"/>
+         <xsl:apply-templates select="problem[
+               not(ends-with(@name, 'decomposition')) and
+               not(starts-with(@name, 'Weighted')) and (
+               @complexity ne 'Unknown' or 
+               not(key('problem', @name)/sparse))]" mode="summary">
+            <xsl:sort select="@name"/>
+         </xsl:apply-templates>
+      </table>
+
+      <h4>Weighted problems</h4>
+      <table style="table-layout:fixed">
+         <xsl:call-template name="teo:complexitylayout"/>
+         <xsl:apply-templates select="problem[
+               starts-with(@name, 'Weighted') and (
+               @complexity ne 'Unknown' or 
+               not(key('problem', @name)/sparse))]" mode="summary">
             <xsl:sort select="@name"/>
          </xsl:apply-templates>
       </table>
@@ -608,9 +693,7 @@
          method="html" indent="yes" encoding="utf-8"
          doctype-public="-//W3C//DTD HTML 4.01//EN">
    <xsl:variable name="complexities" select="
-         if (@name='Cliquewidth')
-         then ('Bounded', 'Unbounded', 'Open', 'Unknown')
-         else ('Linear', 'Polynomial', 'GI-complete', 'NP-hard', 'NP-complete',
+         ('Linear', 'Polynomial', 'GI-complete', 'NP-hard', 'NP-complete',
             'coNP-complete', 'Open', 'Unknown')
          "/>
    <html>
@@ -658,6 +741,310 @@
    </xsl:result-document>
 </xsl:template>
 
+
+<xsl:template match="Parameter">
+   <xsl:variable name="here" select="."/>
+   <xsl:variable name="page" select="concat(@id, '.html')"/>
+   <xsl:variable name="complexities" select="
+         ('Bounded', 'Unbounded', 'Open', 'Unknown')
+         "/>
+   <xsl:result-document href="{teo:file($classesdir,$page)}"
+         method="html" indent="yes" encoding="utf-8"
+         doctype-public="-//W3C//DTD HTML 4.01//EN">
+   <html>
+   <head>
+      <title><xsl:value-of select="@name"/> parameter</title>
+      <link rel="stylesheet" type="text/css" href="{teo:url('','global.css')}"/>
+      <link rel="stylesheet" type="text/css" href="{teo:url('','data.css')}"/>
+      <link rel="shortcut icon" type="image/x-icon" href="{
+         teo:url('','favicon.ico')}"/>
+      <link rel="canonical" href="{teo:fullurl($classesdir,$page)}"/>
+      <script type="text/javascript" src="{teo:url('','isgci.js')}"/>
+      <xsl:call-template name="mathjax"/>
+   </head>
+   <body id="classpage">
+      <xsl:call-template name="header"/>
+      <div id="NavigationBox">
+         <xsl:call-template name="search"/>
+         <xsl:call-template name="mainmenu"/>
+         <ul class="navigation">
+            <li class="title">This parameter</li>
+            <li><a href="#definition">Definition</a></li>
+            <li><a href="#inclusions">Relations</a></li>
+            <li><a href="#problemssummary">Problems</a></li>
+            <xsl:for-each select="$complexities">
+               <li><a href="#{.}"><xsl:value-of select="."/></a></li>
+            </xsl:for-each>
+            <li><a href="javascript:showall()">[+]Details</a></li>
+            <li><a href="javascript:hideall()">[-]Hide details</a></li>
+         </ul>
+      </div>
+
+      <h1>
+         <xsl:if test="@dir='directed'">Directed </xsl:if>
+         Parameter: <xsl:value-of select="@name"/>
+      </h1>
+
+      <xsl:if test="count(note[@name='definition']) = 1">
+         <div id="definition">
+            <div class="defhdr">Definition:</div>
+            <p>
+            <xsl:apply-templates select="note[@name='definition']">
+               <xsl:with-param name="thisparam" tunnel="yes" select="@id"/>
+            </xsl:apply-templates>
+            </p>
+         </div>
+      </xsl:if>
+      <xsl:if test="count(note[@name='definition']) > 1">
+         <div id="definition">
+            <div class="defhdr">The following definitions are equivalent:</div>
+            <ol>
+            <xsl:for-each select="note[@name='definition']">
+               <li><xsl:apply-templates select=".">
+                  <xsl:with-param name="thisparam" tunnel="yes"
+                        select="$here/@id"/>
+               </xsl:apply-templates></li>
+            </xsl:for-each>
+            </ol>
+         </div>
+      </xsl:if>
+
+      <xsl:for-each select="note[not(@name)]">
+         <p><xsl:apply-templates/></p>
+      </xsl:for-each>
+
+      <xsl:if test="note[@name='open-problem']">
+         <div class="openproblems">
+            <h3>Open problems</h3>
+            <ol>
+               <xsl:for-each select="note[@name='open-problem']">
+                  <li><xsl:apply-templates select="."/></li>
+               </xsl:for-each>
+            </ol>
+         </div>
+      </xsl:if>
+
+      <xsl:if test="note[@name='conjecture']">
+         <div class="conjectures">
+            <h3>Conjectures</h3>
+            <ol>
+               <xsl:for-each select="note[@name='conjecture']">
+                  <li><xsl:apply-templates select="."/></li>
+               </xsl:for-each>
+            </ol>
+         </div>
+      </xsl:if>
+
+      <xsl:variable name="otherref" select="problem/
+            paralgo[not(graphparameter) or graphparameter/text() eq $here/@id]/
+            ref[starts-with(text(), 'ref_')]"/>
+      <xsl:if test="ref|$otherref">
+         <div class="references">
+            <h3>References</h3>
+            <p><xsl:apply-templates select="ref">
+               <xsl:sort select="teo:ref2int(text())"/>
+            </xsl:apply-templates></p>
+            <xsl:if test="ref and $otherref">
+               <p>;</p>
+            </xsl:if>
+            <p><xsl:for-each-group select="$otherref" group-by="text()">
+               <xsl:sort select="teo:ref2int(current-grouping-key())"/>
+               <xsl:if test="not($here/ref[text() eq current-grouping-key()])">
+                  <xsl:apply-templates select="current-group()[1]"/>
+               </xsl:if>
+            </xsl:for-each-group></p>
+         </div>
+      </xsl:if>
+
+      <xsl:variable name="equs" select=
+         "key('param_id', note[@name='equivalents']/graphparameter)"/>
+      <xsl:variable name="equ0" select="$equs except current()"/>
+      <xsl:if test="$equ0">
+         <div class="equivs">
+            <h3>Equivalent parameters</h3>
+            <a href="javascript:toggle('equdetails', 'equbutton');">
+               <span class="collapsor"
+                     id="equbutton" name="equbutton">[+]Details</span>
+            </a>
+            <div><p name="equdetails" id="equdetails" style="display:none">
+            <i>Only references for direct inclusions are given. Where no reference is given for an equivalent parameter, check other equivalent parameters.</i>
+            </p></div>
+            <ul class="classeslist">
+            <xsl:for-each select="$equ0">
+               <li>
+               <xsl:apply-templates select="." mode="href"/>
+               <span id="equdetails" name="equdetails" style="display:none">
+                  <xsl:variable name="refs" select=
+                     "(key('paramoutedges', $here/@id)[@param2=current()/@id]|
+                     key('paraminedges', $here/@id)[@param1=current()/@id])/ref"/>
+                  <xsl:for-each-group select="$refs" group-by=".">
+                     <xsl:apply-templates select="."/>
+                  </xsl:for-each-group>
+               </span>
+               </li>
+            </xsl:for-each>
+            </ul>
+         </div>
+      </xsl:if>
+
+      <xsl:variable name="seealsoparam" select="(
+               (key('param_id', (.|note[@name='see-also'])/graphparameter)|
+               key('paramseenby', $here/@id))
+               ) except ($equs)"/>
+      <xsl:if test="$seealsoparam">
+         <div class="related">
+            <h3>Related parameters</h3>
+            <ul class="classeslist">
+            <xsl:for-each select="$seealsoparam">
+               <li><xsl:apply-templates select="." mode="href"/></li>
+            </xsl:for-each>
+            </ul>
+         </div>
+      </xsl:if>
+      
+      <xsl:variable name="seealsorest"
+            select="(note[@name='see-also']/*) except
+               note[@name='see-also']/graphparameter"/>
+      <xsl:if test="$seealsorest">
+         <div class="seealso">
+            <h3>See also</h3>
+            <div id="indent">
+            <xsl:apply-templates select="$seealsorest"/>
+            </div>
+         </div>
+      </xsl:if>
+
+      <h2 id="inclusions">Relations</h2>
+
+      <p><i>
+      Minimal/maximal is with respect to the contents of ISGCI. Only references for direct bounds are given. Where no reference is given, check equivalent parameters.
+      </i></p>
+
+      <xsl:variable name="in" select="key('param_id',
+            (key('param_id', key('paraminedges', $equs/@id)/@param1) except $equs)
+         /note[@name='equivalents']/graphparameter)"/>
+      <xsl:if test="$in">
+         <xsl:variable name="properin"
+               select="key('paraminedges', $equs/@id)[@rel='>']"/>
+         <div class="minsuper">
+         <h3>Minimal upper bounds for this parameter</h3>
+         <a href="javascript:toggle('superdetails', 'superbutton');">
+            <span class="collapsor"
+                  id="superbutton" name="superbutton">[+]Details</span>
+         </a>
+         <ul class="classeslist">
+         <xsl:for-each select="$in">
+            <li>
+            <xsl:apply-templates select="." mode="href"/>
+            <span id="superdetails" name="superdetails" style="display:none">
+               <xsl:apply-templates select=
+                     "key('paraminedges', $here/@id)[@param1=current()/@id]/ref"/>
+               <xsl:variable name="inequ"
+                     select="./note[@name='equivalents']/graphparameter"/>
+               <xsl:choose>
+                  <xsl:when test="some
+                        $edge in $properin,
+                        $super in $inequ
+                        satisfies $edge/@param1=$super">
+                     <xsl:text>(known strict)</xsl:text>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:text>(possibly equal)</xsl:text>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </span>
+            </li>
+         </xsl:for-each>
+         </ul>
+         </div>
+      </xsl:if>
+
+      <xsl:variable name="out" select="key('param_id',
+            (key('param_id', key('paramoutedges', $equs/@id)/@param2) except $equs)
+         /note[@name='equivalents']/graphparameter)"/>
+      <xsl:if test="$out">
+         <div class="maxsub">
+         <xsl:variable name="properout"
+               select="key('paramoutedges', $equs/@id)[@rel='>']"/>
+         <h3>This parameter is a minimal upper bound for</h3>
+         <a href="javascript:toggle('subdetails', 'subbutton');">
+            <span class="collapsor"
+                  id="subbutton" name="subbutton">[+]Details</span>
+         </a>
+         <ul class="classeslist">
+         <xsl:for-each select="$out">
+            <li>
+            <xsl:apply-templates select="." mode="href"/>
+            <span id="subdetails" name="subdetails" style="display:none">
+               <xsl:apply-templates select=
+                     "key('paramoutedges', $here/@id)[@param2=current()/@id]/ref"/>
+               <xsl:variable name="outequ"
+                     select="./note[@name='equivalents']/graphclass"/>
+               <xsl:choose>
+                  <xsl:when test="some
+                        $edge in $properout,
+                        $sub in $outequ
+                        satisfies $edge/@param1=$sub">
+                     <xsl:text> (known strict)</xsl:text>
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <xsl:text> (possibly equal)</xsl:text>
+                  </xsl:otherwise>
+               </xsl:choose>
+            </span>
+            </li>
+         </xsl:for-each>
+         </ul>
+         </div>
+      </xsl:if>
+
+      <h2 id="problemssummary">Problems</h2>
+      <p><i>Problems in italics have no summary page and are only listed when
+      ISGCI contains a result for the current parameter.</i></p>
+      <table style="table-layout:fixed">
+         <tr>
+         <td style="width:17em"/>
+         <td style="width:15em"/>
+         <td style="width:7em"/>
+         <td/>
+         </tr>
+         <xsl:apply-templates select="parproblem[@complexity ne 'Unknown' or 
+               not(key('problem', @name)/sparse)]" mode="summary">
+            <xsl:sort select="@name"/>
+         </xsl:apply-templates>
+      </table>
+
+      <h2>Graph classes</h2>
+
+      <xsl:for-each select="$complexities">
+         <xsl:call-template name="problemcomplexity">
+            <xsl:with-param name="problem" select="$here"/>
+            <xsl:with-param name="complexity" select="."/>
+         </xsl:call-template>
+      </xsl:for-each>
+      <xsl:call-template name="footer">
+         <xsl:with-param name="path" select="$classesdir"/>
+         <xsl:with-param name="page" select="$page"/>
+      </xsl:call-template>
+   </body>
+   </html>
+   </xsl:result-document>
+</xsl:template>
+
+<xsl:template match="Parameter" mode="href">
+   <xsl:param name="path" select="'.'"/>
+   <span class="graphclass">
+   <a href="{teo:url($classesdir, concat(@id,'.html'))}">
+      <xsl:apply-templates select="current()" mode="ref"/>
+   </a>
+   </span>
+</xsl:template>
+
+<xsl:template match="Parameter" mode="ref">
+   <xsl:value-of disable-output-escaping="yes" select="XsltUtil:latex(@name)"/>
+</xsl:template>
+
+
 <xsl:template name="problemcomplexity">
    <xsl:param name="problem"/>
    <xsl:param name="complexity"/>
@@ -665,8 +1052,13 @@
    <h3 id="{$complexity}"><xsl:value-of
          select="teo:longcomplexity($problem/@name, $complexity)"/></h3>
 
-   <xsl:variable name="nodes" select="root($problem)//GraphClass/problem
-            [@name=$problem/@name and @complexity=$complexity]/.."/>
+   <xsl:variable name="nodes" select="
+      if (local-name($problem) = 'Parameter')
+      then root($problem)//GraphClass/parameter
+         [@name=$problem/@name and @boundedness=$complexity]/..
+      else root($problem)//GraphClass/problem
+         [@name=$problem/@name and @complexity=$complexity]/.."/>
+
    <xsl:if test="$nodes">
       <xsl:choose>
          <xsl:when test="teo:complexitycolour($complexity)">
@@ -691,10 +1083,11 @@
    <xsl:call-template name="toplink"/>
 </xsl:template>
 
-<xsl:template match="problem" mode="summary">
-   <xsl:variable name="colour" select="teo:complexitycolour(@complexity)"/>
+<xsl:template match="problem|parameter|parproblem" mode="summary">
+   <xsl:variable name="colour"
+         select="teo:complexitycolour(@complexity|@boundedness)"/>
    <xsl:variable name="complexity"
-         select="teo:longcomplexity(@name, @complexity)"/>
+         select="teo:longcomplexity(@name, @complexity|@boundedness)"/>
    <tr>
    <td>
       <xsl:choose>
@@ -708,14 +1101,24 @@
       <xsl:text> </xsl:text>
       <div class="tooltip">
          <xsl:choose>
-            <xsl:when test="key('problem', @name)[sparse]">
-               [?]
+            <xsl:when test="local-name() = 'parameter'">
+               <a href="{concat(key('param_name', @name)/@id, '.html')}">[?]</a>
+               <div><xsl:apply-templates select="key('param_name', @name)/note[@name='definition'][1]"/>
+               </div>
             </xsl:when>
             <xsl:otherwise>
-            <a href="{teo:problemfile(@name)}">[?]</a>
+               <xsl:choose>
+                  <xsl:when test="key('problem', @name)[sparse]">
+                     [?]
+                  </xsl:when>
+                  <xsl:otherwise>
+                     <a href="{teo:problemfile(@name)}">[?]</a>
+                  </xsl:otherwise>
+               </xsl:choose>
+               <div><xsl:apply-templates select="key('problem', @name)/note"/>
+               </div>
             </xsl:otherwise>
          </xsl:choose>
-         <div><xsl:apply-templates select="key('problem', @name)/note"/></div>
       </div>
    </td>
    <td>
@@ -763,10 +1166,6 @@
    <xsl:apply-templates select=
          "algo[not(graphclass) and @complexity='coNP-complete']"/>
    <xsl:apply-templates select=
-         "algo[not(graphclass) and @complexity='Bounded']"/>
-   <xsl:apply-templates select=
-         "algo[not(graphclass) and @complexity='Unbounded']"/>
-   <xsl:apply-templates select=
          "algo[not(graphclass) and @complexity='Open']"/>
 
    <xsl:if test="algo[not(graphclass)] and algo[graphclass]">
@@ -791,12 +1190,6 @@
    <xsl:apply-templates select="algo[graphclass and @complexity='coNP-complete']">
       <xsl:sort select="teo:graphclass_sortkey(graphclass/text())"/>
    </xsl:apply-templates>
-   <xsl:apply-templates select="algo[graphclass and @complexity='Bounded']">
-      <xsl:sort select="teo:graphclass_sortkey(graphclass/text())"/>
-   </xsl:apply-templates>
-   <xsl:apply-templates select="algo[graphclass and @complexity='Unbounded']">
-      <xsl:sort select="teo:graphclass_sortkey(graphclass/text())"/>
-   </xsl:apply-templates>
    <xsl:apply-templates select="algo[@complexity='Open']">
       <xsl:sort select="teo:graphclass_sortkey(graphclass/text())"/>
    </xsl:apply-templates>
@@ -804,27 +1197,108 @@
    </td></tr>
 </xsl:template>
 
-<xsl:template match="Problem" mode="showall">
+<xsl:template match="parameter" mode="collapsed">
+   <tr id="{concat(teo:name2id(@name),'details')}"
+         name="{concat(teo:name2id(@name),'details')}"
+         style="display:none">
+   <td></td><td colspan="3">
+
+   <xsl:apply-templates select=
+         "bounded[not(graphclass) and @boundedness='Bounded']"/>
+   <xsl:apply-templates select=
+         "bounded[not(graphclass) and @boundedness='Unbounded']"/>
+   <xsl:apply-templates select=
+         "bounded[not(graphclass) and @boundedness='Open']"/>
+
+   <xsl:if test="bounded[not(graphclass)] and bounded[graphclass]">
+      <br/>
+   </xsl:if>
+
+   <xsl:apply-templates select="bounded[graphclass and @boundedness='Bounded']">
+      <xsl:sort select="teo:graphclass_sortkey(graphclass/text())"/>
+   </xsl:apply-templates>
+   <xsl:apply-templates
+         select="bounded[graphclass and @boundedness='Unbounded']">
+      <xsl:sort select="teo:graphclass_sortkey(graphclass/text())"/>
+   </xsl:apply-templates>
+   <xsl:apply-templates select="bounded[@boundedness='Open']">
+      <xsl:sort select="teo:graphclass_sortkey(graphclass/text())"/>
+   </xsl:apply-templates>
+   <!-- No need to doing anything with Unknown complexity -->
+   </td></tr>
+</xsl:template>
+
+<xsl:template match="parproblem" mode="collapsed">
+   <tr id="{concat(teo:name2id(@name),'details')}"
+         name="{concat(teo:name2id(@name),'details')}"
+         style="display:none">
+   <td></td><td colspan="3">
+
+   <xsl:apply-templates select=
+         "paralgo[not(graphparameter) and @complexity='FPT-Linear']"/>
+   <xsl:apply-templates select=
+         "paralgo[not(graphparameter) and @complexity='FPT']"/>
+   <xsl:apply-templates select=
+         "paralgo[not(graphparameter) and @complexity='XP']"/>
+   <xsl:apply-templates select=
+         "paralgo[not(graphparameter) and @complexity='W-hard']"/>
+   <xsl:apply-templates select=
+         "paralgo[not(graphparameter) and @complexity='paraNP-hard']"/>
+   <xsl:apply-templates select=
+         "paralgo[not(graphparameter) and @complexity='paraNP-complete']"/>
+   <xsl:apply-templates select=
+         "paralgo[not(graphparameter) and @complexity='Open']"/>
+
+   <xsl:if test="paralgo[not(graphclass)] and paralgo[graphclass]">
+      <br/>
+   </xsl:if>
+
+   <xsl:apply-templates select="paralgo[graphparameter and @complexity='FPT-Linear']">
+      <xsl:sort select="teo:graphparameter_sortkey(graphparameter/text())"/>
+   </xsl:apply-templates>
+   <xsl:apply-templates select="paralgo[graphparameter and @complexity='FPT']">
+      <xsl:sort select="teo:graphparameter_sortkey(graphparameter/text())"/>
+   </xsl:apply-templates>
+   <xsl:apply-templates select="paralgo[graphparameter and @complexity='XP']">
+      <xsl:sort select="teo:graphparameter_sortkey(graphparameter/text())"/>
+   </xsl:apply-templates>
+   <xsl:apply-templates select="paralgo[graphparameter and @complexity='W-hard']">
+      <xsl:sort select="teo:graphparameter_sortkey(graphparameter/text())"/>
+   </xsl:apply-templates>
+   <xsl:apply-templates select="paralgo[graphparameter and @complexity='paraNP-hard']">
+      <xsl:sort select="teo:graphparameter_sortkey(graphparameter/text())"/>
+   </xsl:apply-templates>
+   <xsl:apply-templates select="paralgo[graphparameter and @complexity='paraNP-complete']">
+      <xsl:sort select="teo:graphparameter_sortkey(graphparameter/text())"/>
+   </xsl:apply-templates>
+   <xsl:apply-templates select="paralgo[@complexity='Open']">
+      <xsl:sort select="teo:graphparameter_sortkey(graphparameter/text())"/>
+   </xsl:apply-templates>
+   <!-- No need to doing anything with Unknown complexity -->
+   </td></tr>
+</xsl:template>
+
+<xsl:template match="Problem|Parameter" mode="showall">
    set0('<xsl:value-of select="concat(teo:name2id(@name),'details')"/>',
         '<xsl:value-of select="concat(teo:name2id(@name),'button')"/>',
          true, true );
 </xsl:template>
 
-<xsl:template match="Problem" mode="hideall">
+<xsl:template match="Problem|Parameter" mode="hideall">
    set0('<xsl:value-of select="concat(teo:name2id(@name),'details')"/>',
         '<xsl:value-of select="concat(teo:name2id(@name),'button')"/>',
          false, true );
 </xsl:template>
 
-<xsl:template match="algo[not(graphclass)]">
+<xsl:template match="algo[not(graphclass)]|bounded[not(graphclass)]|paralgo[not(graphparameter)]">
    <i>
    <xsl:choose>
-      <xsl:when test="@name='Cliquewidth expression' and
+      <xsl:when test="ends-with(@name, ' decomposition') and
             @complexity='NP-complete'">
          Unbounded/NP-complete
       </xsl:when>
       <xsl:otherwise>
-         <xsl:value-of select="@complexity"/><xsl:text> </xsl:text>
+         <xsl:value-of select="@complexity|@boundedness"/><xsl:text> </xsl:text>
       </xsl:otherwise>
    </xsl:choose>
    <xsl:if test="@bounds">
@@ -836,25 +1310,26 @@
    <br/>
 </xsl:template>
 
-<xsl:template match="algo[graphclass]">
-   <xsl:if test="key('graphclass',graphclass)">
+<xsl:template match="algo[graphclass]|bounded[graphclass]|paralgo[graphparameter]">
+   <xsl:if test="key('graphclass',graphclass) or key('param_id', graphparameter)">
       <xsl:choose>
-         <xsl:when test="@name='Cliquewidth expression' and
+         <xsl:when test="ends-with(@name, ' decomposition') and
                @complexity='NP-complete'">
             Unbounded/NP-complete
          </xsl:when>
          <xsl:otherwise>
-            <xsl:value-of select="@complexity"/>
+            <xsl:value-of select="@complexity|@boundedness"/>
          </xsl:otherwise>
       </xsl:choose>
       <xsl:if test="@bounds">
          <xsl:text> </xsl:text>[$<xsl:value-of select="@bounds"/>$]
       </xsl:if>
-      <xsl:apply-templates select="graphclass"/>
+      <xsl:apply-templates select="graphclass|graphparameter"/>
       <xsl:apply-templates select="ref"/>
       <xsl:choose>
          <xsl:when test="note and
-               graphclass/text() eq ancestor::GraphClass/@id">
+               (graphclass/text() eq ancestor::GraphClass/@id
+               or graphparameter/text() eq ancestor::Parameter/@id)">
             <xsl:apply-templates select="note" mode="indent"/>
          </xsl:when>
          <xsl:otherwise><br/>
@@ -863,9 +1338,19 @@
    </xsl:if>
 </xsl:template>
 
-<xsl:template match="algo/graphclass">
+<xsl:template match="algo/graphclass|bounded/graphclass">
    <xsl:variable name="node" select=
          "teo:graphclass(.) except ancestor::GraphClass"/>
+   <xsl:if test="$node">
+      <xsl:text> on </xsl:text>
+      <xsl:apply-templates select="$node" mode="href"/>
+   </xsl:if>
+   <xsl:text>&#xa;</xsl:text>
+</xsl:template>
+
+<xsl:template match="paralgo/graphparameter">
+   <xsl:variable name="node" select=
+         "teo:parameter(.) except ancestor::Parameter"/>
    <xsl:if test="$node">
       <xsl:text> on </xsl:text>
       <xsl:apply-templates select="$node" mode="href"/>
@@ -1118,6 +1603,23 @@
    </xsl:choose>
 </xsl:template>
 
+<!-- A graphparameter IDREF
+     Create a hyperlink if it doesn't refer to the active graphclass.
+     See also algo/graphclass
+  -->
+<xsl:template match="graphparameter">
+   <xsl:param name="thisclass" as="xs:string?" required="no" tunnel="yes"
+         select="ancestor::Parameter/@id"/>
+   <xsl:choose>
+      <xsl:when test=". != $thisclass">
+         <xsl:apply-templates select="teo:parameter(.)" mode="href"/>
+      </xsl:when>
+      <xsl:otherwise>
+         <xsl:apply-templates select="teo:parameter(.)" mode ="ref"/>
+      </xsl:otherwise>
+   </xsl:choose>
+</xsl:template>
+
 <!-- Picture of a small graph -->
 <xsl:template match="smallgraph" mode="image">
    <xsl:if test="not(key('smallgraph', ., $smallgraphs))">
@@ -1211,6 +1713,12 @@
 <!-- Collect the problems -->
 <xsl:template match="Problem" mode="collect">
    <a href="{$classesdir}/{teo:problemfile(@name)}"><xsl:value-of select="@name"/></a>
+   <br/><xsl:text>&#x0a;</xsl:text>
+</xsl:template>
+
+<!-- Collect the parameters -->
+<xsl:template match="Parameter" mode="collect">
+   <xsl:apply-templates select="." mode="href"/>
    <br/><xsl:text>&#x0a;</xsl:text>
 </xsl:template>
 

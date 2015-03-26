@@ -18,7 +18,22 @@
       </note>
    </Problem>
 
-   <Problem name="Treewidth" dir="undirected">
+   <Problem name="cutwidth decomposition" dir="undirected">
+      <note>
+	 <table>
+	 <tr>
+	    <td>Input:</td><td>A graph <i>G</i> in this class and an integer
+	    <i>k</i>.</td>
+	 </tr>
+	 <tr>
+	    <td>Output:</td><td>True iff the cutwidth of <i>G</i>
+	    is at most <i>k</i>.</td>
+	 </tr>
+	 </table>
+      </note>
+   </Problem>
+
+   <Problem name="treewidth decomposition" dir="undirected">
       <note>
 	 <table>
 	 <tr>
@@ -27,32 +42,13 @@
 	 </tr>
 	 <tr>
 	    <td>Output:</td><td>True iff the treewidth of <i>G</i>
-	    is at most <i>k</i> (see <a href="gc_470.html">bounded
-	    treewidth</a>).</td>
+	    is at most <i>k</i>.</td>
 	 </tr>
 	 </table>
       </note>
    </Problem>
 
-   <Problem name="Cliquewidth" complement="Cliquewidth" dir="undirected">
-      <note>
-	 Whether the cliquewidth of the graphs in this class is bounded by a
-	 constant <i>k</i>.<br/>
-	 The cliquewidth of a graph is the number of different labels
-	 that is needed to construct the graph using the following
-	 operations:
-	    <ul>
-	    <li>creation of a vertex with label <i>i</i>,</li>
-	    <li>disjoint union,</li>
-	    <li>renaming labels <i>i</i> to label <i>j</i>,</li>
-	    <li>connecting all vertices with label <i>i</i> to all
-	    vertices with label <i>j</i>.</li>
-	    </ul>
-      </note>
-   </Problem>
-
-   <Problem name="Cliquewidth expression" complement="Cliquewidth expression" dir="undirected">
-      <from name="Cliquewidth" complexity="Polynomial"/>
+   <Problem name="cliquewidth decomposition" complement="cliquewidth decomposition" dir="undirected">
       <note>
 	 <table>
 	 <tr>
@@ -68,8 +64,25 @@
       </note>
    </Problem>
 
+   <Problem name="booleanwidth decomposition" dir="undirected">
+      <note>
+      <table>
+      <tr>
+         <td>Input:</td><td>A graph <i>G</i> in this class.</td>
+      </tr>
+      <tr>
+         <td>Output:</td><td>An expression that constructs
+         <i>G</i> according to the rules for booleanwidth, using only a
+         constant number of labels.<br/>
+         Undefined if this class has unbounded booleanwidth.</td>
+      </tr>
+      </table>
+      </note>
+   </Problem>
+
+
    <Problem name="Weighted independent set" dir="undirected">
-      <from name="Cliquewidth expression"/>
+      <forparams/>
       <note>
 	 <table>
 	 <tr>
@@ -87,6 +100,7 @@
 
    <Problem name="Independent set" dir="undirected">
       <from name="Weighted independent set"/>
+      <forparams/>
       <note>
 	 <table>
 	 <tr>
@@ -103,8 +117,8 @@
    </Problem>
 
    <Problem name="Weighted independent dominating set" dir="undirected">
-      <from name="Cliquewidth expression"/>
-      <!-- <sparse/> -->
+      <sparse/>
+      <forparams/>
       <note>
 	 <table>
 	 <tr>
@@ -124,7 +138,8 @@
 
    <Problem name="Independent dominating set" dir="undirected">
       <from name="Weighted independent dominating set"/>
-      <!-- <sparse/> -->
+      <sparse/>
+      <forparams/>
       <note>
 	 <table>
 	 <tr>
@@ -143,7 +158,7 @@
    </Problem>
 
    <Problem name="Weighted clique" complement="Weighted independent set" dir="undirected">
-      <from name="Cliquewidth expression"/>
+      <forparams/>
       <note>
 	 <table>
 	 <tr>
@@ -161,6 +176,7 @@
 
    <Problem name="Clique" complement="Independent set" dir="undirected">
       <from name="Weighted clique"/>
+      <forparams/>
       <note>
 	 <table>
 	 <tr>
@@ -177,7 +193,7 @@
    </Problem>
 
    <Problem name="Domination" dir="undirected">
-      <from name="Cliquewidth expression"/>
+      <forparams/>
       <note>
 	 <table>
 	 <tr>
@@ -195,7 +211,7 @@
    </Problem>
 
    <Problem name="Colourability" dir="undirected">
-      <from name="Cliquewidth expression" complexity="P"/>
+      <forparams/>
       <note>
 	 <table>
 	 <tr>
@@ -210,7 +226,7 @@
    </Problem>
 
    <Problem name="Clique cover" complement="Colourability" dir="undirected">
-      <from name="Cliquewidth expression" complexity="P"/>
+      <forparams/>
       <note>
 	 <table>
 	 <tr>
@@ -228,7 +244,7 @@
 
    <Problem name="3-Colourability" dir="undirected">
       <from name="Colourability"/>
-      <from name="Cliquewidth expression"/>
+      <forparams/>
       <note>
 	 <table>
 	 <tr>
@@ -241,24 +257,8 @@
       </note>
    </Problem>
 
-   <Problem name="Cutwidth" dir="undirected">
-      <note>
-	 <table>
-	 <tr>
-	    <td>Input:</td><td>A graph <i>G</i> in this class and an integer
-	    <i>k</i>.</td>
-	 </tr>
-	 <tr>
-	    <td>Output:</td><td>True iff the cutwidth of <i>G</i>
-	    is at most <i>k</i> (see <a href="gc_1052.html">bounded
-	    cutwidth</a>).</td>
-	 </tr>
-	 </table>
-      </note>
-   </Problem>
-
    <Problem name="Hamiltonian cycle">
-      <from name="Cliquewidth expression" complexity="P"/>
+      <forparams/>
       <note>
 	 <table>
 	 <tr>
@@ -272,7 +272,7 @@
    </Problem>
 
    <Problem name="Hamiltonian path">
-      <from name="Cliquewidth expression" complexity="P"/>
+      <forparams/>
       <note>
 	 <table>
 	 <tr>
@@ -286,7 +286,7 @@
    </Problem>
 
    <Problem name="Weighted feedback vertex set" dir="undirected">
-      <from name="Cliquewidth expression"/>
+      <forparams/>
       <note>
 	 <table>
 	 <tr>
@@ -305,6 +305,7 @@
 
    <Problem name="Feedback vertex set" dir="undirected">
       <from name="Weighted feedback vertex set"/>
+      <forparams/>
       <note>
 	 <table>
 	 <tr>
@@ -322,6 +323,7 @@
 
    <Problem name="Weighted maximum cut" dir="undirected">
       <sparse/>
+      <forparams/>
       <note>
 	 (decision variant)
 	 <table>
@@ -341,6 +343,7 @@
 
    <Problem name="Maximum cut" dir="undirected">
       <from name="Weighted maximum cut"/>
+      <forparams/>
       <note>
 	 (decision variant)
 	 <table>
@@ -360,6 +363,7 @@
 
    <Problem name="Maximum bisection" dir="undirected">
       <sparse/>
+      <forparams/>
       <note>
 	 (decision variant)
 	 <table>
@@ -381,6 +385,7 @@
 
    <Problem name="Minimum bisection" dir="undirected">
       <sparse/>
+      <forparams/>
       <note>
 	 (decision variant)
 	 <table>
@@ -401,6 +406,7 @@
    </Problem>
 
    <Problem name="Graph isomorphism" complement="Graph isomorphism">
+      <forparams/>
       <note>
 	 <table>
 	 <tr>
@@ -412,6 +418,459 @@
 	 </table>
       </note>
    </Problem>
+
+   <Parameters>
+      <Parameter id="par_1" name="distance to clique" dir="undirected">
+         <note name="definition">
+         Let $G$ be a graph. Its <graphparameter>par_1</graphparameter> is the
+         minimum number of vertices that have to be deleted from $G$ in
+         order to obtain a clique.
+         </note>
+      </Parameter>
+
+      <Parameter id="par_2" name="vertex cover" dir="undirected">
+         <note name="definition">
+         Let $G$ be a graph. Its <graphparameter>par_2</graphparameter>
+         number is the minimum number of vertices that have to be deleted in
+         order to obtain an independent set.
+         </note>
+      </Parameter>
+
+      <Parameter id="par_3" name="distance to co-cluster" dir="undirected">
+         <note name="definition">
+         Let $G$ be a graph. Its <graphparameter>par_3</graphparameter> is the
+         minimum number of vertices that have to be deleted to obtain a
+         complement of a cluster graph.
+         </note>
+      </Parameter>
+
+      <Parameter id="par_4" name="minimum clique cover" dir="undirected">
+         <note name="definition">
+         A clique cover of a graph $G = (V, E)$ is a partition $P$ of $V$
+         such that each part in $P$ induces a clique in $G$. The
+         <graphparameter>par_4</graphparameter> of $G$ is the minimum number of
+         parts in a clique cover
+         of $G$. Note that the clique cover number of
+         a graph is exactly the chromatic number of its complement.
+         </note>
+      </Parameter>
+
+      <Parameter id="par_5" name="minimum dominating set" dir="undirected">
+         <note name="definition">
+         A dominating set of a graph $G$ is a subset $D$ of its vertices, such
+         that every vertex not in $D$ is adjacent to at least one member of
+         $D$. The parameter <graphparameter>par_5</graphparameter> for graph
+         $G$ is the minimum number of vertices in a dominating set for $G$.
+         </note>
+      </Parameter>
+
+      <Parameter id="par_6" name="diameter" dir="undirected">
+         <note name="definition">
+         The <graphparameter>par_6</graphparameter> of a graph $G$ is the
+         length of the longest shortest path between any two vertices in $G$.
+         </note>
+      </Parameter>
+
+      <Parameter id="par_7" name="distance to cograph" dir="undirected">
+         <note name="definition">
+	 The <graphparameter>par_7</graphparameter> of a graph $G$ is
+         the minimum number of vertices that have to be deleted from $G$ in
+         order to obtain a <graphclass>gc_151</graphclass>.
+         </note>
+      </Parameter>
+
+      <Parameter id="par_8" name="maximum independent set" dir="undirected">
+         <note name="definition">
+         An independent set of a graph $G$ is a subset of pairwise non-adjacent
+         vertices. The parameter <graphparameter>par_8</graphparameter> of 
+         graph $G$ is the size of a largest independent set in $G$.
+         </note>
+      </Parameter>
+
+      <Parameter id="par_9" name="pathwidth" dir="undirected">
+         <note name="definition">
+         A path decomposition of a graph $G$ is a pair $(P,X)$ where $P$ is
+         a path with vertex set $\{1, \ldots, q\}$, and
+         $X = \{X_1,X_2, \ldots ,X_q\}$ is a family of vertex subsets of $V(G)$
+         such that:
+         <ul>
+            <li>$\bigcup_{p \in \{1,\ldots ,q\}} X_p = V(G)$</li>
+            <li>$\forall\{u,v\} \in E(G) \exists p \colon u, v \in X_p$</li>
+            <li>$\forall v \in V(G)$ the set of vertices $\{p \mid v \in X_p\}$
+            is a connected subpath of $P$.</li>
+         </ul>
+         The width of a path decomposition $(P,X)$ is
+         max$\{|X_p| - 1 \mid p \in \{1,\ldots ,q\}\}$.
+         The <graphparameter>par_9</graphparameter> of a graph $G$ is the
+         minimum width among all possible path decompositions of $G$.
+         </note>
+         <ref>ref_911</ref>
+	 <ref>ref_1699</ref>
+      </Parameter>
+
+      <Parameter id="par_10" name="treewidth" dir="undirected" decomp="Lin">
+         <note name="definition">
+         A tree decomposition of a graph $G$ is a pair $(T, X)$, where $T = (I,
+         F)$ is a tree, and $X = \{X_i \mid i \in I\}$ is a family of subsets
+         of $V(G)$ such that
+	 <ul>
+	    <li>the union of all $X_i$, $i \in I$ equals $V$,</li>
+            <li>for all edges $\{v,w\} \in E$, there exists $i \in I$, such that $v, w \in X_i$, and</li>
+            <li>for all $v \in V$ the set of nodes $\{i \in I \mid v \in X_i\}$
+            forms a subtree of $T$.</li>
+	 </ul>
+	 The width of the tree decomposition is $\max |X_i| - 1$.<br/>
+         The treewidth of a graph is the minimum width over all possible tree
+         decompositions of the graph.<br/>
+         </note>
+	 <ref>ref_915</ref>
+         <ref>ref_1699</ref>
+         <ref>ref_119</ref>
+         <ref>ref_1411</ref>
+         <paralgo name="Weighted independent set" complexity="FPT-Lin"> <ref>ref_1701</ref> </paralgo>
+         <paralgo name="Weighted clique" complexity="FPT-Lin"/>
+         <paralgo name="Domination" complexity="FPT-Lin"> <ref>ref_1701</ref>
+         </paralgo>
+         <paralgo name="Weighted feedback vertex set" complexity="FPT"> <ref>ref_1701</ref> </paralgo>
+         <paralgo name="Hamiltonian path" complexity="FPT"> <ref>ref_1701</ref> </paralgo>
+	 <paralgo name="3-Colourability" complexity="FPT-Lin"> <ref>ref_119</ref> </paralgo>
+	 <paralgo name="Hamiltonian cycle" complexity="FPT-Lin"> <ref>ref_119</ref> </paralgo>
+	 <paralgo name="Feedback vertex set" complexity="FPT"> <ref>ref_1582</ref> </paralgo>
+	 <paralgo name="Maximum cut" complexity="FPT-Lin"> <ref>ref_1629</ref> </paralgo>
+         <paralgo name="Graph isomorphism" complexity="XP"> <ref>ref_1701</ref> </paralgo>
+      </Parameter>
+
+      <Parameter id="par_11" name="branchwidth" dir="undirected">
+         <note name="definition">
+         A branch decomposition of a graph $G$ is a pair $(T,\chi)$,
+         where $T$ is a binary tree and $\chi$ is a bijection, mapping leaves
+         of $T$ to vertices of $G$.  Any edge $\{u, v\}$ of the tree divides
+         the tree into two components and
+         divides the set of edges of $G$ into two parts $X, E \backslash X$,
+         consisting of edges mapped to the leaves of each component. The
+         width of the edge $\{u,v\}$ is the number of vertices of $G$ that is incident both with an edge in
+         $X$ and with an edge in $E \backslash X$. The width of the
+         decomposition $(T,\chi)$ is the maximum width of its edges. The
+         <graphparameter>par_11</graphparameter> of the graph $G$ is the
+         minimum width over all branch-decompositions of $G$.
+         </note>
+	 <ref>ref_922</ref>
+         <ref>ref_1699</ref>
+         <paralgo name="Weighted independent set" complexity="FPT"><ref>ref_1701</ref></paralgo>
+         <paralgo name="Domination" complexity="FPT"><ref>ref_1701</ref></paralgo>
+      </Parameter>
+
+      <Parameter id="par_12" name="cliquewidth" parcomplement="cliquewidth"
+            decomp="P" dir="undirected">
+         <note name="definition">
+	 The cliquewidth of a graph is the number of different labels
+	 that is needed to construct the graph using the following
+	 operations:
+	    <ul>
+	    <li>creation of a vertex with label $i$,</li>
+	    <li>disjoint union,</li>
+	    <li>renaming labels $i$ to label $j$, and</li>
+	    <li>connecting all vertices with label $i$ to all
+	    vertices with label $j$.</li>
+	    </ul>
+         </note>
+	 <ref>ref_1174</ref>
+         <ref>ref_1699</ref>
+         <paralgo name="Weighted independent set" complexity="FPT-Lin"> <ref>ref_1701</ref> </paralgo>
+         <paralgo name="Independent set" complexity="FPT"> <ref>ref_1716</ref> </paralgo>
+         <paralgo name="Weighted independent dominating set" complexity="FPT-Lin"> </paralgo>
+         <paralgo name="Clique" complexity="FPT"> </paralgo>
+         <paralgo name="Weighted clique" complexity="FPT"> </paralgo>
+         <paralgo name="Domination" complexity="FPT-Lin"> <ref>ref_1701</ref> </paralgo>
+         <paralgo name="Colourability" complexity="FPT"> </paralgo>
+         <paralgo name="3-Colourability" complexity="FPT-Lin"> </paralgo>
+         <paralgo name="Clique cover" complexity="XP"> <ref>ref_1714</ref> </paralgo>
+         <paralgo name="Hamiltonian cycle" complexity="XP"> <ref>ref_1714</ref> <ref>ref_1715</ref> </paralgo>
+         <paralgo name="Hamiltonian path" complexity="XP"> <ref>ref_1714</ref> <ref>ref_1715</ref> </paralgo>
+         <paralgo name="Weighted feedback vertex set" complexity="FPT-Lin"> </paralgo>
+         <paralgo name="Feedback vertex set" complexity="FPT"> </paralgo>
+      </Parameter>
+
+      <Parameter id="par_13" name="maximum matching" dir="undirected">
+         <note name="definition">
+	 A matching in a graph is a subset of pairwise disjoint edges
+	 (any two edges that do not share an endpoint). The parameter
+	 <graphparameter>par_13</graphparameter> of a graph $G$ is the
+	 largest size of a matching in $G$.
+         </note>
+         <ref>ref_1699</ref>
+      </Parameter>
+
+      <Parameter id="par_14" name="maximum induced matching" dir="undirected">
+         <note name="definition">
+         For a graph $G = (V,E)$ an induced matching is an edge subset
+         $M \subseteq E$ that satisfies the following two conditions:
+         $M$ is a matching of the graph $G$ and there is no edge in $E
+         \backslash M$ connecting any two vertices belonging to edges
+         of the matching $M$. The parameter
+	 <graphparameter>par_14</graphparameter> of a graph $G$ is the
+	 largest size of a induced matching in $G$.
+         </note>
+         <ref>ref_1699</ref>
+      </Parameter>
+
+      <Parameter id="par_15" name="cutwidth" decomp="Lin" dir="undirected">
+         <note name="definition">
+         The cutwidth of a graph $G$ is the smallest integer $k$ such
+         that the vertices of $G$ can be arranged in a linear layout
+         $v_1, \ldots, v_n$ in such a way that for every $i = 1,
+         \ldots,n - 1$, there are at most $k$ edges with one endpoint
+         in $\{v_1, \ldots, v_i\}$ and the other in ${v_{i+1}, \ldots,
+         v_n\}$.
+         </note>
+	 <ref>ref_1719</ref>
+	 <ref>ref_1695</ref>
+         <ref>ref_1508</ref>
+      </Parameter>
+
+      <Parameter id="par_16" name="carvingwidth" dir="undirected">
+         <note name="definition">
+         Consider a decomposition $(T,\chi)$ of a graph $G$ where $T$
+         is a binary tree with $|V(G)|$ leaves and $\chi$ is a
+         bijection mapping the leaves of $T$ to the vertices of
+         $G$. Every edge $e \in E(T)$ of the tree $T$ partitions the
+         vertices of the graph $G$ into two parts $V_e$ and $V
+         \backslash V_e$ according to the leaves of the two connected
+         components in $T - e$. The width of an edge $e$ of the tree
+         is the number of edges of a graph $G$ that have exactly one
+         endpoint in $V_e$ and another endpoint in $V \backslash V_e$.
+         The width of the decomposition $(T,\chi)$ is the largest
+         width over all edges of the tree $T$. The
+         <graphparameter>par_16</graphparameter> of a graph is the
+         minimum width over all decompositions as above.
+         </note>
+	 <ref>ref_1720</ref>
+         <ref>ref_1699</ref>
+      </Parameter>
+
+      <Parameter id="par_17" name="degeneracy" dir="undirected">
+         <note name="definition">
+         The <graphparameter>par_17</graphparameter> of a graph $G$ is the
+         smallest integer $k$ such that each subgraph of $G$ contains a vertex
+         of degree at most $k$.
+	 </note>
+         <note name="definition">
+         Let $G$ be a graph and consider the following
+         algorithm:
+         <ul>
+            <li>Find a vertex $v$ with smallest degree.</li>
+            <li>Delete vertex $v$ and its connected edges.</li>
+            <li>Repeat as long as the graph is not empty.</li>
+         </ul>
+         The <graphparameter>par_17</graphparameter> of a graph $G$ is the
+         maximum degree of a vertex when it is deleted in the above algorithm.
+         </note>
+         <ref>ref_1721</ref>
+      </Parameter>
+
+      <Parameter id="par_18" name="tree depth" dir="undirected">
+         <note name="definition">
+         A tree depth decomposition of a graph $G = (V,E)$ is a rooted
+         tree $T$ with the same vertices $V$, such that, for every
+         edge $\{u,v\} \in E$, either $u$ is an ancestor of $v$ or $v$
+         is an ancestor of $u$ in the tree $T$. The depth of $T$ is
+         the maximum number of vertices on a path from the root to any
+         leaf. The <graphparameter>par_18</graphparameter> of a graph
+         $G$ is the minimum depth among all tree depth decompositions.
+         </note>
+         <ref>ref_1722</ref>
+      </Parameter>
+
+      <Parameter id="par_19" name="chromatic number" parcomplement="minimum clique cover" dir="undirected">
+         <note name="definition">
+         The <graphparameter>par_19</graphparameter> of a graph is the minimum
+         number of colours needed to label all its vertices in 
+         such a way that no two vertices with the same color are adjacent.
+         </note>
+         <ref>ref_1699</ref>
+      </Parameter>
+
+      <Parameter id="par_20" name="rankwidth" parcomplement="rankwidth" dir="undirected">
+         <note name="definition">
+         Let $M$ be the $|V| \times |V|$ adjacency matrix of a graph $G$. The
+         cut rank of a set $A \subseteq V(G)$ is the rank of the submatrix of
+         $M$ induced by the rows of $A$ and the columns of $V(G) \backslash A$.
+         A rank decomposition of a graph $G$ is a pair $(T,L)$ where $T$ is a
+         binary tree and $L$ is a bijection from $V(G)$ to the leaves of the
+         tree $T$. Any edge $e$ in the tree $T$ splits $V(G)$ into two parts
+         $A_e, B_e$ corresponding to the leaves of the two connected components
+         of $T - e$. The width of an edge $e \in E(T)$ is the cutrank of $A_e$.
+         The width of the rank-decomposition $(T,L)$ is the maximum width of an
+         edge in $T$. The <graphparameter>par_20</graphparameter> of the graph
+         $G$ is the minimum width of a rank-decomposition of $G$.
+         </note>
+         <ref>ref_1723</ref>
+         <paralgo name="Weighted feedback vertex set" complexity="FPT"><ref>ref_1701</ref></paralgo>
+         <paralgo name="Hamiltonian path" complexity="XP"><ref>ref_1701</ref></paralgo>
+      </Parameter>
+
+      <Parameter id="par_21" name="booleanwidth" parcomplement="booleanwidth" decomp="P" dir="undirected">
+         <note name="definition">
+         Consider the following decomposition of a graph $G$ which is defined
+         as a pair $(T,L)$ where $T$ is a binary tree and $L$ is a bijection
+         from $V(G)$ to the leaves of the tree $T$. The function
+         $\text{cut-bool} \colon 2^{V(G)} \rightarrow R$ is
+         defined as $\text{cut-bool}(A)$ := $\log_2|\{S \subseteq
+         V(G) \backslash A \mid \exists X \subseteq A \colon
+         S = (V(G) \backslash A) \cap \bigcup_{x \in X} N(x)\}|$.
+         Every edge $e$ in $T$
+         partitions the vertices $V(G)$ into $\{A_e,\overline{A_e}\}$ according
+         to the leaves of the two connected components of $T - e$.
+         The booleanwidth of the above decomposition $(T,L)$
+         is $\max_{e \in E(T)\;} \{ \text{cut-bool}(A_e)\}$.
+         The <graphparameter>par_21</graphparameter> of a graph $G$ is the
+         minimum booleanwidth of a decomposition of $G$ as above.
+         </note>
+         <ref>ref_1724</ref>
+         <paralgo name="Weighted independent set" complexity="FPT"><ref>ref_1701</ref></paralgo>
+         <paralgo name="Domination" complexity="FPT"><ref>ref_1701</ref></paralgo>
+      </Parameter>
+
+      <Parameter id="par_22" name="max-leaf number" dir="undirected">
+         <note name="definition">
+         The <graphparameter>par_22</graphparameter> of a graph $G$ is the
+         maximum number of leaves in a spanning tree of $G$. 
+         </note>
+      </Parameter>
+
+      <Parameter id="par_23" name="genus" dir="undirected">
+         <note name="definition">
+         The genus $g$ of a graph $G$ is the minimum number of handles over
+         all surfaces on which $G$ can be embedded.
+         </note>
+      </Parameter>
+
+      <Parameter id="par_24" name="distance to linear forest" dir="undirected">
+         <note name="definition">
+         The <graphparameter>par_24</graphparameter> of a graph $G = (V, E)$ is
+         the size of a smallest subset $S$ of vertices, such that
+         $G[V \backslash S]$ is a disjoint union of paths and singleton
+         vertices.
+         </note>
+      </Parameter>
+
+      <Parameter id="par_25" name="bandwidth" dir="undirected">
+         <note name="definition">
+         The <graphparameter>par_25</graphparameter> of a graph $G$ is the
+         shortest maximum "length" of an edge over all one dimensional
+         layouts of $G$.
+         Formally, <graphparameter>par_25</graphparameter> is defined as
+         $\min_{i \colon V \rightarrow \mathbb{N}\;}\{\max_{\{u,v\}\in E\;}
+         \{|i(u)-i(v)|\}\mid i\text{ is injective}\}$.
+         </note>
+      </Parameter>
+
+      <Parameter id="par_26" name="distance to outerplanar" dir="undirected">
+         <note name="definition">
+         The <graphparameter>par_26</graphparameter> of a graph $G = (V,E)$ is
+         the minumum size of a vertex subset $X \subseteq V$, such that $G[V
+         \backslash X]$ is a <graphclass>gc_110</graphclass> graph. 
+         </note>
+      </Parameter>
+
+      <Parameter id="par_27" name="maximum clique" dir="undirected">
+         <note name="definition">
+           The parameter <graphparameter>par_27</graphparameter> of a graph $G$
+           is the largest number of vertices in a complete subgraph of $G$.
+         </note>
+         <ref>ref_1699</ref>
+      </Parameter>
+
+      <Parameter id="par_28" name="maximum degree" dir="undirected">
+         <note name="definition">
+           The <graphparameter>par_28</graphparameter> of a graph $G$ is the
+           largest number of neighbors of a vertex in $G$.
+         </note>
+	 <paralgo name="Weighted clique" complexity="XP">
+	    <ref>def</ref>
+	 </paralgo>
+         <paralgo name="Graph isomorphism" complexity="XP">
+            <ref>ref_1691</ref>
+         </paralgo>
+      </Parameter>
+
+      <Parameter id="par_29" name="distance to cluster" dir="undirected">
+         <note name="definition">
+           A <graphclass>gc_1237</graphclass>cluster graph is a disjoint union
+           of cliques. The
+           <graphparameter>par_29</graphparameter> of a graph $G$ is the size
+           of a smallest vertex subset whose deletion makes $G$ a
+           <graphclass>gc_1237</graphclass> graph.
+         </note>
+      </Parameter>
+
+      <Parameter id="par_30" name="distance to block" dir="undirected">
+         <note name="definition">
+           The <graphparameter>par_30</graphparameter> of a graph $G$ is the
+           size of a smallest vertex subset whose deletion makes $G$ a
+           <graphclass>gc_93</graphclass> graph.
+         </note>
+         <ref>ref_1727</ref>
+         <paralgo name="Maximum cut" complexity="FPT">
+            <ref>ref_1727</ref>
+         </paralgo>
+      </Parameter>
+
+   </Parameters>
+
+   <ParamRelations>
+     <parrelation param1="par_21" rel=">=" param2="par_12" functiontype="exponential"> <ref>ref_1724</ref> </parrelation>
+     <parrelation param1="par_21" rel=">=" param2="par_20" functiontype="exponential"> <ref>ref_1724</ref> </parrelation>
+     <parrelation param1="par_11" rel=">=" param2="par_10" functiontype="linear"> <ref>ref_922</ref> </parrelation>
+     <parrelation param1="par_16" rel=">=" param2="par_10" functiontype="linear"> <ref>ref_1699</ref> </parrelation>
+     <parrelation param1="par_19" rel=">" param2="par_27" functiontype="linear"> </parrelation>
+     <parrelation param1="par_12" rel=">=" param2="par_21" functiontype="linear"> <ref>ref_1724</ref> </parrelation>
+     <parrelation param1="par_12" rel=">=" param2="par_20" functiontype="linear"> <ref>ref_1723</ref> </parrelation>
+     <parrelation param1="par_15" rel=">" param2="par_16" functiontype="linear"> <ref>ref_1699</ref> </parrelation>
+     <parrelation param1="par_15" rel=">=" param2="par_9" functiontype="linear"> <ref>ref_1411</ref> </parrelation>
+     <parrelation param1="par_15" rel=">=" param2="par_25" functiontype="polynomial"> </parrelation>
+     <parrelation param1="par_17" rel=">=" param2="par_19" functiontype="linear"> </parrelation>
+     <parrelation param1="par_19" rel="not >=" param2="par_17" functiontype="linear"> <ref>ref_1730</ref> </parrelation>
+     <parrelation param1="par_1" rel=">=" param2="par_29" functiontype="linear"> </parrelation>
+     <parrelation param1="par_1" rel=">=" param2="par_3" functiontype="linear"> </parrelation>
+
+     <!-- Manuel: I checked the relations until here. -->
+     
+     <parrelation param1="par_1" rel=">=" param2="par_4" functiontype="linear"> <ref>ref_1704</ref> </parrelation>
+      <parrelation param1="par_29" rel=">=" param2="par_7" functiontype="linear"> <ref>ref_1705</ref> </parrelation>
+      <parrelation param1="par_3" rel=">=" param2="par_7" functiontype="linear"> <ref>ref_1706</ref> </parrelation>
+      <parrelation param1="par_7" rel=">" param2="par_6" functiontype="linear"> <ref>ref_1707</ref> </parrelation>
+      <parrelation param1="par_24" rel=">=" param2="par_9" functiontype="linear"> <ref>ref_1411</ref> </parrelation>
+      <parrelation param1="par_26" rel=">=" param2="par_10" functiontype="linear"> <ref>ref_1411</ref> </parrelation>
+      <parrelation param1="par_23" rel=">=" param2="par_19" functiontype="polynomial"> <ref>ref_1700</ref> </parrelation>
+      <parrelation param1="par_22" rel=">=" param2="par_15" functiontype="polynomial"> <ref>ref_1698</ref> </parrelation>
+      <parrelation param1="par_22" rel=">=" param2="par_24" functiontype="linear"> <ref>ref_1697</ref> </parrelation>
+      <parrelation param1="par_22" rel=">=" param2="par_23" functiontype="polynomial"> <ref>ref_520</ref> </parrelation>
+      <parrelation param1="par_28" rel=">" param2="par_27" functiontype="linear"> <ref>ref_1708</ref> </parrelation>
+      <parrelation param1="par_8" rel=">=" param2="par_14" functiontype="linear"> <ref>ref_1699</ref> </parrelation>
+      <parrelation param1="par_8" rel=">" param2="par_5" functiontype="linear"> <ref>ref_1709</ref> </parrelation>
+      <parrelation param1="par_13" rel=">=" param2="par_14" functiontype="linear"> <ref>ref_1699</ref> </parrelation>
+      <parrelation param1="par_13" rel=">" param2="par_18" functiontype="linear"> <ref>ref_1699</ref> </parrelation>
+      <parrelation param1="par_13" rel=">=" param2="par_2" functiontype="linear"> <ref>ref_1699</ref> </parrelation>
+      <parrelation param1="par_4" rel=">" param2="par_8" functiontype="linear"> <ref>ref_1710</ref> </parrelation>
+      <parrelation param1="par_5" rel=">=" param2="par_6" functiontype="linear"> <ref>ref_1711</ref> </parrelation>
+      <parrelation param1="par_9" rel=">=" param2="par_10" functiontype="linear"> <ref>ref_1699</ref> </parrelation>
+      <parrelation param1="par_20" rel=">=" param2="par_21" functiontype="polynomial"> <ref>ref_1699</ref> </parrelation>
+      <parrelation param1="par_20" rel=">=" param2="par_12" functiontype="exponential"> <ref>ref_1699</ref> </parrelation>
+      <parrelation param1="par_25" rel=">=" param2="par_15" functiontype="polynomial"> <ref>ref_1696</ref> </parrelation>
+      <parrelation param1="par_18" rel=">=" param2="par_9" functiontype="linear"> <ref>ref_1699</ref> </parrelation>
+      <parrelation param1="par_10" rel=">=" param2="par_11" functiontype="linear"> <ref>ref_1699</ref> </parrelation>
+      <parrelation param1="par_10" rel=">=" param2="par_12" functiontype="exponential"> <ref>ref_1699</ref> </parrelation>
+      <parrelation param1="par_10" rel=">=" param2="par_17" functiontype="linear"> <ref>ref_1699</ref> </parrelation>
+      <parrelation param1="par_2" rel=">=" param2="par_29" functiontype="linear"> <ref>ref_1712</ref> </parrelation>
+      <parrelation param1="par_2" rel=">=" param2="par_3" functiontype="linear"> <ref>ref_1713</ref> </parrelation>
+      <parrelation param1="par_2" rel=">=" param2="par_13" functiontype="linear"> <ref>ref_1699</ref> </parrelation>
+      <parrelation param1="par_2" rel=">" param2="par_18" functiontype="linear"> <ref>ref_1699</ref> </parrelation>
+      <parrelation param1="par_16" rel="not >=" param2="par_9"> <ref>ref_1699</ref> </parrelation>
+      <parrelation param1="par_14" rel="not >=" param2="par_5"> <ref>ref_1699</ref> </parrelation>
+      <parrelation param1="par_18" rel="not >=" param2="par_14"> <ref>ref_1699</ref> </parrelation>
+      <parrelation param1="par_18" rel="not >=" param2="par_5"> <ref>ref_1699</ref> </parrelation>
+   </ParamRelations>
 
    <GraphClasses>
       <GraphClass id="gc_1" type="forbidden">
@@ -547,10 +1006,10 @@
 	    <graphclass>gc_504</graphclass>
 	 </note>
 	 <ref>ref_440</ref>
-	 <algo name="Cliquewidth expression" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1175</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Lin">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Lin">
 	    <ref>ref_1175</ref>
 	 </algo>
 	 <algo name="Independent set" complexity="Lin">
@@ -661,7 +1120,7 @@
             <ref>ref_997</ref>
             <ref>ref_530</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="P">
+	 <algo name="treewidth decomposition" complexity="P">
 	    <ref>ref_1421</ref>
 	 </algo>
 	 <algo name="Colourability" complexity="P" bounds="O(V^4E)">
@@ -769,9 +1228,9 @@
 	 </note>
 	 <ref>ref_874</ref>
 	 <ref>ref_363</ref>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1177</ref>
-	 </algo>
+	 </bounded>
          <algo name="Weighted independent set" complexity="Lin">
 	    <ref>ref_1164</ref>
 	 </algo>
@@ -787,10 +1246,10 @@
 	    <ref>ref_990</ref>
 	    <ref>ref_806</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="P">
+	 <algo name="treewidth decomposition" complexity="P">
 	    <ref>ref_119</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="Lin">
+	 <algo name="treewidth decomposition" complexity="Lin">
 	    <ref>ref_1418</ref>
 	 </algo>
 	 <algo name="Colourability" complexity="P" bounds="O(V \log V)">
@@ -928,9 +1387,9 @@
 	 </note>
 	 <ref>ref_501</ref>
 	 <ref>ref_453</ref>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1174</ref>
-	 </algo>
+	 </bounded>
          <algo name="Independent set" complexity="Lin">
             <ref>ref_425</ref>
             <ref>ref_931</ref>
@@ -945,7 +1404,7 @@
 	    <ref>ref_931</ref>
 	    <ref>ref_1020</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="P">
+	 <algo name="treewidth decomposition" complexity="P">
 	    <ref>ref_119</ref>
 	 </algo>
 	 <algo name="Colourability" complexity="Lin">
@@ -1017,9 +1476,9 @@
 	 partitioned in an independent set and a clique.
 	 </note>
 	 <ref>ref_395</ref>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1176</ref>
-	 </algo>
+	 </bounded>
          <algo name="Domination" complexity="NPC">
             <ref>ref_1144</ref>
             <ref>ref_1145</ref>
@@ -1027,10 +1486,10 @@
 	 <algo name="Recognition" complexity="Lin">
 	    <ref>ref_518</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="P">
+	 <algo name="treewidth decomposition" complexity="P">
 	    <ref>ref_119</ref>
 	 </algo>
-	 <algo name="Cutwidth" complexity="NPC">
+	 <algo name="cutwidth decomposition" complexity="NPC">
 	    <ref>ref_1510</ref>
 	 </algo>
 	 <algo name="Hamiltonian cycle" complexity="NPC">
@@ -1040,7 +1499,7 @@
 	    <ref>ref_1629</ref>
 	 </algo>
          <algo name="Graph isomorphism" complexity="GIC">
-            <ref>ref_1717</ref>
+            <ref>ref_1695</ref>
          </algo>
       </GraphClass>
 
@@ -1106,9 +1565,9 @@
 	 without crossing edges.
 	 </note>
 	 <ref>ref_813</ref>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1174</ref>
-	 </algo>
+	 </bounded>
          <algo name="Independent set" complexity="NPC">
 	    <note>Even when the maximum degree is at most 6 <ref>ref_421</ref>.</note>
          </algo>
@@ -1117,7 +1576,7 @@
 	    <ref>ref_127</ref>
 	    <ref>ref_195</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="Open"/>
+	 <algo name="treewidth decomposition" complexity="Open"/>
 	 <algo name="Hamiltonian cycle" complexity="NPC">
 	    <note>Even when cubic and 3-connected <ref>ref_1539</ref>.</note>
 	 </algo>
@@ -1137,7 +1596,7 @@
 	    <ref>ref_1628</ref>
 	 </algo>
          <algo name="Graph isomorphism" complexity="Lin">
-            <ref>ref_1684</ref>
+            <ref>ref_1700</ref>
          </algo>
       </GraphClass>
 
@@ -1366,7 +1825,7 @@
 	    <ref>ref_496</ref>
 	    <ref>ref_1490</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="P" bounds="O(V^2)">
+	 <algo name="treewidth decomposition" complexity="P" bounds="O(V^2)">
 	    <ref>ref_1417</ref>
 	 </algo>
 	 <algo name="Feedback vertex set" complexity="P" bounds="O(VE)">
@@ -1517,7 +1976,7 @@
             <ref>ref_1142</ref>
          </algo>
 	 <algo name="Recognition" complexity="Lin"/>
-	 <algo name="Treewidth" complexity="NPC">
+	 <algo name="treewidth decomposition" complexity="NPC">
 	    <ref>ref_119</ref>
 	 </algo>
 	 <algo name="Colourability" complexity="Lin">
@@ -1669,7 +2128,7 @@
 	    <ref>ref_850</ref>
 	    <ref>ref_743</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="P">
+	 <algo name="treewidth decomposition" complexity="P">
 	    <ref>ref_119</ref>
 	 </algo>
 	 <algo name="Hamiltonian cycle" complexity="NPC">
@@ -1700,10 +2159,10 @@
 	    </ul>
 	 </note>
 	 <ref>ref_57</ref>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1177</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Linear">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Linear">
 	    <ref>ref_1177</ref>
 	 </algo>
          <algo name="Weighted independent set" complexity="Linear">
@@ -1717,7 +2176,7 @@
 	    <ref>ref_511</ref>
 	    <ref>ref_57</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="Lin">
+	 <algo name="treewidth decomposition" complexity="Lin">
 	    <ref>ref_159</ref>
 	 </algo>
 	 <algo name="Hamiltonian cycle" complexity="Lin">
@@ -1745,13 +2204,13 @@
 	 Let G = (A, B, E) be a <graphclass>gc_69</graphclass> graph. An ordering &lt; of A has the adjacency property, if, for every vertex b in B, N(b) consits of vertices that are consecutive in &lt;. An ordering &lt; of A has the enclosure property, if, for every pair b,b' of vertices in B with N(b) \subseteq N(b'), the vertices of N(b')\N(b) appear consecutively in &lt;, implying that b is adjacent to the leftmost or rightmost neighbour of b' in &lt;.<br/>
 	 A <graphclass>gc_69</graphclass> graph G = (A, B, E) is a <graphclass>gc_81</graphclass> graph iff it admits an ordering of A that has the adjacency and enclosure properties.<br/>
 	 </note>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1182</ref>
-	 </algo>
+	 </bounded>
 	 <algo name="Recognition" complexity="Lin">
 	    <ref>ref_996</ref>
 	 </algo>
-	 <algo name="Cutwidth" complexity="Lin">
+	 <algo name="cutwidth decomposition" complexity="Lin">
 	    <ref>ref_1507</ref>
 	 </algo>
 	 <algo name="Hamiltonian cycle" complexity="P">
@@ -1852,7 +2311,7 @@
 	 <algo name="Recognition" complexity="Lin">
 	    <ref>ref_825</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="P" bounds="O((V+E) \log V)">
+	 <algo name="treewidth decomposition" complexity="P" bounds="O((V+E) \log V)">
 	    <ref>ref_1419</ref>
 	 </algo>
       </GraphClass>
@@ -1903,6 +2362,10 @@
 	 <ref>ref_586</ref>
 	 <ref>ref_57</ref>
 	 <algo name="Recognition" complexity="Lin"/>
+         <algo name="Maximum cut" complexity="P" bounds="O(V^4)">
+            <ref>ref_1727</ref>
+         </algo>
+	 <bounded name="distance to block" boundedness="Bounded"> <ref>def</ref> </bounded>
       </GraphClass>
 
       <GraphClass id="gc_94" type="intersect">
@@ -2089,6 +2552,7 @@
 	 <algo name="Recognition" complexity="Lin">
 	    <ref>ref_784</ref>
 	 </algo>
+         <bounded name="distance to outerplanar" boundedness="Bounded"> <ref>def</ref> </bounded>
       </GraphClass>
 
       <GraphClass id="gc_111" type="base">
@@ -2192,6 +2656,9 @@
             <ref>ref_1644</ref>
          </algo>
          <algo name="Feedback vertex set" complexity="NPC">
+            <ref>ref_1729</ref>
+         </algo>
+         <algo name="treewidth decomposition" complexity="NPC">
             <ref>ref_1729</ref>
          </algo>
       </GraphClass>
@@ -2374,7 +2841,7 @@
 	    <ref>ref_138</ref>
 	    <ref>ref_807</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="P">
+	 <algo name="treewidth decomposition" complexity="P">
 	    <ref>ref_119</ref>
 	 </algo>
          <algo name="Weighted clique" complexity="P" bounds="O(V^2 + E \log \log V)">
@@ -2415,7 +2882,7 @@
 	    <graphclass>gc_132</graphclass>
 	 </note>
 	 <note name="open-problem">
-	 Characterize <graphclass>gc_133</graphclass> graphs by forbidden induced subgraphs <ref>ref_1404</ref>. A forbidden structure characterisation in the form of mutually avoiding walks is given in <ref>ref_1728</ref>.
+	 Characterize <graphclass>gc_133</graphclass> graphs by forbidden induced subgraphs <ref>ref_1404</ref>. A forbidden structure characterisation in the form of mutually avoiding walks is given in <ref>ref_1724</ref>.
 	 </note>
 	 <note name="open-problem">
 	 Characterize <graphclass>gc_133</graphclass> graphs that admit a model where the arcs have to most two sizes <ref>ref_1404</ref>.
@@ -2429,7 +2896,7 @@
 	 <ref>ref_1038</ref>
 	 <ref>ref_1043</ref>
 	 <ref>ref_1404</ref>
-	 <ref>ref_1728</ref>
+	 <ref>ref_1724</ref>
          <algo name="Independent set" complexity="Linear" bounds="O(n)">
             <ref>ref_1105</ref>
             <ref>ref_1106</ref>
@@ -2445,10 +2912,7 @@
 	 <algo name="Recognition" complexity="Lin">
 	    <ref>ref_1219</ref>
 	 </algo>
-	 <algo name="Recognition" complexity="P">
-	    <ref>ref_1728</ref>
-	 </algo>
-	 <algo name="Treewidth" complexity="P">
+	 <algo name="treewidth decomposition" complexity="P">
 	    <ref>ref_119</ref>
 	 </algo>
          <algo name="Weighted clique" complexity="P" bounds="O(VE)">
@@ -2498,7 +2962,7 @@
 	    <ref>ref_999</ref>
 	    <ref>ref_934</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="P">
+	 <algo name="treewidth decomposition" complexity="P">
 	    <ref>ref_119</ref>
 	 </algo>
       </GraphClass>
@@ -2619,7 +3083,7 @@
 	 <algo name="Recognition" complexity="Lin">
 	    <ref>ref_558</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="P">
+	 <algo name="treewidth decomposition" complexity="P">
 	    <ref>ref_119</ref>
 	 </algo>
       </GraphClass>
@@ -2651,7 +3115,7 @@
             <ref>ref_1150</ref>
             <ref>ref_1151</ref>
          </algo>
-	 <algo name="Treewidth" complexity="NPC">
+	 <algo name="treewidth decomposition" complexity="NPC">
 	    <ref>ref_119</ref>
 	 </algo>
 	 <algo name="Colourability" complexity="P" bounds="O(V^3)">
@@ -2730,7 +3194,7 @@
 	 <algo name="Recognition" complexity="Lin">
 	    <ref>ref_258</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="P">
+	 <algo name="treewidth decomposition" complexity="P">
 	    <ref>ref_119</ref>
 	 </algo>
 	 <algo name="Hamiltonian cycle" complexity="Lin">
@@ -2745,6 +3209,7 @@
 	 <algo name="Graph isomorphism" complexity="P">
 	    <ref>ref_251</ref>
 	 </algo>
+         <bounded name="distance to cograph" boundedness="Bounded"> <ref>def</ref> </bounded>
       </GraphClass>
 
       <GraphClass id="gc_152" type="forbidden">
@@ -2808,20 +3273,20 @@
 
       <GraphClass id="gc_156" type="complement">
          <graphclass>gc_3</graphclass>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <note>See <graphclass>gc_3</graphclass></note>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_157" type="complement">
          <graphclass>gc_234</graphclass>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <note>See <graphclass>gc_234</graphclass>.</note>
-	 </algo>
+	 </bounded>
 	 <algo name="Recognition" complexity="Lin">
 	    <ref>ref_995</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="P">
+	 <algo name="treewidth decomposition" complexity="P">
 	    <ref>ref_1416</ref>
 	 </algo>
       </GraphClass>
@@ -3208,7 +3673,7 @@
 	 <algo name="Clique cover" complexity="NPC">
 	    <ref>ref_1504</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="NPC">
+	 <algo name="treewidth decomposition" complexity="NPC">
 	    <ref>ref_143</ref>
 	 </algo>
       </GraphClass>
@@ -3272,10 +3737,10 @@
          <algo name="Weighted independent set" complexity="P">
             <ref>ref_402</ref>
          </algo>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1186</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Lin">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Lin">
 	    <ref>ref_1186</ref>
 	 </algo>
 	 <algo name="Recognition" complexity="Lin">
@@ -3392,7 +3857,7 @@
 	    <ref>ref_120</ref>
 	 </algo>
          <algo name="Graph isomorphism" complexity="P">
-            <ref>ref_1685</ref>
+            <ref>ref_1701</ref>
          </algo>
       </GraphClass>
 
@@ -3514,7 +3979,7 @@
 	    <ref>ref_565</ref>
 	    <ref>ref_1326</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="P">
+	 <algo name="treewidth decomposition" complexity="P">
 	    <ref>ref_1420</ref>
 	 </algo>
       </GraphClass>
@@ -3751,7 +4216,7 @@
 	    <ref>ref_595</ref>
 	    <ref>ref_499</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="P">
+	 <algo name="treewidth decomposition" complexity="P">
 	    <ref>ref_119</ref>
 	 </algo>
 	 <algo name="Hamiltonian cycle" complexity="Lin">
@@ -4205,10 +4670,10 @@
 	    A graph is <graphclass>gc_270</graphclass> if it is not <graphclass>gc_56</graphclass> and every induced subgraph is <graphclass>gc_56</graphclass>.<br/>
 	    These are precisely the odd (anti)-holes <ref>ref_1128</ref>.
 	 </note>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>trivial</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Lin">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Lin">
 	    <ref>trivial</ref>
 	 </algo>
          <algo name="Weighted independent set" complexity="Lin">
@@ -4598,10 +5063,10 @@
 	 <note name="see-also">
 	    <graphclass>gc_234</graphclass>
 	 </note>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1177</ref>
-	 </algo>
-	 <algo name="Cutwidth" complexity="Lin">
+	 </bounded>
+	 <algo name="cutwidth decomposition" complexity="Lin">
 	    <ref>ref_1513</ref>
 	    <ref>ref_1510</ref>
 	 </algo>
@@ -4707,7 +5172,7 @@
 	    <ref>ref_120</ref>
 	 </algo>
          <algo name="Graph isomorphism" complexity="P">
-            <ref>ref_1685</ref>
+            <ref>ref_1701</ref>
          </algo>
       </GraphClass>
 
@@ -4843,10 +5308,10 @@
 	    <graphclass>gc_151</graphclass>
 	 </note>
 	 <ref>ref_1025</ref>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <note>From the decomposition tree.</note>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="P">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="P">
 	    <note>From the decomposition tree.</note>
 	 </algo>
 	 <algo name="Recognition" complexity="P">
@@ -4928,7 +5393,7 @@
 	    <ref>ref_218</ref>
 	    <ref>ref_509</ref>
 	 </algo>
-	 <algo name="Cutwidth" complexity="P">
+	 <algo name="cutwidth decomposition" complexity="P">
 	    <ref>ref_1510</ref>
 	 </algo>
       </GraphClass>
@@ -5061,10 +5526,10 @@
             <note>Obvious.</note>
          </algo>
 	 <algo name="Recognition" complexity="Lin"/>
-	 <algo name="Treewidth" complexity="Lin">
+	 <algo name="treewidth decomposition" complexity="Lin">
 	    <ref>ref_119</ref>
 	 </algo>
-	 <algo name="Cutwidth" complexity="P">
+	 <algo name="cutwidth decomposition" complexity="P">
 	    <ref>ref_1514</ref>
 	 </algo>
 	 <algo name="Clique cover" complexity="Lin">
@@ -5461,7 +5926,7 @@
          <algo name="Clique" complexity="Polynomial">
 	    <note>Assuming the positions of the disks are given <ref>ref_229</ref>.</note>
          </algo>
-	 <algo name="Cutwidth" complexity="NPC">
+	 <algo name="cutwidth decomposition" complexity="NPC">
 	    <ref>ref_1511</ref>
 	 </algo>
 	 <algo name="Maximum cut" complexity="NPC">
@@ -5507,9 +5972,9 @@
 
       <GraphClass id="gc_392" type="complement">
          <graphclass>gc_350</graphclass>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <note>See <graphclass>gc_350</graphclass>.</note>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_393" type="complement">
@@ -5563,11 +6028,11 @@
          <smallgraph>bull</smallgraph>
          <smallgraph>chair</smallgraph>
          <smallgraph>kite</smallgraph>
-         <algo name="Cliquewidth" complexity="Bounded">
+         <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1124</ref>
 	    <ref>ref_1185</ref>
-	 </algo>
-         <algo name="Cliquewidth expression" complexity="Lin">
+	 </bounded>
+         <algo name="cliquewidth decomposition" complexity="Lin">
 	    <ref>ref_1124</ref>
 	    <ref>ref_1185</ref>
 	 </algo>
@@ -5650,10 +6115,10 @@
       <GraphClass id="gc_409" type="forbidden">
          <smallgraph>P_5</smallgraph>
          <smallgraph>diamond</smallgraph>
-         <algo name="Cliquewidth" complexity="Bounded">
+         <bounded name="cliquewidth" boundedness="Bounded">
             <ref>ref_1190</ref>
-         </algo>
-         <algo name="Cliquewidth expression" complexity="Lin">
+         </bounded>
+         <algo name="cliquewidth decomposition" complexity="Lin">
             <ref>ref_1190</ref>
          </algo>
       </GraphClass>
@@ -5693,7 +6158,7 @@
             <ref>ref_420</ref>
          </algo>
 	 <algo name="Recognition" complexity="Lin"/>
-	 <algo name="Cutwidth" complexity="NPC">
+	 <algo name="cutwidth decomposition" complexity="NPC">
 	    <ref>ref_1509</ref>
 	 </algo>
       </GraphClass>
@@ -5841,10 +6306,10 @@
          <algo name="Weighted independent set" complexity="Lin">
             <ref>ref_1126</ref>
          </algo>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1126</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Lin">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Lin">
 	    <ref>ref_1126</ref>
 	 </algo>
       </GraphClass>
@@ -5855,11 +6320,11 @@
          <algo name="Weighted independent set" complexity="Lin">
             <ref>ref_1126</ref>
          </algo>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1126</ref>
 	    <ref>ref_1183</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Lin">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Lin">
 	    <ref>ref_1126</ref>
 	    <ref>ref_1183</ref>
 	 </algo>
@@ -6048,10 +6513,10 @@
 	 <smallgraph>star_{1,2,3}</smallgraph>
 	 <smallgraph>P_7</smallgraph>
 	 <ref>ref_1136</ref>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1181</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Lin">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Lin">
 	    <ref>ref_1181</ref>
 	 </algo>
       </GraphClass>
@@ -6076,10 +6541,10 @@
 	 <smallgraph>star_{1,2,3}</smallgraph>
 	 <smallgraph>sunlet_4</smallgraph>
 	 <ref>ref_1139</ref>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1139</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="P" bounds="O(V^2+VE)">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="P" bounds="O(V^2+VE)">
 	    <ref>ref_1139</ref>
 	 </algo>
       </GraphClass>
@@ -6088,10 +6553,10 @@
 	 <smallgraph>odd-cycle</smallgraph>
 	 <smallgraph>star_{1,2,3}</smallgraph>
 	 <ref>ref_1140</ref>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1140</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="P" bounds="O(V^2+VE)">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="P" bounds="O(V^2+VE)">
 	    <ref>ref_1140</ref>
 	 </algo>
       </GraphClass>
@@ -6255,16 +6720,16 @@
 	 An n\times m <graphclass>gc_464</graphclass> is the cartesian product
 	 of P_n and P_m.
 	 </note>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1177</ref>
-	 </algo>
+	 </bounded>
 	 <algo name="Recognition" complexity="Lin"/>
-	 <algo name="Treewidth" complexity="Lin">
+	 <algo name="treewidth decomposition" complexity="Lin">
 	    <note>The treewidth of a n x m grid is min(n, m)
 	       <ref>ref_1411</ref>
 	    </note>
 	 </algo>
-	 <algo name="Cutwidth" complexity="P">
+	 <algo name="cutwidth decomposition" complexity="P">
 	    <ref>ref_1512</ref>
 	 </algo>
 	 <algo name="Hamiltonian cycle" complexity="P">
@@ -6307,11 +6772,11 @@
 	 <algo name="Weighted independent set" complexity="Lin">
 	    <ref>ref_1170</ref>
 	 </algo>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1189</ref>
 	    <ref>ref_1171</ref>
 	    <ref>ref_1185</ref>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_467" type="complement">
@@ -6337,6 +6802,10 @@
       <GraphClass id="gc_470" type="base">
 	 <name>bounded treewidth</name>
 	 <note name="definition">
+         See <graphparameter>par_10</graphparameter>.
+         </note>
+         <!--
+	 <note name="definition">
 	 A tree decomposition of a graph G=(V,E) is a pair ({X<sub>i</sub> | i in I}, T = (I, F)) with {X<sub>i</sub> | i in I} a family of subsets of V, one for each node in T, and T a tree such that
 	 <ul>
 	    <li>the union of all X<sub>i</sub>, i in I equals V.</li>
@@ -6349,18 +6818,21 @@
 	 </note>
 	 <ref>ref_119</ref>
 	 <ref>ref_1411</ref>
+         <bounded name="treewidth" boundedness="Bounded"/>
+         -->
+         <!--
 	 <algo name="Weighted independent set" complexity="Lin"/>
 	 <algo name="Weighted clique" complexity="Lin"/>
 	 <algo name="Domination" complexity="Lin"/>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
+	    <ref>ref_1414</ref>
+	    <ref>ref_1415</ref>
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="P">
 	    <ref>ref_1414</ref>
 	    <ref>ref_1415</ref>
 	 </algo>
-	 <algo name="Cliquewidth expression" complexity="P">
-	    <ref>ref_1414</ref>
-	    <ref>ref_1415</ref>
-	 </algo>
-	 <algo name="Treewidth" complexity="Lin">
+	 <algo name="treewidth decomposition" complexity="Lin">
 	    <ref>ref_120</ref>
 	 </algo>
 	 <algo name="3-Colourability" complexity="Lin">
@@ -6375,6 +6847,7 @@
 	 <algo name="Maximum cut" complexity="Lin">
 	    <ref>ref_1629</ref>
 	 </algo>
+         -->
       </GraphClass>
 
       <GraphClass id="gc_472" type="base">
@@ -6422,11 +6895,11 @@
 	 <smallgraph>chair</smallgraph>
 	 <smallgraph>\co{P}</smallgraph>
 	 <smallgraph>gem</smallgraph>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1184</ref>
 	    <ref>ref_1185</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Lin">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Lin">
 	    <ref>ref_1184</ref>
 	    <ref>ref_1185</ref>
 	 </algo>
@@ -6436,10 +6909,10 @@
 	 <smallgraph>chair</smallgraph>
 	 <smallgraph>bull</smallgraph>
 	 <smallgraph>gem</smallgraph>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1185</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Lin">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Lin">
 	    <ref>ref_1185</ref>
 	 </algo>
       </GraphClass>
@@ -6448,11 +6921,11 @@
 	 <smallgraph>chair</smallgraph>
 	 <smallgraph>house</smallgraph>
 	 <smallgraph>\co{P}</smallgraph>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1185</ref>
 	    <ref>ref_1186</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Lin">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Lin">
 	    <ref>ref_1185</ref>
 	    <ref>ref_1186</ref>
 	 </algo>
@@ -6462,11 +6935,11 @@
 	 <smallgraph>chair</smallgraph>
 	 <smallgraph>house</smallgraph>
 	 <smallgraph>bull</smallgraph>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1124</ref>
 	    <ref>ref_1185</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Lin">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Lin">
 	    <ref>ref_1124</ref>
 	    <ref>ref_1185</ref>
 	 </algo>
@@ -6476,11 +6949,11 @@
 	 <smallgraph>bull</smallgraph>
 	 <smallgraph>house</smallgraph>
 	 <smallgraph>P_5</smallgraph>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1187</ref>
 	    <ref>ref_1185</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Lin">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Lin">
 	    <ref>ref_1187</ref>
 	    <ref>ref_1185</ref>
 	 </algo>
@@ -6491,10 +6964,10 @@
 	 <smallgraph>\co{chair}</smallgraph>
 	 <smallgraph>\co{P}</smallgraph>
 	 <smallgraph>P</smallgraph>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1185</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Lin">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Lin">
 	    <ref>ref_1185</ref>
 	 </algo>
       </GraphClass>
@@ -6503,11 +6976,11 @@
 	 <smallgraph>chair</smallgraph>
 	 <smallgraph>house</smallgraph>
 	 <smallgraph>P_5</smallgraph>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1185</ref>
 	    <ref>ref_402</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Lin">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Lin">
 	    <ref>ref_1185</ref>
 	    <ref>ref_402</ref>
 	 </algo>
@@ -6519,8 +6992,8 @@
 	    <graphclass>gc_482</graphclass>
 	    <graphclass>gc_483</graphclass>
 	 </note>
-	 <algo name="Cliquewidth" complexity="Bounded"/>
-	 <algo name="Cliquewidth expression" complexity="Linear"/>
+	 <bounded name="cliquewidth" boundedness="Bounded"/>
+	 <algo name="cliquewidth decomposition" complexity="Linear"/>
       </GraphClass>
 
       <GraphClass id="gc_482" type="base">
@@ -6529,8 +7002,8 @@
 	    <graphclass>gc_481</graphclass>
 	    <graphclass>gc_483</graphclass>
 	 </note>
-	 <algo name="Cliquewidth" complexity="Bounded"/>
-	 <algo name="Cliquewidth expression" complexity="Polynomial" bounds="O(V^2E)">
+	 <bounded name="cliquewidth" boundedness="Bounded"/>
+	 <algo name="cliquewidth decomposition" complexity="Polynomial" bounds="O(V^2E)">
 	    <ref>ref_1178</ref>
 	 </algo>
 	 <algo name="Recognition" complexity="P" bounds="O(V^2E)">
@@ -6544,7 +7017,7 @@
 	    <graphclass>gc_482</graphclass>
 	    <graphclass>gc_481</graphclass>
 	 </note>
-	 <algo name="Cliquewidth" complexity="Bounded"/>
+	 <bounded name="cliquewidth" boundedness="Bounded"/>
 	 <algo name="Recognition" complexity="Open"/>
       </GraphClass>
 
@@ -6571,10 +7044,10 @@
 
       <GraphClass id="gc_486" type="complement">
 	 <graphclass>gc_69</graphclass>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <note>See <graphclass>gc_69</graphclass>.</note>
-	 </algo>
-	 <algo name="Treewidth" complexity="NPC">
+	 </bounded>
+	 <algo name="treewidth decomposition" complexity="NPC">
 	    <ref>ref_25</ref>
 	    <ref>ref_123</ref>
 	 </algo>
@@ -6619,10 +7092,10 @@
 	 <note name="see-also">
 	    <graphclass>gc_488</graphclass>
 	 </note>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1175</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Linear">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Linear">
 	    <ref>ref_1175</ref>
 	 </algo>
       </GraphClass>
@@ -6643,10 +7116,10 @@
 	 <note name="see-also">
 	    <graphclass>gc_488</graphclass>
 	 </note>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1175</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Linear">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Linear">
 	    <ref>ref_1175</ref>
 	 </algo>
       </GraphClass>
@@ -6658,9 +7131,9 @@
 	 <note name="see-also">
 	    <graphclass>gc_488</graphclass>
 	 </note>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1176</ref>
-	 </algo>
+	 </bounded>
 	 <algo name="Recognition" complexity="Polynomial"/>
       </GraphClass>
 
@@ -6671,10 +7144,10 @@
 	 <note name="see-also">
 	    <graphclass>gc_488</graphclass>
 	 </note>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1175</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Linear">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Linear">
 	    <ref>ref_1175</ref>
 	 </algo>
 	 <algo name="Recognition" complexity="Polynomial"/>
@@ -6699,9 +7172,9 @@
 	 <note name="see-also">
 	    <graphclass>gc_488</graphclass>
 	 </note>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1176</ref>
-	 </algo>
+	 </bounded>
 	 <algo name="Recognition" complexity="Polynomial"/>
       </GraphClass>
 
@@ -6712,10 +7185,10 @@
 	 <note name="see-also">
 	    <graphclass>gc_488</graphclass>
 	 </note>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1175</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Linear">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Linear">
 	    <ref>ref_1175</ref>
 	 </algo>
 	 <algo name="Recognition" complexity="Polynomial"/>
@@ -6728,10 +7201,10 @@
 	 <note name="see-also">
 	    <graphclass>gc_488</graphclass>
 	 </note>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_488</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Linear">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Linear">
 	    <ref>ref_488</ref>
 	 </algo>
 	 <algo name="Recognition" complexity="Lin">
@@ -6746,14 +7219,14 @@
 	 <note name="see-also">
 	    <graphclass>gc_488</graphclass>
 	 </note>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1175</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Linear">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Linear">
 	    <ref>ref_1175</ref>
 	 </algo>
 	 <algo name="Recognition" complexity="Polynomial"/>
-	 <algo name="Treewidth" complexity="P">
+	 <algo name="treewidth decomposition" complexity="P">
 	    <ref>ref_1422</ref>
 	 </algo>
       </GraphClass>
@@ -6779,10 +7252,10 @@
 	 <note name="see-also">
 	    <graphclass>gc_488</graphclass>
 	 </note>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1176</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Linear">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Linear">
 	    <ref>ref_1176</ref>
 	 </algo>
 	 <algo name="Recognition" complexity="Lin">
@@ -6830,10 +7303,10 @@
 	 <algo name="Independent set" complexity="Linear">
 	    <ref>ref_1180</ref>
 	 </algo>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1179</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Linear">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Linear">
 	    <ref>ref_1179</ref>
 	 </algo>
 	 <algo name="Recognition" complexity="Lin">
@@ -6845,9 +7318,9 @@
 	 <smallgraph>T_2</smallgraph>
 	 <smallgraph>A</smallgraph>
 	 <smallgraph>odd-cycle</smallgraph>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1183</ref>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_506" type="forbidden">
@@ -6855,34 +7328,34 @@
 	 <smallgraph>C_4</smallgraph>
 	 <smallgraph>claw</smallgraph>
 	 <smallgraph>diamond</smallgraph>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1183</ref>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_507" type="intersect">
 	 <graphclass>gc_69</graphclass>
 	 <graphclass>gc_360</graphclass>
 	 <graphclass>gc_436</graphclass>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1183</ref>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_508" type="forbidden">
 	 <graphclass>claw</graphclass>
 	 <graphclass>2K_2</graphclass>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1183</ref>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_509" type="forbidden">
 	 <graphclass>claw</graphclass>
 	 <graphclass>paw</graphclass>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1183</ref>
-	 </algo>
+	 </bounded>
 	 <algo name="Colourability" complexity="P">
 	    <ref>ref_1433</ref>
 	 </algo>
@@ -6891,10 +7364,10 @@
       <GraphClass id="gc_510" type="forbidden">
 	 <smallgraph>co-gem</smallgraph>
 	 <smallgraph>gem</smallgraph>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1188</ref>
 	    <ref>ref_1185</ref>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_511" type="forbidden">
@@ -6903,9 +7376,9 @@
 	 <smallgraph>P</smallgraph>
 	 <smallgraph>\co{P}</smallgraph>
 	 <smallgraph>C_5</smallgraph>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1185</ref>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_512" type="forbidden">
@@ -6915,9 +7388,9 @@
 	 <smallgraph>\co{P}</smallgraph>
 	 <smallgraph>C_5</smallgraph>
 	 <smallgraph>\co{chair}</smallgraph>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1185</ref>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_513" type="forbidden">
@@ -6928,18 +7401,18 @@
 	 <smallgraph>P</smallgraph>
 	 <smallgraph>C_5</smallgraph>
 	 <smallgraph>bull</smallgraph>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1185</ref>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_514" type="forbidden">
 	 <smallgraph>paw</smallgraph>
 	 <smallgraph>co-paw</smallgraph>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1126</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Lin">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Lin">
 	    <ref>ref_1126</ref>
 	 </algo>
       </GraphClass>
@@ -6947,10 +7420,10 @@
       <GraphClass id="gc_515" type="forbidden">
 	 <smallgraph>K_4</smallgraph>
 	 <smallgraph>\co{K_4}</smallgraph>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1126</ref>
-	 </algo>
-	 <algo name="Cliquewidth expression" complexity="Lin">
+	 </bounded>
+	 <algo name="cliquewidth decomposition" complexity="Lin">
 	    <ref>ref_1126</ref>
 	 </algo>
       </GraphClass>
@@ -7010,9 +7483,9 @@
       <GraphClass id="gc_523" type="complement">
 	 <graphclass>gc_522</graphclass>
 	 <ref>ref_1032</ref>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <note>See <graphclass>gc_522</graphclass>.</note>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_524" type="base">
@@ -7024,9 +7497,9 @@
 	    <graphclass>gc_328</graphclass>
 	 </note>
 	 <ref>ref_1191</ref>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1192</ref>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_525" type="intersect">
@@ -7047,9 +7520,9 @@
 	    <graphclass>gc_527</graphclass>
 	 </note>
 	 <ref>ref_1176</ref>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1176</ref>
-	 </algo>
+	 </bounded>
          <algo name="Hamiltonian cycle" complexity="Lin">
             <ref>ref_1656</ref>
          </algo>
@@ -7071,9 +7544,9 @@
 	    <graphclass>gc_526</graphclass>
 	 </note>
 	 <ref>ref_1176</ref>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1176</ref>
-	 </algo>
+	 </bounded>
          <algo name="Hamiltonian cycle" complexity="Lin">
             <ref>ref_1656</ref>
          </algo>
@@ -7727,9 +8200,12 @@
 	    <ref>ref_25</ref>
 	    <ref>ref_120</ref>
 	 </algo>
-         <algo name="Graph isomorphism" complexity="P">
-            <ref>ref_1685</ref>
-         </algo>
+         <bounded name="treewidth" boundedness="Bounded">
+            <ref>ref_950</ref> <ref>ref_1085</ref>
+         </bounded>
+         <!-- <algo name="Graph isomorphism" complexity="P">
+            <ref>ref_1701</ref>
+         </algo> -->
       </GraphClass>
 
       <GraphClass id="gc_597" type="forbidden">
@@ -8180,10 +8656,10 @@
 	 A graph G is a <graphclass>gc_649</graphclass> if there is a tree T whose leaves correspond to the vertices of G in such a way that two vertices are adjacent in G precisely when their distance in T is at most k.
 	 </note>
 	 <ref>ref_1247</ref>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1379</ref>
 	    <note>Bounded by 3k/2</note>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_650" type="base">
@@ -8415,7 +8891,7 @@
 	 <algo name="Independent set" complexity="NPC">
 	    <note><graphclass>gc_675</graphclass> are precisely the <graphclass>gc_472</graphclass> graphs of <graphclass>gc_43</graphclass> graphs.</note>
 	 </algo>
-	 <algo name="Cutwidth" complexity="NPC">
+	 <algo name="cutwidth decomposition" complexity="NPC">
             <note>From <ref>ref_1648</ref> and <ref>ref_1509</ref>.</note>
          </algo>
          <algo name="Feedback vertex set" complexity="NPC">
@@ -10258,9 +10734,9 @@
 	 <algo name="Recognition" complexity="Polynomial" bounds="O(V(V+E))">
 	    <ref>ref_1362</ref>
 	 </algo>
-	 <algo name="Cliquewidth" complexity="Unbounded">
+	 <bounded name="cliquewidth" boundedness="Unbounded">
 	    <ref>ref_1362</ref>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_835" type="base">
@@ -11175,40 +11651,44 @@
 	 <name>treewidth 2</name>
 	 <ref>ref_119</ref>
 	 <ref>ref_1411</ref>
-	 <algo name="Treewidth" complexity="Lin">
+	 <algo name="treewidth decomposition" complexity="Lin">
 	    <ref>ref_119</ref>
 	    <ref>ref_120</ref>
 	 </algo>
+         <bounded name="treewidth" boundedness="Bounded"> <ref>def</ref> </bounded>
       </GraphClass>
 
       <GraphClass id ="gc_900" type="base">
 	 <name>treewidth 3</name>
 	 <ref>ref_119</ref>
 	 <ref>ref_1411</ref>
-	 <algo name="Treewidth" complexity="Lin">
+	 <algo name="treewidth decomposition" complexity="Lin">
 	    <ref>ref_119</ref>
 	    <ref>ref_120</ref>
 	 </algo>
+         <bounded name="treewidth" boundedness="Bounded"> <ref>def</ref> </bounded>
       </GraphClass>
 
       <GraphClass id ="gc_901" type="base">
 	 <name>treewidth 4</name>
 	 <ref>ref_119</ref>
 	 <ref>ref_1411</ref>
-	 <algo name="Treewidth" complexity="Lin">
+	 <algo name="treewidth decomposition" complexity="Lin">
 	    <ref>ref_119</ref>
 	    <ref>ref_120</ref>
 	 </algo>
+         <bounded name="treewidth" boundedness="Bounded"> <ref>def</ref> </bounded>
       </GraphClass>
 
       <GraphClass id ="gc_902" type="base">
 	 <name>treewidth 5</name>
 	 <ref>ref_119</ref>
 	 <ref>ref_1411</ref>
-	 <algo name="Treewidth" complexity="Lin">
+	 <algo name="treewidth decomposition" complexity="Lin">
 	    <ref>ref_119</ref>
 	    <ref>ref_120</ref>
 	 </algo>
+         <bounded name="treewidth" boundedness="Bounded"> <ref>def</ref> </bounded>
       </GraphClass>
 
       <GraphClass id ="gc_903" type="base">
@@ -11249,11 +11729,11 @@
 	 <ref>ref_1417</ref>
 	 <ref>ref_392</ref>
 	 <ref>ref_393</ref>
-	 <algo name="Treewidth" complexity="P">
+	 <algo name="treewidth decomposition" complexity="P">
 	    <note>Assuming an intersection model is given <ref>ref_1417</ref>.
 	    </note>
 	 </algo>
-	 <algo name="Treewidth" complexity="P">
+	 <algo name="treewidth decomposition" complexity="P">
 	    <ref>ref_675</ref>
 	 </algo>
 	 <algo name="Clique cover" complexity="P" bounds="O(V log^{d-1} V)">
@@ -11285,7 +11765,7 @@
 
       <GraphClass id="gc_908" type="complement">
 	 <graphclass>gc_907</graphclass>
-	 <algo name="Treewidth" complexity="P">
+	 <algo name="treewidth decomposition" complexity="P">
 	    <ref>ref_675</ref>
 	 </algo>
       </GraphClass>
@@ -11421,9 +11901,9 @@
 	 <algo name="Colourability" complexity="P">
 	    <ref>ref_1434</ref>
 	 </algo>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1435</ref>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_923" type="forbidden">
@@ -11437,9 +11917,9 @@
       <GraphClass id="gc_924" type="forbidden">
          <smallgraph>triangle</smallgraph>
          <smallgraph>star_{1,1,3}</smallgraph>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1434</ref>
-	 </algo>
+	 </bounded>
 	 <algo name="Colourability" complexity="P">
 	    <ref>ref_1434</ref>
 	 </algo>
@@ -11448,9 +11928,9 @@
       <GraphClass id="gc_925" type="forbidden">
          <smallgraph>triangle</smallgraph>
          <smallgraph>K_2 \cup claw</smallgraph>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1434</ref>
-	 </algo>
+	 </bounded>
 	 <algo name="Colourability" complexity="P">
 	    <ref>ref_1434</ref>
 	 </algo>
@@ -11536,7 +12016,7 @@
 	 <algo name="Independent set" complexity="NPC">
 	    <ref>ref_1506</ref>
 	 </algo>
-	 <algo name="Treewidth" complexity="NPC">
+	 <algo name="treewidth decomposition" complexity="NPC">
 	    <ref>ref_1506</ref>
 	 </algo>
 	 <algo name="Domination" complexity="NPC">
@@ -11648,18 +12128,18 @@
 	 <smallgraph>odd-cycle</smallgraph>
 	 <smallgraph>claw \cup 3K_1</smallgraph>
 	 <ref>ref_1437</ref>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1437</ref>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_940" type="forbidden">
 	 <smallgraph>odd-cycle</smallgraph>
 	 <smallgraph>star_{1,1,3} \cup K_1</smallgraph>
 	 <ref>ref_1437</ref>
-	 <algo name="Cliquewidth" complexity="Bounded">
+	 <bounded name="cliquewidth" boundedness="Bounded">
 	    <ref>ref_1437</ref>
-	 </algo>
+	 </bounded>
       </GraphClass>
 
       <GraphClass id="gc_941" type="intersect">
@@ -12969,6 +13449,10 @@
 
       <GraphClass id="gc_1052" type="base">
 	 <name>bounded cutwidth</name>
+         <note name="definition">
+         See <graphparameter>par_15</graphparameter>.
+         </note>
+         <!--
 	 <hereditary type="induced-hereditary"/>
 	 <note name="definition">
 	 The cutwidth of a graph G is the smallest integer k such that the vertices of G can be arranged in a linear layout v<sub>1</sub>,...,v<sub>n</sub> in such a way that, for every i = 1,...,n - 1, there are at most k edges with one endpoint in {v<sub>1</sub>.....v<sub>i</sub>}. and the other in {v<sub>i+1</sub>,...,v<sub>n</sub>}.<br/>
@@ -12978,32 +13462,33 @@
 	 <algo name="Recognition" complexity="Lin">
 	    <ref>ref_1508</ref>
 	 </algo>
-	 <algo name="Cutwidth" complexity="Lin">
+	 <algo name="cutwidth decomposition" complexity="Lin">
 	    <ref>ref_1508</ref>
 	 </algo>
+         -->
       </GraphClass>
 
       <GraphClass id="gc_1053" type="base">
 	 <name>bounded degree</name>
+         <note name="definition">
+         See <graphparameter>par_28</graphparameter>.
+         </note>
+         <!--
 	 <hereditary type="induced-hereditary"/>
 	 <note name="definition">
-	 A graph is of <graphclass>gc_1053</graphclass> when no vertex has more than k neighbours, for some given constant k.
+	 A graph is of <graphclass>gc_1053</graphclass> when no vertex has more than k neighbours, for some given constant k. See <graphparameter>par_28</graphparameter>
 	 </note>
+         <bounded name="maximum degree" boundedness="Bounded"> <ref>def</ref> </bounded>
 	 <algo name="Recognition" complexity="Lin">
 	    <ref>trivial</ref>
 	 </algo>
-	 <algo name="Weighted clique" complexity="P">
-	    <ref>def</ref>
-	 </algo>
-         <algo name="Graph isomorphism" complexity="P">
-            <ref>ref_1691</ref>
-         </algo>
+         -->
       </GraphClass>
 
       <GraphClass id="gc_1054" type="intersect">
 	 <graphclass>gc_470</graphclass>
 	 <graphclass>gc_1053</graphclass>
-	 <algo name="Cutwidth" complexity="P">
+	 <algo name="cutwidth decomposition" complexity="P">
 	    <ref>ref_1515</ref>
 	 </algo>
       </GraphClass>
@@ -13032,7 +13517,7 @@
 	    <graphclass>gc_440</graphclass>
 	    <graphclass>gc_1058</graphclass>
 	 </note>
-	 <algo name="Cutwidth" complexity="NPC">
+	 <algo name="cutwidth decomposition" complexity="NPC">
 	    <ref>ref_1511</ref>
 	 </algo>
 	 <algo name="Hamiltonian cycle" complexity="NPC">
@@ -13081,10 +13566,10 @@
 	 </note>
 	 <ref>ref_1542</ref>
 	 <algo name="Recognition" complexity="GIC">
-            <ref>ref_1718</ref>
+            <ref>ref_1696</ref>
          </algo>
          <algo name="Graph isomorphism" complexity="GIC">
-            <ref>ref_1718</ref>
+            <ref>ref_1696</ref>
          </algo>
       </GraphClass>
 
@@ -13558,6 +14043,7 @@
 	 <algo name="Clique" complexity="P">
 	    <ref>trivial</ref>
 	 </algo>
+         <bounded name="maximum degree" boundedness="Bounded"> <ref>def</ref> </bounded>
       </GraphClass>
 
       <GraphClass id="gc_1091" type="intersect">
@@ -15579,6 +16065,15 @@
          This class is defined by a simplified list of forbidden subgraphs of <graphclass>gc_890</graphclass>
          </note>
       </GraphClass>
+
+      <GraphClass id="gc_1237" type="base">
+         <name>cluster</name>
+         <note name="definition">
+         A graph is a <graphclass>gc_1237</graphclass> graph if it is a disjoint union of cliques.
+         </note>
+         <bounded name="distance to cluster" boundedness="Bounded"> <ref>def</ref> </bounded>
+      </GraphClass>
+
       
 
 
@@ -16840,15 +17335,17 @@
       <incl super="gc_45" sub="gc_591"> <ref>ref_53</ref> </incl>
       <incl super="gc_593" sub="gc_77"> <ref>ref_57</ref> </incl>
       <incl super="gc_77" sub="gc_593"> <ref>ref_57</ref> </incl>
-      <incl super="gc_595" sub="gc_470">
+      <!-- <incl super="gc_595" sub="gc_470">
 	 <ref>ref_950</ref> <ref>ref_1085</ref>
       </incl>
       <incl super="gc_470" sub="gc_595">
 	 <ref>ref_950</ref> <ref>ref_1085</ref>
-      </incl>
+      </incl> -->
       <incl super="gc_595" sub="gc_594" proper="y"> <ref>def</ref> </incl>
+      <!--
       <incl super="gc_595" sub="gc_310" proper="y"> <ref>def</ref> </incl>
       <incl super="gc_595" sub="gc_199" proper="y"> <ref>def</ref> </incl>
+      -->
       <incl super="gc_594" sub="gc_342" proper="y"> <ref>def</ref> </incl>
       <incl super="gc_274" sub="gc_597"> <ref>def</ref> </incl>
       <incl super="gc_597" sub="gc_274"> <ref>def</ref> </incl>
@@ -17292,10 +17789,13 @@
       <equ gc1="gc_899" gc2="gc_310"> <ref>ref_1411</ref> </equ>
       <equ gc1="gc_900" gc2="gc_199"> <ref>ref_1411</ref> </equ>
       <equ gc1="gc_901" gc2="gc_734"> <ref>ref_1411</ref> </equ>
+      <!--
       <incl super="gc_470" sub="gc_899" proper="y"> <ref>def</ref> </incl>
       <incl super="gc_470" sub="gc_900" proper="y"> <ref>def</ref> </incl>
       <incl super="gc_470" sub="gc_901" proper="y"> <ref>def</ref> </incl>
       <incl super="gc_470" sub="gc_902" proper="y"> <ref>def</ref> </incl>
+      -->
+      <incl super="gc_902" sub="gc_901" proper="y"> <ref>def</ref> </incl>
       <incl super="gc_902" sub="gc_42" proper="y"> <ref>ref_1411</ref> <ref>ref_118</ref> </incl>
       <equ gc1="gc_903" gc2="gc_110"> <ref>ref_1411</ref> <ref>ref_1412</ref> </equ>
       <incl super="gc_72" sub="gc_904" proper="y"> <ref>def</ref> </incl>
@@ -17462,8 +17962,8 @@
       <equ gc1="gc_1045" gc2="gc_441"> <ref>ref_1298</ref> </equ>
       <equ gc1="gc_1049" gc2="gc_341"> <ref>def</ref> </equ>
       <equ gc1="gc_1050" gc2="gc_1051" confidence="unpublished"> <ref>ref_1505</ref> </equ>
-      <incl super="gc_1053" sub="gc_1090" proper="y"> <ref>def</ref> </incl>
-      <incl super="gc_1053" sub="gc_720" proper="y"> <ref>def</ref> </incl>
+      <!-- <incl super="gc_1053" sub="gc_1090" proper="y"> <ref>def</ref> </incl>
+      <incl super="gc_1053" sub="gc_720" proper="y"> <ref>def</ref> </incl> -->
       <incl super="gc_419" sub="gc_723" proper="y"> <ref>ref_842</ref> <ref>ref_1516</ref> </incl>
       <incl super="gc_440" sub="gc_1057" proper="y"> <ref>def</ref> </incl>
       <incl super="gc_389" sub="gc_1057" proper="y"> <ref>ref_1511</ref> </incl>
@@ -17474,7 +17974,7 @@
       <incl super="gc_590" sub="gc_440" proper="y"> <ref>trivial</ref> </incl>
       <incl super="gc_436" sub="gc_1057" proper="y"> <ref>trivial</ref> </incl>
       <incl super="gc_900" sub="gc_985" proper="y"> <ref>ref_1544</ref> </incl>
-      <incl super="gc_1052" sub="gc_470"> <ref>ref_115</ref>  </incl>
+      <!-- <incl super="gc_1052" sub="gc_470"> <ref>ref_115</ref>  </incl> -->
 
       <equ gc1="gc_1060" gc2="gc_741"> <ref>ref_1545</ref> </equ>
       <equ gc1="gc_1066" gc2="gc_867"> <ref>ref_1545</ref> </equ>
@@ -17636,7 +18136,7 @@
       <incl super="gc_1181" sub="gc_43" proper="y"> <ref>def</ref> </incl>
       <incl super="gc_43" sub="gc_1184"> <ref>def</ref> </incl>
       <incl super="gc_1184" sub="gc_42"> <ref>def</ref> </incl>
-      <incl super="gc_470" sub="gc_1184"> <ref>ref_1411</ref> </incl>
+      <incl super="gc_595" sub="gc_1184"> <ref>ref_1411</ref> </incl>
 
       <incl super="gc_1148" sub="gc_1186" proper="y"> <ref>def</ref> </incl>
       <incl super="gc_1149" sub="gc_1185" proper="y"> <ref>def</ref> </incl>
@@ -17691,6 +18191,7 @@
       <equ gc1="gc_1230" gc2="gc_1231"> <ref>basederived</ref> </equ>
       <incl super="gc_771" sub="gc_1092" proper="y"> <ref>def</ref> </incl>
       <incl super="gc_1092" sub="gc_1235" proper="y"> <ref>ref_1692</ref> <ref>ref_1693</ref> </incl>
+      <equ gc1="gc_1237" gc2="gc_406"> <ref>trivial</ref> </equ>
 
 
 

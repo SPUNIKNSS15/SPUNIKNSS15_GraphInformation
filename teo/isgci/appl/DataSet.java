@@ -17,6 +17,8 @@ import org.jgrapht.graph.SimpleDirectedGraph;
 import teo.isgci.grapht.*;
 import teo.isgci.xml.*;
 import teo.isgci.gc.GraphClass;
+import teo.isgci.parameter.GraphParameter;
+import teo.isgci.parameter.PseudoClass;
 import teo.isgci.problem.Problem;
 import teo.isgci.util.LessLatex;
 import teo.isgci.relation.*;
@@ -37,11 +39,20 @@ public final class DataSet {
     public static SimpleDirectedGraph<GraphClass,Inclusion> inclGraph;
     /** Maps classnames to nodes */
     protected static TreeMap<String,GraphClass> names;
+    
+    protected static TreeMap<String,GraphClass> dnames;
+    
+    protected static TreeMap<String,GraphClass> udnames;
+    
+    protected static TreeMap<String,PseudoClass> pnames;
+    
     /** Maps graphclasses to their SCCs */
     protected static Map<GraphClass, Set<GraphClass> > sccs;
 
     /** Problems */
     public static Vector<Problem> problems;
+    /** Parameters. */
+    public static Vector<GraphParameter> parameters;
 
     /** Relations not in inclGraph */
     public static List<AbstractRelation> relations;
@@ -59,7 +70,8 @@ public final class DataSet {
         inclGraph = new SimpleDirectedGraph<GraphClass,Inclusion>(
                 Inclusion.class);
         problems = new Vector<Problem>();
-        load(loader, file, inclGraph, problems);
+        parameters = new Vector<GraphParameter>(); // added by vector
+        load(loader, file, inclGraph, problems, parameters);
 
         // Sort problems
         Collections.sort(problems, new Comparator<Problem>() {
@@ -68,10 +80,34 @@ public final class DataSet {
             }
         });
 
+        // Sort parameters (added by vector)
+        Collections.sort(parameters, new Comparator<GraphParameter>() {
+            public int compare(GraphParameter o1, GraphParameter o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+
         // Gather the classnames
         names = new TreeMap<String,GraphClass>(new LessLatex());
         for (GraphClass gclass : inclGraph.vertexSet())
-            names.put(gclass.toString(), gclass);
+            if (!gclass.isPseudoClass())
+                names.put(gclass.toString(), gclass);
+
+        dnames = new TreeMap<String,GraphClass>(new LessLatex());
+        udnames = new TreeMap<String,GraphClass>(new LessLatex());
+        for(GraphClass gclass : inclGraph.vertexSet()){
+            if(!gclass.isPseudoClass() && gclass.isDirected())
+                dnames.put(gclass.toString(), gclass);
+            else if(!gclass.isPseudoClass() && gclass.isUndirected())
+                udnames.put(gclass.toString(), gclass);
+        }
+
+        pnames = new TreeMap<String,PseudoClass>(new LessLatex());
+        for(GraphParameter gp : parameters) {
+            //System.out.println(gp.toString());
+            //System.out.println(gp.getPseudoClass().toString());
+            pnames.put(gp.toString(), gp.getPseudoClass());
+        }
 
         // Gather the SCCs
         sccs = GAlg.calcSCCMap(inclGraph);
@@ -82,8 +118,9 @@ public final class DataSet {
 
     public static void load(Resolver loader, String file,
             SimpleDirectedGraph<GraphClass,Inclusion> graph,
-            Vector problems) {
-        ISGCIReader gcr = new ISGCIReader(graph, problems);
+            Vector<Problem> problems, Vector<GraphParameter> parameters) {
+        // parameters added by vector
+        ISGCIReader gcr = new ISGCIReader(graph, problems, parameters);
         XMLParser xml=new XMLParser(loader.openInputSource(file),
                 gcr, loader.getEntityResolver());
         xml.parse();
@@ -107,6 +144,18 @@ public final class DataSet {
      */
     public static Collection<GraphClass> getClasses() {
         return Collections.unmodifiableCollection(names.values());
+    }
+    
+    public static Collection<PseudoClass> getPseudoClasses() {
+        return Collections.unmodifiableCollection(pnames.values());
+    }
+    
+    public static Collection<GraphClass> getDirectedClasses() {
+        return Collections.unmodifiableCollection(dnames.values());
+    }
+    
+    public static Collection<GraphClass> getUndirectedClasses() {
+        return Collections.unmodifiableCollection(udnames.values());
     }
 
 
@@ -137,6 +186,17 @@ public final class DataSet {
         return null;
     }
     
+    /**
+     * Return the parameter with the given name.
+     */
+    public static GraphParameter getParameter(String name){
+        for (int i = 0; i < parameters.size(); i++)
+            if (name.equals(parameters.elementAt(i).getName())) {
+                return parameters.elementAt(i);
+            }
+        return null;
+    }
+
     public static String getDate() {
         return date;
     }        

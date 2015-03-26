@@ -22,8 +22,10 @@ import teo.isgci.grapht.*;
 import teo.isgci.ref.*;
 import teo.isgci.relation.*;
 import teo.isgci.gc.*;
+import teo.isgci.parameter.*;
 import teo.isgci.problem.*;
 import teo.isgci.util.LessLatex;
+import java.sql.SQLException;
 
 
 public class ISGCIWriter {
@@ -55,11 +57,13 @@ public class ISGCIWriter {
      * Write a full ISGCI dataset as an XML document.
      * @param g the graph whose data to write
      * @param problems the problems to write
+     * @param parameters the parameters to write (added by vector)
      * @param complementAnn a Set of complement nodes per node
      * @param xmldecl XML declaration (may be null)
      */
     public void writeISGCIDocument(DirectedGraph<GraphClass,Inclusion> g,
             Collection<Problem> problems,
+            Collection<GraphParameter> parameters,
             Collection<AbstractRelation> relations,
             Map<GraphClass,Set<GraphClass> > complementAnn,
             String xmldecl) throws SAXException {
@@ -84,8 +88,16 @@ public class ISGCIWriter {
         writer.characters("\n");
             writeStatistics(g);
             writeProblemDefs(problems);
+            // Parameters added by vector
+            writeParameters(parameters, problems, g);
+            writer.startElement(Tags.PARAM_RELATIONS);
+            writer.characters("\n");
+            writeParamEdges(g);
+            writeParamRelations(relations);
+            writer.endElement(Tags.PARAM_RELATIONS);
+            writer.characters("\n");
             writeNodes(sortbyname ?  names.values() : g.vertexSet(),
-                    problems, complementAnn, g);
+                    problems, parameters, complementAnn, g);
 
             writer.startElement(Tags.INCLUSIONS);
             writer.characters("\n");
@@ -100,6 +112,7 @@ public class ISGCIWriter {
 
     private void writeStatistics(DirectedGraph<GraphClass,Inclusion> g)
             throws SAXException {
+        int classes = 0, params = 0, inclusions = 0, paramedges = 0;
         SimpleAttributes atts = new SimpleAttributes();
 
         DirectedGraph<GraphClass,Inclusion> closedGraph =
@@ -107,16 +120,76 @@ public class ISGCIWriter {
         Graphs.addGraph(closedGraph, g);
         GAlg.transitiveClosure(closedGraph);
 
+        for (GraphClass gc : closedGraph.vertexSet())
+            if (gc instanceof PseudoClass)
+                params++;
+            else
+                classes++;
+
+        for (Inclusion e : closedGraph.edgeSet())
+            if (e.getSuper() instanceof PseudoClass)
+                paramedges++;
+            else
+                inclusions++;
+
         atts.addAttribute(Tags.DATE,
                 new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-        atts.addAttribute(Tags.NODECOUNT,
-                Integer.toString(closedGraph.vertexSet().size()));
-        atts.addAttribute(Tags.EDGECOUNT,
-                Integer.toString(closedGraph.edgeSet().size()));
+
+        atts.addAttribute(Tags.NODECOUNT, Integer.toString(classes));
+        atts.addAttribute(Tags.EDGECOUNT, Integer.toString(inclusions));
+        atts.addAttribute(Tags.PARAMCOUNT, Integer.toString(params));
+        atts.addAttribute(Tags.PARAMEDGECOUNT, Integer.toString(paramedges));
         writer.emptyElement("", Tags.STATS, "", atts);
         writer.characters("\n");
     }
 
+
+    /**
+     * Write the GraphParameters.
+     * @param parameters the parameters to write
+     * @param problems the problems that can occur for parameters
+     * @throws SAXException
+     * @author vector
+     */
+    private void writeParameters(Collection<GraphParameter> parameters,
+            Collection<Problem> problems,
+            DirectedGraph<GraphClass, Inclusion> g) throws SAXException {
+        SimpleAttributes atts = new SimpleAttributes();
+        Map<GraphClass,Set<GraphClass> > scc = GAlg.calcSCCMap(g);
+
+        writer.startElement(Tags.PARAMETERS);
+        writer.characters("\n");
+
+        for (GraphParameter par : parameters) {
+            // Header
+            atts.addAttribute(Tags.ID, par.getID());
+            atts.addAttribute(Tags.NAME, par.getName());
+            if (par.forDirected() && !par.forUndirected())
+                atts.addAttribute(Tags.DIRTYPE, Tags.DIRECTED);
+            else if (par.forUndirected() && !par.forDirected())
+                atts.addAttribute(Tags.DIRTYPE, Tags.UNDIRECTED);
+            //if (!par.isLinDecomp())
+                //atts.addAttribute(Tags.PARAMETER_DECOMP, par
+                        //.getDecomposition().getComplexityString());
+            writer.startElement("", Tags.PARAMETER_DEF, "", atts);
+            writer.characters("\n");
+            atts.clear();
+            // References and notes
+            if (mode == MODE_WEB) {
+                writeEquivParams( scc.get(par.getPseudoClass()) );
+                writer.characters("\n");
+                writeRefs(par.getRefs());
+                writer.characters("\n");
+            }
+            // Problems
+            writeComplexities(par.getPseudoClass(), problems);
+            writer.endElement(Tags.PARAMETER_DEF);
+            writer.characters("\n\n");
+            atts.clear();
+        }
+        writer.endElement(Tags.PARAMETERS);
+        writer.characters("\n");
+    }
 
     /**
      * Write the GraphClasses.
@@ -125,6 +198,7 @@ public class ISGCIWriter {
      */
     private void writeNodes(Iterable<GraphClass> nodes,
             Collection<Problem> problems,
+            Collection<GraphParameter> parameters,
             Map<GraphClass,Set<GraphClass> > complementAnn,
             DirectedGraph<GraphClass,Inclusion> g) throws SAXException {
         SimpleAttributes atts = new SimpleAttributes();
@@ -134,6 +208,8 @@ public class ISGCIWriter {
         writer.characters("\n");
 
         for (GraphClass gc : nodes) {
+            if (gc.isPseudoClass()) // no Parameter-PseudoClasses
+                continue;
             // Header
             atts.addAttribute(Tags.ID, gc.getID());
             atts.addAttribute(Tags.TYPE, Tags.graphClassType(gc));
@@ -180,6 +256,8 @@ public class ISGCIWriter {
                 }
                 // Problems
                 writeComplexities(gc, problems);
+                // Parameters
+                writeBoundednesses(gc, parameters);
             writer.endElement(Tags.GRAPHCLASS);
             writer.characters("\n\n");
             atts.clear();
@@ -198,8 +276,13 @@ public class ISGCIWriter {
         SimpleAttributes atts = new SimpleAttributes();
 
         for (AbstractRelation r : relations) {
+            if (r.get1().isPseudoClass())
+                continue;
+
             String tag = r instanceof Disjointness ? Tags.DISJOINT :
                     Tags.INCOMPARABLE;
+            if (r instanceof Open)
+                tag = Tags.OPEN;
 
             atts.addAttribute(Tags.GC1, r.get1().getID());
             atts.addAttribute(Tags.GC2, r.get2().getID());
@@ -216,6 +299,43 @@ public class ISGCIWriter {
             atts.clear();
         }
     }
+
+    /**
+     * Write the not bounds relation between parameters.
+     * @param relations the list that contains the NotInclusion or Open
+     * relations to write
+     * @author vector
+     */
+    private void writeParamRelations(Collection<AbstractRelation> relations)
+            throws SAXException {
+        int confidence;
+        SimpleAttributes atts = new SimpleAttributes();
+
+        for (AbstractRelation r : relations) {
+            if (!r.get1().isPseudoClass())
+                continue;
+            if (r instanceof NotInclusion  || r instanceof Open) {
+                atts.addAttribute(Tags.PARAM1, r.get1().getID());
+                atts.addAttribute(Tags.PARAM2, r.get2().getID());
+
+                String rel = r instanceof NotInclusion ? Tags.PAR_NOT_BOUNDS
+                        : Tags.OPEN;
+                atts.addAttribute(Tags.PAR_ATT_REL, rel);
+                confidence = r.getConfidence();
+                if (confidence < Inclusion.CONFIDENCE_HIGHEST) {
+                    atts.addAttribute(Tags.CONFIDENCE,
+                            Tags.confidence2string(confidence));
+                }
+                writer.startElement("", Tags.PARAM_RELATION, "", atts);
+                if (mode != MODE_SAGE)
+                    writeRefs(r.getRefs());
+                writer.endElement(Tags.PARAM_RELATION);
+                writer.characters("\n");
+                atts.clear();
+            }
+        }
+    }
+
     /**
      * Write the edges.
      */
@@ -225,6 +345,9 @@ public class ISGCIWriter {
         SimpleAttributes atts = new SimpleAttributes();
 
         for (Inclusion e : g.edgeSet()) {
+            if (g.getEdgeSource(e).isPseudoClass()) // no PseudoClass-Edges
+                continue;
+
             atts.addAttribute(Tags.SUPER, g.getEdgeSource(e).getID());
             atts.addAttribute(Tags.SUB, g.getEdgeTarget(e).getID());
             if (e.isProper()) {
@@ -244,6 +367,40 @@ public class ISGCIWriter {
         }
     }
 
+    /**
+     * Write the parameter relation edges.
+     * @param g the inclusion graph which contains the edges between
+     *          parameter PseudoClasses
+     * @author vector
+     */
+    private void writeParamEdges(DirectedGraph<GraphClass, Inclusion> g)
+            throws SAXException {
+        int confidence;
+        SimpleAttributes atts = new SimpleAttributes();
+
+        for (Inclusion e : g.edgeSet()) {
+            if (g.getEdgeSource(e).isPseudoClass()) {
+                atts.addAttribute(Tags.PARAM1, g.getEdgeSource(e).getID()
+                        .toString());
+                atts.addAttribute(Tags.PARAM2, g.getEdgeTarget(e).getID()
+                        .toString());
+                atts.addAttribute(Tags.PAR_ATT_REL, Tags.PAR_BOUNDS);
+                confidence = e.getConfidence();
+                if (confidence < Inclusion.CONFIDENCE_HIGHEST) {
+                    atts.addAttribute(Tags.CONFIDENCE,
+                            Tags.confidence2string(confidence));
+                }
+                atts.addAttribute(Tags.FUNCTIONTYPE, e.getFunctiontype()
+                        .toString());
+                writer.startElement("", Tags.PARAM_RELATION, "", atts);
+                if (mode != MODE_SAGE)
+                    writeRefs(e.getRefs());
+                writer.endElement(Tags.PARAM_RELATION);
+                writer.characters("\n");
+                atts.clear();
+            }
+        }
+    }
 
     /**
      * Write the forbidden subgraphs in set.
@@ -259,8 +416,15 @@ public class ISGCIWriter {
      * @param set the graphclasses to write
      */
     private void writeClassesSet(Iterable<GraphClass> set) throws SAXException{
-        for (GraphClass gc : set)
+        for (GraphClass gc : set) {
+            if (gc.getID() == null) {
+                System.out.println("missing ID at: " +gc);//intID
+                //gc.setID(Integer.MAX_VALUE);//intID
+                //IDGenerator temp = new IDGenerator(1, cachefile) //is AUTO !
+                //wie soll ich fehlende ID fixen? ... IDGenerator übergeben?
+            }
             writer.dataElement(Tags.GCREF, gc.getID());
+        }
     }
 
     /**
@@ -269,6 +433,16 @@ public class ISGCIWriter {
      */
     private void writeClassesSet(GraphClass gc) throws SAXException {
         writer.dataElement(Tags.GCREF, gc.getID());
+    }
+
+
+    /**
+     * Write the single graphparameter for gc as a set.
+     * @param gc the pseudoclass of the parameter to write
+     * @author vector
+     */
+    private void writeParameterSet(PseudoClass gc) throws SAXException {
+        writer.dataElement(Tags.PARREF, gc.getID());
     }
 
 
@@ -315,6 +489,23 @@ public class ISGCIWriter {
     }
 
     /**
+     * Write a note containing the given equivalent parameters.
+     * @param eqs the Set of equivalent parameter PseudoClasses 
+     * @author vector
+     */
+    private void writeEquivParams(Set<GraphClass> eqs) throws SAXException {
+        if (eqs == null)
+            return;
+        SimpleAttributes atts = new SimpleAttributes();
+        atts.addAttribute(Tags.NAME, Tags.EQUIVALENTS);
+        writer.startElement("", Tags.NOTE, "", atts);
+            for (GraphClass eq : eqs) {
+                writeParameterSet((PseudoClass) eq);
+            }
+        writer.endElement(Tags.NOTE);
+    }
+
+    /**
      * Write a note containing the given complementclasses.
      */
     private void writeComplements(Set<GraphClass> cos)
@@ -330,6 +521,74 @@ public class ISGCIWriter {
         writer.endElement(Tags.NOTE);
     }
 
+    /**
+     * Write all boundedness values for GraphClass n.
+     * @param n the GraphClass to write boundedness values for
+     * @param parameters the list of parameters that can be bounded or
+     * unbounded on the GraphClasses
+     * @author vector
+     */
+    private void writeBoundednesses(GraphClass n,
+            Collection<GraphParameter> parameters) throws SAXException {
+        for (GraphParameter par : parameters) {
+            if (mode != MODE_WEB || par.validFor(n))
+                writeBoundedness(par, par.getDerivedBoundedness(n),
+                        par.getProofs(n));
+        }
+    }
+
+    /**
+     * Write a boundedness value for GraphParameter parameter.
+     * @param parameter the GraphParameter to write a boundedness value for
+     * @param b the Boundedness for parameter on the current GraphClass
+     * @param proofs the proofs for boundedness b
+     * @author vector
+     */
+    private void writeBoundedness(GraphParameter parameter, Boundedness b,
+            Iterator<BoundednessProof> proofs) throws SAXException {
+        if (b == null)
+            return;
+        SimpleAttributes atts = new SimpleAttributes();
+        atts.addAttribute(Tags.NAME, parameter.getName());
+        atts.addAttribute(Tags.BOUNDEDNESS, parameter.getComplexityString(b));
+        if (mode == MODE_ONLINE || mode == MODE_SAGE) {
+            writer.emptyElement("", Tags.PARAMETER, "", atts);
+        } else {
+            writer.startElement("", Tags.PARAMETER, "", atts);
+            writer.characters("\n");
+            writeProofs(parameter, proofs);
+            writer.endElement(Tags.PARAMETER);
+        }
+        writer.characters("\n");
+    }
+
+    /**
+     * Write the boundedness proofs for parameter.
+     * @param parameter the GraphParameter to write boundedness proofs for
+     * @param proofs the proofs to write
+     * @author vector
+     */
+    private void writeProofs(GraphParameter parameter,
+            Iterator<BoundednessProof> proofs) throws SAXException {
+        if (mode == MODE_ONLINE || mode == MODE_SAGE || proofs == null)
+            return;
+        SimpleAttributes atts = new SimpleAttributes();
+        while (proofs.hasNext()) {
+            BoundednessProof b = proofs.next();
+            atts.addAttribute(Tags.NAME, parameter.getName());
+            atts.addAttribute(Tags.BOUNDEDNESS,
+                    parameter.getComplexityString(b.getBoundedness()));
+            writer.startElement("", Tags.BOUNDED, "", atts);
+            if (b.getGraphClass() != null)
+                writer.dataElement(Tags.GCREF, b.getGraphClass().getID()
+                        .toString());
+            writeRefs(b.getRefs());
+            writer.endElement(Tags.BOUNDED);
+            writer.characters("\n");
+            atts.clear();
+        }
+    }
+
 
     /**
      * Write all Complexities for GraphClass n.
@@ -343,6 +602,19 @@ public class ISGCIWriter {
         }
     }
 
+    /**
+     * Write all Complexities for PseudoClass n.
+     * @param n the PseudoClass to write the complexities for
+     * @param problems the problems that can be defined for n
+     * @author vector
+     */
+    private void writeComplexities(PseudoClass n, Collection<Problem> problems)
+            throws SAXException {
+        for (Problem p : problems) {
+            if (mode != MODE_WEB || p.validFor(n))
+                writeComplexity(p, p.getDerivedComplexity(n), p.getAlgos(n));
+        }
+    }
 
     /**
      * Write a Complexity for Problem problem.
@@ -361,6 +633,32 @@ public class ISGCIWriter {
             writer.characters("\n");
                 writeAlgorithms(problem, algos);
             writer.endElement(Tags.PROBLEM);
+        }
+        writer.characters("\n");
+    }
+
+    /**
+     * Write a parameterized Complexity for Problem problem.
+     * @param problem the problem to write a complexity for
+     * @param c the parameterized Complexity value for problem for the
+     *          current GraphParameter
+     * @param algos the algorithms that prove complexity c for the problem
+     * @author vector
+     */
+    private void writeComplexity(Problem problem, ParamComplexity c,
+            Iterator<ParamAlgorithm> algos) throws SAXException {
+        if (c == null)
+            return;
+        SimpleAttributes atts = new SimpleAttributes();
+        atts.addAttribute(Tags.NAME, problem.getName());
+        atts.addAttribute(Tags.COMPLEXITY, problem.getComplexityString(c));
+        if (mode == MODE_ONLINE || mode == MODE_SAGE) {
+            writer.emptyElement("", Tags.PAR_PROBLEM, "", atts);
+        } else {
+            writer.startElement("", Tags.PAR_PROBLEM, "", atts);
+            writer.characters("\n");
+            writeParamAlgorithms(problem, algos);
+            writer.endElement(Tags.PAR_PROBLEM);
         }
         writer.characters("\n");
     }
@@ -390,6 +688,34 @@ public class ISGCIWriter {
         }
     }
 
+    /**
+     * Write the parameterized algorithms for problem.
+     * @param problem the Problem to write algorithms for
+     * @param algos the algorithms to write
+     * @author vector
+     */
+    private void writeParamAlgorithms(Problem problem,
+            Iterator<ParamAlgorithm> algos) throws SAXException {
+        if (mode == MODE_ONLINE || mode == MODE_SAGE || algos == null)
+            return;
+        SimpleAttributes atts = new SimpleAttributes();
+        while (algos.hasNext()) {
+            ParamAlgorithm a = algos.next();
+            atts.addAttribute(Tags.NAME, problem.getName());
+            atts.addAttribute(Tags.COMPLEXITY,
+                    problem.getComplexityString(a.getComplexity()));
+            if (a.getTimeBounds() != null)
+                atts.addAttribute(Tags.BOUNDS, a.getTimeBounds());
+            writer.startElement("", Tags.PAR_ALGO, "", atts);
+            if (a.getGraphClass() != null)
+                writer.dataElement(Tags.PARREF, a.getGraphClass().getID()
+                        .toString());
+            writeRefs(a.getRefs());
+            writer.endElement(Tags.PAR_ALGO);
+            writer.characters("\n");
+            atts.clear();
+        }
+    }
 
     /**
      * Write the references in refs.
@@ -433,6 +759,8 @@ public class ISGCIWriter {
             atts.clear();
             if (p.isSparse())
                 writer.emptyElement(Tags.PROBLEM_SPARSE);
+            if (p.forParameters())
+                writer.emptyElement(Tags.PROBLEM_FORPARAMS);
             writer.characters("\n");
             if (mode == MODE_WEB) {
                 writeReductions(p.getReductions());

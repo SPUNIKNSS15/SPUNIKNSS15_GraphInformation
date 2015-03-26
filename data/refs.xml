@@ -15008,7 +15008,197 @@
       </note>
    </Ref>
 
-   <!-- INSERT 1695-1716 FROM PARAMETERS HERE -->
+   <Ref id="ref_1695">
+      <bib>
+         <authors>F.R.K. Chung</authors>
+         <title>On the cutwidth and the topological bandwidth of a tree</title>
+         <rest>SIAM J. Alg. Discr. Meth. 6 1985 268--277</rest>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1696">
+      <bib>
+         <authors>F.R.K. Chung, P.D. Seymour</authors>
+         <title>Graphs with small bandwidth and cutwidth</title>
+         <rest>Disc. Math. 75 1989 113--119</rest>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1697">
+      <bib>
+         <authors>E. DeLaVina, B. Waller</authors>
+         <title>A NOTE ON A CONJECTURE OF HANSEN ET AL.</title>
+         <rest>manuscript 2009</rest>
+         <link rrr="http://cms.dt.uh.edu/faculty/delavinae/research/DelavinaWaller2009.pdf"/>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1698">
+      <bib>
+         <authors>D.J. Kleitman, D.B. West</authors>
+         <title>Spanning trees with many leaves</title>
+         <rest>SIAM J. Alg. Discr. Meth. 4 1991 99--106</rest>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1699">
+      <bib>
+         <authors>R. Sasák</authors>
+         <title>Comparing 17 graph parameters</title>
+         <rest>Master's thesis, University of Bergen 2010</rest>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1700">
+      <bib>
+         <authors>R.A. Wilson</authors>
+         <title>Graphs, colourings and the four-colour theorem</title>
+         <rest>Oxford University Press, London 2002</rest>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1701">
+      <bib>
+         <authors>M. Vatshelle</authors>
+         <title>New Width Parameters of Graphs</title>
+         <rest>PhD Thesis, Dept. of Informatics, University of Bergen 2012</rest>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1702">
+      <note>Distance to clique ist the minimal number of vertices to delete
+      from a graph $G$, to obtain that $G$ is clique. a cluster graph is a
+      is a vertex disjoint union of cliques. In order to obtain a cluster
+      graph of $G$ you need at most $\beta$ </note>
+   </Ref>
+
+   <Ref id="ref_1703">
+      <note>A clique is the complement of an independent set and an
+      independent set is a co-cluster. Hence, deleting vertices from a
+      graph~$G$ to obtain a clique makes~$G$ a co-cluster in particular.
+      Hence the minimum number of vertices that have to be deleted in order
+      to make~$G$ a co-cluster is at most~$\beta$.</note>
+   </Ref>
+
+   <Ref id="ref_1704">
+      <note>Distance to clique is the minimum number of vertices to delete
+      in order to obtain a clique of a graph $G$. This set is a a clique
+      cover too. Take every vertex of this set as its own part and the
+      clique graph as another part. Hence a minimum clique cover needs at
+      most $\beta$ parts.</note>
+   </Ref>
+
+   <Ref id="ref_1705">
+      <note>A cluster graph is a $P_3$ free graph. A cograph is a $P_4$ free
+      graph. After removing the minimal number of vertices in a graph $G$ to
+      obtain a cograph, it is not ensured that $G$ is $P_3$ free. Maybe more
+      vertices have to be delted. This implies that $\alpha \leq
+      \beta$.</note>
+   </Ref>
+
+   <Ref id="ref_1706">
+      <note>Given is a graph $G$. First step is to create the complement
+      $\overline{G}$ of $G$. If a $G$ is a cograph, than its complement is,
+      by definition, a cograph too. Next step is to create the minimal set
+      of vertices to get a cograph and remove them from $\overline{G}$. the
+      resultig graph does not contain a $P_4$ anymore but maybe still a
+      $P_3$ which is not allowed in a co-cluster. If not $\alpha = \beta$.
+      If there there is still $P_3$, it must be deleted more vertices. This
+      implies $\alpha \leq \beta$.</note>
+   </Ref>
+
+   <Ref id="ref_1707">
+      <note>A cograph is a $P_4$ free graph. To create a cograph of a graph
+      $G$, it must be removed all but three vertices, which contained in the
+      path of the diameter. If $G$ only is the path of the diameter,
+      $\alpha$ can be maximal greater than $beta$ by three, because a $P_3$
+      is allowed. If $G$ is greater it doesn't change anything. This implies
+      $\alpha \leq \beta + 3$ </note>
+   </Ref>
+
+   <Ref id="ref_1708">
+      <note>Be $f(x) = x+1$\\The degree $deg_G$ of all vertices $k$ in the
+      maximum clique is $deg_G(k) = \alpha(G) -1$. Hence $deg_G(k)$ is the
+      smallest possible maximum degree of graph $G$.\\Be $s$ the identifier
+      for all vertices in $G$, which are not in the maximum clique.\\
+      $deg_G(s) &gt; deg_G(k) \Rightarrow \alpha(G) \leq \beta(G)$ and
+      $deg_G(s)$ is the maximum degree.\\$deg_G(s) \leq deg_G(k) \Rightarrow
+      deg_G(k)$ is the maximum degree.\\  It follows by $f$: $\alpha(G) \leq
+      \beta(G)+1 \Leftrightarrow \alpha(G) \leq f(\beta(G)) \Rightarrow
+      \alpha \leq_{G} \beta$. \\</note>
+   </Ref>
+
+   <Ref id="ref_1709">
+      <note>The maximum independent set is always a dominating set. Because
+      every edge $e$ of the graph $G$ has one ending in the maximum
+      independent set, except of $e$ is part of a clique. If $\beta$ is also
+      the minimum Dominating Set, $\beta = \alpha$. If there is a smaller
+      Dominating Set than $\beta$, it implies $\alpha &lt; \beta$.Both
+      together implies $\alpha \leq \beta$.</note>
+   </Ref>
+
+   <Ref id="ref_1710">
+      <note>A maximum independent contains as many as possible vertices of a
+      graph $G$, which are not adjacent to each other. This means for a
+      minimum clique cover that every vertex of a maximum independent set
+      must be in a different part of the clique partition. Hence a minimum
+      clique cover is always the size of a maximum independent set or
+      bigger.</note>
+   </Ref>
+
+   <Ref id="ref_1711">
+      <note>Let $\beta$ be the diameter of the Graph $G$. The first step to
+      create a minumum domination set is to seperate the diameter in parts
+      $(x,y,z)$ with $x,y,z \in V$, where $x$ is a neighbour of $y$ and $y$
+      a neighbour of $z$ in the diameter. Every vertex contained in the
+      diameter is only in one part. Next take a vertex $v$ which is
+      neighboured to all three vertices of a part and put $v$ into the
+      minimum dominating set $\alpha$. There can't be a vertex which is
+      neighboured to four vertices of the diameter, because otherwise the
+      path of the diameter would not be the diameter anymore. Hence we need
+      at least one vertex in the minimum dominating set for three vertices
+      of the diameter. This implies that $3 \cdot |\alpha|$ is always upper
+      bounds $\beta$.  </note>
+   </Ref>
+
+   <Ref id="ref_1712">
+      <note>Removing the vertices of a vertex cover of a graph $G$ resolves
+      in a graph without edges. This graph is a cluster graph. In order to
+      obtain a cluster graph you need to remove a most $\beta$
+      vertices.</note>
+   </Ref>
+
+   <Ref id="ref_1713">
+      <note>Since deleting a vertex cover from a graph~$G$ yields an
+      independent set, deleting a vertex cover makes~$G$ a co-cluster. Hence
+      the minimum number of vertices that have to be deleted in order to
+      make~$G$ a co-cluster is at most~$h$.</note>
+   </Ref>
+
+   <Ref id="ref_1714">
+      <bib>
+         <authors>W. Espelage, F. Gurski, E. Wanke</authors>
+         <title>How to solve NP-hard graph problems on clique-width bounded graphs in polynomial time</title>
+	 <rest>Proceedings of the 27th International Workshop on Graph-Theoretic Concepts in Computer Science WG'01, LNCS 2204, 117-128 (2001)</rest>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1715">
+      <bib>
+         <authors>R. Ganian, P. Hlineny, J. Obdrzalek</authors>
+         <title>Clique-width: When hard does not mean impossible</title>
+	 <rest>Symposium on Theoretical Aspects of Computer Science STACS 2011, Leibniz International Proceedings in Informatics LIPIcs Vol 9, Dagstuhl 404-415 (2011)</rest>
+      </bib>
+   </Ref>
+
+   <Ref id="ref_1716">
+      <bib>
+         <authors>F. Gurski</authors>
+         <title>A comparison of two approaches for polynomial time algorithms computing basic graph parameters</title>
+	 <rest>Manuscript 2008</rest>
+	 <note>Available on <a href="http://arxiv.org/abs/0806.4073">arXiv</a>.</note>
+      </bib>
+   </Ref>
 
    <Ref id="ref_1717">
       <bib>
@@ -15071,6 +15261,39 @@
       </bib>
    </Ref>
 
+  <Ref id="ref_1724">
+    <bib>
+      <authors>B.-M. Bui-Xuan, J.A. Telle, M. Vatshelle</authors>
+      <title>Boolean-width of graphs</title>
+      <rest>Theoretical Computer Science Vol. 412 (39), 5187-5204 (2011)</rest>
+    </bib>
+  </Ref>
+
+  <Ref id="ref_1725">
+    <bib>
+      <authors>L. Auslander, T.A. Brown, J.W.T. Youngs</authors>
+      <title>The Imbedding of Graphs in Manifolds</title>
+      <rest>Journal of Mathematics and Mechanics Vol. 12, 565-568 (1962)</rest>
+    </bib>
+  </Ref>
+
+  <Ref id="ref_1726">
+    <bib>
+      <authors>P. Z. Chinn, J. Chvátalová, A.K. Dewdney, N.E. Gibbs</authors>
+      <title>The bandwidth problem for graphs and matrices—a survey</title>
+      <rest>Journal of Graph Theory Vol. 6 (3), 223-254 (1982)</rest>
+    </bib>
+  </Ref>
+
+  <Ref id="ref_1727">
+    <bib>
+      <authors>R. Crowston, M. Jones, M. Mnich</authors>
+      <title>Max-cut parametrized above the Edwards-Erdős bound</title>
+      <rest>Algorithmica Jan. 2014 1-24 (2014)</rest>
+      <doi>10.1007/s00453-014-9870-z</doi>
+    </bib>
+  </Ref>
+
    <Ref id="ref_1728">
       <bib>
          <authors>M. Francis, P. Hell, J. Stacho</authors>
@@ -15088,10 +15311,15 @@
          <doi>10.1007/978-3-319-07956-1_22</doi>
       </bib>
    </Ref>
-
-
-
-
-
+ 
+   <Ref id="ref_1730">
+      <bib>
+         <authors>M. Larsen, J. Propp, D. Ullman</authors>
+         <title>The Fractional Chromatic Number of Mycielski's Graphs</title>
+         <rest>Journal of Graph Theory Vol. 19 (3), 411-416 (1995)</rest>
+         <doi>10.1002/jgt.3190190313</doi>
+      </bib>
+   </Ref>
+  
 
 </REFS>

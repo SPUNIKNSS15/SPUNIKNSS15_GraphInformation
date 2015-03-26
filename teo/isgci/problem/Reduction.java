@@ -68,10 +68,10 @@ public class Reduction {
         if (c.betterOrEqual(Complexity.P))
             return c.betterThan(complexity) ? complexity : c;
         // Cliquewidth unbounded distributes DOWNWARD!
-        if (c.equals(Complexity.NPC)  &&
+        /*if (c.equals(Complexity.NPC)  &&
                 "Cliquewidth".equals(parent.getName())  &&
                 "Cliquewidth expression".equals(child.getName()))
-            return c;
+            return c;*/
         return Complexity.UNKNOWN;
     }
 

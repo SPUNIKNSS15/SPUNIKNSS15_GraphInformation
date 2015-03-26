@@ -133,7 +133,7 @@
 </target>
 
 
-<target name="clean"
+<target name="clean.all"
    description="Deletes all created files">
 
    <delete dir="${build.dir}"/>
@@ -561,6 +561,8 @@
       <fileset file="${data.dir}/index.html.3.2"/>
       <fileset file="${build.data.dir}/problems.inc"/>
       <fileset file="${data.dir}/index.html.3.4"/>
+      <fileset file="${build.data.dir}/parameters.inc"/>
+      <fileset file="${data.dir}/index.html.3.6"/>
       <fileset file="${build.data.dir}/static.4"/>
    </concat>
    <concat force="yes" destfile="${web.dir}/about.html">

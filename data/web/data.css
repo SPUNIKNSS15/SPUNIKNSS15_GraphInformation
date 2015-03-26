@@ -75,7 +75,7 @@ ul.navigation li {
 
 ul.navigation .title {
    float: left;
-   width: 6em;
+   width: 8em;
    font-weight: bold;
 }
 
@@ -207,6 +207,12 @@ ul#Pagination a:hover {
 }
 
 /*---- Class page ----*/
+#classpage h4 {
+   font-weight: bold;
+   margin-top: 2ex;
+   margin-bottom: 0.5ex;
+}
+
 #classpage h3 {
    font-size: 100%;
    font-weight: normal;
