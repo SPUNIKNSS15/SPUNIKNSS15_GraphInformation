@@ -15065,114 +15065,14 @@
       </bib>
    </Ref>
 
+   <!-- Replaces the original ref_1702-ref_1713 for parameters -->
    <Ref id="ref_1702">
-      <note>Distance to clique ist the minimal number of vertices to delete
-      from a graph $G$, to obtain that $G$ is clique. a cluster graph is a
-      is a vertex disjoint union of cliques. In order to obtain a cluster
-      graph of $G$ you need at most $\beta$ </note>
-   </Ref>
-
-   <Ref id="ref_1703">
-      <note>A clique is the complement of an independent set and an
-      independent set is a co-cluster. Hence, deleting vertices from a
-      graph~$G$ to obtain a clique makes~$G$ a co-cluster in particular.
-      Hence the minimum number of vertices that have to be deleted in order
-      to make~$G$ a co-cluster is at most~$\beta$.</note>
-   </Ref>
-
-   <Ref id="ref_1704">
-      <note>Distance to clique is the minimum number of vertices to delete
-      in order to obtain a clique of a graph $G$. This set is a a clique
-      cover too. Take every vertex of this set as its own part and the
-      clique graph as another part. Hence a minimum clique cover needs at
-      most $\beta$ parts.</note>
-   </Ref>
-
-   <Ref id="ref_1705">
-      <note>A cluster graph is a $P_3$ free graph. A cograph is a $P_4$ free
-      graph. After removing the minimal number of vertices in a graph $G$ to
-      obtain a cograph, it is not ensured that $G$ is $P_3$ free. Maybe more
-      vertices have to be delted. This implies that $\alpha \leq
-      \beta$.</note>
-   </Ref>
-
-   <Ref id="ref_1706">
-      <note>Given is a graph $G$. First step is to create the complement
-      $\overline{G}$ of $G$. If a $G$ is a cograph, than its complement is,
-      by definition, a cograph too. Next step is to create the minimal set
-      of vertices to get a cograph and remove them from $\overline{G}$. the
-      resultig graph does not contain a $P_4$ anymore but maybe still a
-      $P_3$ which is not allowed in a co-cluster. If not $\alpha = \beta$.
-      If there there is still $P_3$, it must be deleted more vertices. This
-      implies $\alpha \leq \beta$.</note>
-   </Ref>
-
-   <Ref id="ref_1707">
-      <note>A cograph is a $P_4$ free graph. To create a cograph of a graph
-      $G$, it must be removed all but three vertices, which contained in the
-      path of the diameter. If $G$ only is the path of the diameter,
-      $\alpha$ can be maximal greater than $beta$ by three, because a $P_3$
-      is allowed. If $G$ is greater it doesn't change anything. This implies
-      $\alpha \leq \beta + 3$ </note>
-   </Ref>
-
-   <Ref id="ref_1708">
-      <note>Be $f(x) = x+1$\\The degree $deg_G$ of all vertices $k$ in the
-      maximum clique is $deg_G(k) = \alpha(G) -1$. Hence $deg_G(k)$ is the
-      smallest possible maximum degree of graph $G$.\\Be $s$ the identifier
-      for all vertices in $G$, which are not in the maximum clique.\\
-      $deg_G(s) &gt; deg_G(k) \Rightarrow \alpha(G) \leq \beta(G)$ and
-      $deg_G(s)$ is the maximum degree.\\$deg_G(s) \leq deg_G(k) \Rightarrow
-      deg_G(k)$ is the maximum degree.\\  It follows by $f$: $\alpha(G) \leq
-      \beta(G)+1 \Leftrightarrow \alpha(G) \leq f(\beta(G)) \Rightarrow
-      \alpha \leq_{G} \beta$. \\</note>
-   </Ref>
-
-   <Ref id="ref_1709">
-      <note>The maximum independent set is always a dominating set. Because
-      every edge $e$ of the graph $G$ has one ending in the maximum
-      independent set, except of $e$ is part of a clique. If $\beta$ is also
-      the minimum Dominating Set, $\beta = \alpha$. If there is a smaller
-      Dominating Set than $\beta$, it implies $\alpha &lt; \beta$.Both
-      together implies $\alpha \leq \beta$.</note>
-   </Ref>
-
-   <Ref id="ref_1710">
-      <note>A maximum independent contains as many as possible vertices of a
-      graph $G$, which are not adjacent to each other. This means for a
-      minimum clique cover that every vertex of a maximum independent set
-      must be in a different part of the clique partition. Hence a minimum
-      clique cover is always the size of a maximum independent set or
-      bigger.</note>
-   </Ref>
-
-   <Ref id="ref_1711">
-      <note>Let $\beta$ be the diameter of the Graph $G$. The first step to
-      create a minumum domination set is to seperate the diameter in parts
-      $(x,y,z)$ with $x,y,z \in V$, where $x$ is a neighbour of $y$ and $y$
-      a neighbour of $z$ in the diameter. Every vertex contained in the
-      diameter is only in one part. Next take a vertex $v$ which is
-      neighboured to all three vertices of a part and put $v$ into the
-      minimum dominating set $\alpha$. There can't be a vertex which is
-      neighboured to four vertices of the diameter, because otherwise the
-      path of the diameter would not be the diameter anymore. Hence we need
-      at least one vertex in the minimum dominating set for three vertices
-      of the diameter. This implies that $3 \cdot |\alpha|$ is always upper
-      bounds $\beta$.  </note>
-   </Ref>
-
-   <Ref id="ref_1712">
-      <note>Removing the vertices of a vertex cover of a graph $G$ resolves
-      in a graph without edges. This graph is a cluster graph. In order to
-      obtain a cluster graph you need to remove a most $\beta$
-      vertices.</note>
-   </Ref>
-
-   <Ref id="ref_1713">
-      <note>Since deleting a vertex cover from a graph~$G$ yields an
-      independent set, deleting a vertex cover makes~$G$ a co-cluster. Hence
-      the minimum number of vertices that have to be deleted in order to
-      make~$G$ a co-cluster is at most~$h$.</note>
+      <bib>
+         <authors>M. Sorge, M. Weller</authors>
+         <title>The graph parameter hierarchy</title>
+         <rest>Manuscript, 2013</rest>
+         <note>Available <a href="http://fpt.akt.tu-berlin.de/msorge/parameter-hierarchy.pdf">here</a>.</note>
+      </bib>
    </Ref>
 
    <Ref id="ref_1714">
