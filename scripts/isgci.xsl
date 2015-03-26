@@ -617,6 +617,8 @@
       </xsl:if>
 
       <h2 id="paramssummary">Parameters</h2>
+      <p><i>Parameters are in beta. If you find any irregularities, please <a href="/contact.html">contact us!</a></i></p>
+
       <table style="table-layout:fixed">
          <xsl:call-template name="teo:complexitylayout"/>
          <xsl:apply-templates select="parameter" mode="summary">
@@ -784,6 +786,9 @@
          <xsl:if test="@dir='directed'">Directed </xsl:if>
          Parameter: <xsl:value-of select="@name"/>
       </h1>
+
+      <p><i>Parameters are in beta. If you find any irregularities, please <a href="/contact.html">contact us!</a></i></p>
+
 
       <xsl:if test="count(note[@name='definition']) = 1">
          <div id="definition">

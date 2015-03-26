@@ -127,6 +127,7 @@
       <li><a href="#forbidden_configurations_XZ">Configurations XZ</a></li>
       <li><a href="#families_XF">Families XF</a></li>
       <li><a href="#families">General families</a></li>
+      <li><a href="http://hog.grinvin.org">More graphs in the <i>House of Graphs</i> (external link)</a></li>
    </ul>
 
    <!-- Create alphabetical list of simples -->
