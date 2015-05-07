@@ -1,0 +1,42 @@
+Methods using matrices:
+
+	- In class Configuration:
+		- Configuration(Configuration, boolean)
+		- copyFromComplement()
+		- addNodesCount(int)
+		- addEdge(int)
+		- countEdges(int)
+		- degree(int, int)
+		- degree(int, int, boolean)
+		- toString()
+		- getGraphs(maxGraphs)
+		- getAutomorphisms()
+		- isIsomorphic(Configuration)
+		- isIsomorphicIntern(Configuration, boolean, boolean)
+		- isInducedSubgraph(Graph)
+		- check(Configuration, int[])
+
+	- In Graph
+		- Graph(Graph, boolean)
+		- addNodesCount(int)
+		- copyFrom(SmallGraph gs)
+		- degree(int)
+		- degree(int, boolean)
+		- adjList(int)
+		- addNode()
+		- increment()
+		- addEdge(int, int)
+		- delEdge(int, int)
+		- getEdge(int, int)
+		- toString()
+		- isIsomorphic(Graph)
+		- isIsomorphicIntern(Graph, boolean, boolean)
+		- isIsomorphicIntern2(Graph, boolean, boolean, boolean)
+		- isSubIsomorphic(Graph)
+		- check(Graph, int)
+		- getVertexCover()
+
+	- in Permutation
+		- Permutation(int)
+		- Permutation(int, darf)
+		- next()
