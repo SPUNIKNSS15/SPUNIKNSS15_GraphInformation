@@ -43,6 +43,7 @@ public class GraphTest {
 
     @Test
     public void testConstructor1() throws Exception {
+        // graph is already initialized by setUp
         testNewNodesAndEdges(0);
     }
 
