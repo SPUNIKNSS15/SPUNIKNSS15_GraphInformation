@@ -618,12 +618,25 @@ contFHMT:           for (j=0; j<smMem.size(); j++)
         
         GAlg.transitiveReduction(resultGraph);
     }
-    
+
+
+    /*
+    addBigSmallmembers operates on the families smallmembers which
+    had more than maxCnt nodes and were therefore not processed yet
+
+    Every bigSmallgraph is either unknown (and then added to bigSmallmemb)
+    or induces an already known bigSmallgraph according to VF2
+
+
+
+     */
     public static void addBigSmallmembers() throws
             IOException, InterruptedException {
-        
-        Vector bigSmallmemb = new Vector();// Contains graphs of size larger
-                                           // than maxCnt
+
+        /* Contains graphs of size larger than maxCnt*/
+        Vector bigSmallmemb = new Vector();
+
+        /* iterate over all families in this.families */
         for (int i=0; i<families.size(); i++)
             if (families.elementAt(i) instanceof HMTFamily)
                 if (((HMTFamily)families.elementAt(i)).getGrammar() != null) {
@@ -631,14 +644,28 @@ contFHMT:           for (j=0; j<smMem.size(); j++)
                     HMTFamily fcomp = (HMTFamily)fhmt.getComplement();
                     Vector smMem = fhmt.getSmallmembers();
                     Vector compSmMem = new Vector();
+
+                    //iterate over all of the families small members...
 contBig:            for (int j=0; j<smMem.size(); j++)
                         if (((Graph)smMem.elementAt(j)).countNodes() > maxCnt) {
-                            for (int k=0; k<bigSmallmemb.size(); k++)
+
+
+                            for (int k=0; k< bigSmallmemb.size(); k++)
+                                                           /*
+                            If one of the already found big smallmembers
+                            (stored in bigSmallmemb) has the same amount
+                            of nodes as the currently examined graph of the
+                            current family AND is isomorphic according to the
+                            external VF2 isomorphism algorithm...
+                            */
                                 if (((Graph)smMem.elementAt(j)).countNodes() ==
                                         ((Graph)bigSmallmemb.elementAt(k)).
                                         countNodes() &&
                                         isSubgraphVF((Graph)smMem.elementAt(j),
                                         (Graph)bigSmallmemb.elementAt(k))) {
+                                    //...set the graph and its complement within
+                                    //the family accordingly, copying all known
+                                    //information about that graph
                                     smMem.setElementAt((Graph)bigSmallmemb.
                                             elementAt(k), j);
                                     compSmMem.addElement((Graph)
@@ -646,6 +673,8 @@ contBig:            for (int j=0; j<smMem.size(); j++)
                                             getComplement());
                                     continue contBig;
                                 }
+                            //If no isomorphic big smallgraph is found,
+                            //add it as an USG to bigSmallmemb
                             ((Graph)smMem.elementAt(j)).addLink(fhmt.getLink());
                             addUSG((Graph)smMem.elementAt(j), bigSmallmemb,ISG);
                             compSmMem.addElement((Graph)((Graph)smMem.
@@ -661,7 +690,13 @@ contBig:            for (int j=0; j<smMem.size(); j++)
                     ((HMTFamily)fcomp).setSmallmembers(compSmMem);
                 }
 
+
         ArrayList<Graph> topo = new ArrayList<Graph>();
+
+        /*
+        Add the present resultgraphs members to topo according
+        to their topological order, which is provided by jgrapht
+         */
         for (Graph v : GAlg.topologicalOrder(resultGraph))
             topo.add(v);
 
@@ -712,18 +747,33 @@ contBig:            for (int j=0; j<smMem.size(); j++)
             }*/
 
         System.out.println("All big smallmembers are added.");
-        
+
+
+        /*
+        add a vertex to resultGraph for every element of bigSmallmemb
+
+        check for every of the bigSmallgraphs whether it induces any one of
+        the already known graphs in resultGraph
+
+        topological order is provided by jgrapht
+         */
         for (int i=0; i<bigSmallmemb.size(); i++) {
             Graph bigGr = (Graph)bigSmallmemb.elementAt(i);
             resultGraph.addVertex(bigGr);
-            
+
             for (Graph v : topo) {
+                //getPath is a dijkstra shortest path between the nodes
+                //bigGr and v in resultGraph - if none is existing...
                 if (GAlg.getPath(resultGraph, bigGr, v) == null)
+                    //check if v (in the existing resultGraph)
+                    //is induced subgraph of the current bigGraph
+                    //=> add the edge to the resultGraph respectively
                     if (isSubgraphVF(bigGr, v))
                         resultGraph.addEdge(bigGr, v);
             }
         }
-        
+
+        //Add all graphs from bigSmallmemb to graphs
         for (int i=0; i<bigSmallmemb.size(); i++)
             graphs.addElement((Graph)bigSmallmemb.elementAt(i));
     }
