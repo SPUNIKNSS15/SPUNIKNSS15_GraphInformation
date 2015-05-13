@@ -95,6 +95,17 @@ public class FindISG{
         t1=System.currentTimeMillis();
         try{
             readXMLFile(inxml);
+            /*
+            See comments on readXMLFile. The function does far more than
+             just xml reading: All graphs/families/grammars/ are added
+             to this's respective member vectors and generated graphs
+             from e.g. families are linked to already known graphs
+             from the graphs vector to obtain infos names, already known
+             subgraph isomorphisms etc.
+
+             readXML excessively uses the respective isomorphy checking methods
+             */
+
         }catch(Exception ex){
             ex.printStackTrace();//System.err.println(ex);
             System.exit(1);
@@ -115,7 +126,13 @@ public class FindISG{
         }
 
         t1=System.currentTimeMillis();
-        
+
+
+
+        /*
+        create subgraphs for each graph in graphs, check isomorphy to
+        already known graphs and link respectively or add the graph as an USG
+         */
         for (int i=0; i<graphs.size(); i++)
             getSubs((Graph)graphs.elementAt(i));
         
@@ -136,6 +153,11 @@ public class FindISG{
         }
 
         t1=System.currentTimeMillis();
+
+        /*
+        add every KNOWN graph that is induced subgraph of EVERY of the
+        configurations graphs to the induced subgraph list of C
+         */
         for (int i = 0; i < configurations.size(); i++)
             for (int j = 0; j < graphs.size(); j++) {
                 Configuration C = (Configuration) configurations.elementAt(i);
@@ -166,6 +188,7 @@ public class FindISG{
         }
 
         t1=System.currentTimeMillis();
+        /*Sort graphs by their number of nodes*/
         sortNum(graphs,0,graphs.size()-1);
         t2=System.currentTimeMillis();
 
@@ -177,16 +200,26 @@ public class FindISG{
             System.err.print("Schreibe " + outxml);
         }
 
-        
+        /*
+        Create the digraph containing all the induced subgraph relationships
+        between known graphs - USGS are bridged using the transitive closure,
+        but not listet in the final digraph.
+         */
         makeDigraph();
         System.out.println("Digraph is made. Starting to add big smallmembers");
         addBigSmallmembers();
 
+        /*if -t option is set -
+        * FIXME: can be optimized by simply not calling transitive reduction in makeDigraph()
+        */
         if (transitivelyClosed)
             GAlg.transitiveClosure(resultGraph);
 
         t1=System.currentTimeMillis();
         try{
+            /* write out graphs, families, grammars...
+            * with the newly calculated relationships
+            */
             makeNewXMLFile(outxml);
         }catch(Exception ioe){
             ioe.printStackTrace();
@@ -548,7 +581,17 @@ contFHMT:           for (j=0; j<smMem.size(); j++)
         if(left < j) sortNum(vec, left, j);
         if(i < right) sortNum(vec, i, right);
     }
-    
+
+
+    /*
+    The digraph contains a node for every graph in graphs and an edge for every
+    induced subgraph relationship between graphs.
+
+    The transitive closure is calculated on this relation, then,
+    unknown graphs are removed, and finally the transitive reduction is
+    applied. Therefore, relationships between graphs via USGs are kept without
+    explicitely listing the USGs.
+     */
     public static void makeDigraph() {
         // Creating a Node for every graph
         for (int i=0; i<graphs.size(); i++)
@@ -712,7 +755,6 @@ contBig:            for (int j=0; j<smMem.size(); j++)
                 if (large.getEdge(i,j))
                     out.println(i +" "+ j);
         out.println(-1);
-
         out.close();
         n = Integer.parseInt(in.readLine());
         p.waitFor();
