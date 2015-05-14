@@ -1,0 +1,42 @@
+Methods using matrices:
+
+	- In class Configuration:
+		- Configuration(Configuration, boolean) Moritz
+		- copyFromComplement()     Valentin
+		- addNodesCount(int)       Moritz
+		- addEdge(int)             Moritz
+		- countEdges(int)          Moritz
+		- degree(int, int)           Dennis
+		- degree(int, int, boolean)  Dennis
+		- toString()                 Fällt vmtl weg
+		- getGraphs(maxGraphs)     Valentin
+		- getAutomorphisms()       Valentin
+		- isIsomorphic(Configuration)  Dennis + Oli
+		- isIsomorphicIntern(Configuration, boolean, boolean) Dennis + Oli
+		- isInducedSubgraph(Graph)     Dennis + Oli
+		- check(Configuration, int[])  Dennis + Oli
+
+	- In Graph
+		- Graph(Graph, boolean)       Moritz
+		- addNodesCount(int)          Moritz
+		- copyFrom(SmallGraph gs)     Oli
+		- degree(int)                 Dennis
+		- degree(int, boolean)        Dennis
+		- adjList(int)                Moritz
+		- addNode()                   Tassilo
+		- increment()                 Fällt vermutlich weg (Tassilo)
+		- addEdge(int, int)           Tassilo
+		- delEdge(int, int)           Tassilo
+		- getEdge(int, int)           Tassilo
+		- toString()                  Fällt vermutlich weg
+		- isIsomorphic(Graph)                                    Oli + Dennis
+		- isIsomorphicIntern(Graph, boolean, boolean)            Oli + Dennis
+		- isIsomorphicIntern2(Graph, boolean, boolean, boolean)  Oli + Dennis
+		- isSubIsomorphic(Graph)                                 Oli + Dennis
+		- check(Graph, int)         Oli + Dennis
+		- getVertexCover()          Moritz
+
+	- in Permutation   Fällt vmtl komplett weg
+		- Permutation(int)
+		- Permutation(int, darf)
+		- next()
