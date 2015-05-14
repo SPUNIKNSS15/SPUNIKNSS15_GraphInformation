@@ -49,7 +49,7 @@
     <node id="n2">
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.start1">
-          <y:Geometry height="40.0" width="138.125" x="-244.62941370183717" y="1053.7624283854168"/>
+          <y:Geometry height="40.0" width="138.125" x="-244.62941370183714" y="901.124936523437"/>
           <y:Fill color="#FFFF00" color2="#B7C9E3" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" modelName="custom" textColor="#000000" visible="true" width="123.4375" x="7.34375" y="10.93359375">getAutomorphisms()<y:LabelModel>
@@ -625,10 +625,10 @@
     <node id="n38">
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.process">
-          <y:Geometry height="101.43999999999997" width="140.928" x="2970.864272432175" y="634.7307790120437"/>
+          <y:Geometry height="122.96364292654548" width="140.928" x="1018.7754839658162" y="-174.01511189704797"/>
           <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="102.9296875" modelName="custom" textColor="#000000" visible="true" width="126.56640625" x="7.180796874999942" y="-0.7448437499999727">rot = Graph
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="102.9296875" modelName="custom" textColor="#000000" visible="true" width="126.56640625" x="7.180796874999942" y="10.016977713272752">rot = Graph
 gelb = Configuration
 grün = Smallgraph
 grau = Permutation
@@ -647,7 +647,7 @@ schwarz = FindISG<y:LabelModel>
     <node id="n39">
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.start1">
-          <y:Geometry height="40.0" width="107.4144" x="1784.1033010986323" y="-800.2553737386063"/>
+          <y:Geometry height="40.0" width="107.4144" x="1338.4746308408166" y="-800.2553737386063"/>
           <y:Fill color="#3366FF" color2="#B7C9E3" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" modelName="custom" textColor="#000000" visible="true" width="84.61328125" x="11.400559375000057" y="10.93359375">getGrammar()<y:LabelModel>
@@ -663,7 +663,7 @@ schwarz = FindISG<y:LabelModel>
     <node id="n40">
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.start1">
-          <y:Geometry height="40.0" width="138.125" x="1635.332154223632" y="-800.2553737386063"/>
+          <y:Geometry height="40.0" width="138.125" x="1189.7034839658163" y="-800.2553737386063"/>
           <y:Fill color="#3366FF" color2="#B7C9E3" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" modelName="custom" textColor="#000000" visible="true" width="116.048828125" x="11.0380859375" y="10.93359375">getSmallmembers()<y:LabelModel>
@@ -679,7 +679,7 @@ schwarz = FindISG<y:LabelModel>
     <node id="n41">
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.start1">
-          <y:Geometry height="40.0" width="138.125" x="1902.1638479736323" y="-800.2553737386063"/>
+          <y:Geometry height="40.0" width="138.125" x="1456.5351777158166" y="-800.2553737386063"/>
           <y:Fill color="#3366FF" color2="#B7C9E3" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" modelName="custom" textColor="#000000" visible="true" width="130.15234375" x="3.986328125" y="10.93359375">initFromGrammar(int)<y:LabelModel>
@@ -839,7 +839,7 @@ schwarz = FindISG<y:LabelModel>
     <node id="n51">
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.start1">
-          <y:Geometry height="40.0" width="247.1875" x="1358.144654223632" y="-800.2553737386063"/>
+          <y:Geometry height="40.0" width="247.1875" x="912.5159839658163" y="-800.2553737386063"/>
           <y:Fill color="#3366FF" color2="#B7C9E3" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" modelName="custom" textColor="#000000" visible="true" width="233.74609375" x="6.720703125" y="10.93359375">setSmallmembers(Vector&lt;SmallGraph&gt;<y:LabelModel>
@@ -1159,7 +1159,7 @@ schwarz = FindISG<y:LabelModel>
     <node id="n71">
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.start1">
-          <y:Geometry height="30.0" width="173.3599999999999" x="2841.941630045572" y="297.3380055936167"/>
+          <y:Geometry height="30.0" width="173.3599999999999" x="2841.941630045572" y="134.43183898925724"/>
           <y:Fill color="#FF0000" color2="#B7C9E3" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" modelName="custom" textColor="#000000" visible="true" width="143.107421875" x="15.126289062499836" y="5.93359375">isSubIsomorphic(Graph)<y:LabelModel>
@@ -1175,7 +1175,7 @@ schwarz = FindISG<y:LabelModel>
     <node id="n72">
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.start1">
-          <y:Geometry height="30.0" width="108.125" x="2997.2407582600895" y="545.7801540120438"/>
+          <y:Geometry height="30.0" width="108.125" x="2997.2407582600895" y="372.6059965006505"/>
           <y:Fill color="#FFFFFF" color2="#FFFFFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" modelName="custom" textColor="#000000" visible="true" width="35.201171875" x="36.4619140625" y="5.93359375">first()<y:LabelModel>
@@ -1191,7 +1191,7 @@ schwarz = FindISG<y:LabelModel>
     <node id="n73">
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.start1">
-          <y:Geometry height="30.0" width="108.125" x="3135.3657582600895" y="543.8581843884791"/>
+          <y:Geometry height="30.0" width="108.125" x="3135.3657582600895" y="370.68402687708584"/>
           <y:Fill color="#FFFFFF" color2="#FFFFFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" modelName="custom" textColor="#000000" visible="true" width="30.4609375" x="38.83203125" y="5.93359375">get()<y:LabelModel>
@@ -1207,7 +1207,7 @@ schwarz = FindISG<y:LabelModel>
     <node id="n74">
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.start1">
-          <y:Geometry height="30.0" width="108.125" x="3273.5719547238414" y="543.8581843884791"/>
+          <y:Geometry height="30.0" width="108.125" x="3273.5719547238414" y="370.68402687708584"/>
           <y:Fill color="#FFFFFF" color2="#FFFFFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" modelName="custom" textColor="#000000" visible="true" width="37.78515625" x="35.169921875" y="5.93359375">next()<y:LabelModel>
@@ -1223,7 +1223,7 @@ schwarz = FindISG<y:LabelModel>
     <node id="n75">
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.start1">
-          <y:Geometry height="30.0" width="177.45833333333394" x="3411.6969547238414" y="543.8581843884791"/>
+          <y:Geometry height="30.0" width="177.45833333333394" x="3411.6969547238414" y="370.68402687708584"/>
           <y:Fill color="#FFFFFF" color2="#FFFFFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" modelName="custom" textColor="#000000" visible="true" width="151.990234375" x="12.73404947916697" y="5.93359375">permutationMask(int, int)<y:LabelModel>
@@ -1239,7 +1239,7 @@ schwarz = FindISG<y:LabelModel>
     <node id="n76">
       <data key="d6">
         <y:GenericNode configuration="com.yworks.flowchart.start1">
-          <y:Geometry height="30.0" width="30.0" x="-516.7280341527278" y="1499.9878657794022"/>
+          <y:Geometry height="30.0" width="30.0" x="1850.761879272728" y="1126.250795752729"/>
           <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.1328125" modelName="custom" textColor="#000000" visible="true" width="19.17578125" x="5.412109375" y="5.93359375">77<y:LabelModel>
@@ -1352,10 +1352,9 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="-175.56691370183717" y="1111.341381785075"/>
-            <y:Point x="820.6695691951313" y="1111.341381785075"/>
+            <y:Point x="820.6695691951313" y="921.124936523437"/>
           </y:Path>
-          <y:LineStyle color="#800080" type="line" width="1.0"/>
+          <y:LineStyle color="#FFCC00" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
           <y:BendStyle smoothed="false"/>
         </y:PolyLineEdge>
@@ -1365,7 +1364,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="155.7999184169098" ty="7.41930276447842">
-            <y:Point x="632.0254214625562" y="1073.7624283854168"/>
+            <y:Point x="632.0254214625562" y="921.124936523437"/>
           </y:Path>
           <y:LineStyle color="#FFCC99" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -1377,7 +1376,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="-471.9616814630674" y="1073.7624283854168"/>
+            <y:Point x="-471.9616814630674" y="921.124936523437"/>
           </y:Path>
           <y:LineStyle color="#FFCC99" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -1389,7 +1388,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="2429.034866333007" y="1073.7624283854168"/>
+            <y:Point x="2429.034866333007" y="921.124936523437"/>
           </y:Path>
           <y:LineStyle color="#FFCC99" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -1401,7 +1400,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="2319.034866333007" y="1073.7624283854168"/>
+            <y:Point x="2319.034866333007" y="921.124936523437"/>
           </y:Path>
           <y:LineStyle color="#FFCC99" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -1413,7 +1412,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="2239.034866333007" y="1073.7624283854168"/>
+            <y:Point x="2239.034866333007" y="921.124936523437"/>
           </y:Path>
           <y:LineStyle color="#FFCC99" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -1425,7 +1424,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="2624.191116333007" y="1073.7624283854168"/>
+            <y:Point x="2624.191116333007" y="921.124936523437"/>
           </y:Path>
           <y:LineStyle color="#FFCC99" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -1956,7 +1955,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="1971.2263479736323" y="-825.2663022867836"/>
+            <y:Point x="1525.5976777158166" y="-825.2663022867836"/>
           </y:Path>
           <y:LineStyle color="#FF6600" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -1968,7 +1967,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="1837.8105010986321" y="-825.2663022867836"/>
+            <y:Point x="1392.1818308408165" y="-825.2663022867836"/>
           </y:Path>
           <y:LineStyle color="#FF6600" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -1980,7 +1979,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="1704.394654223632" y="-825.2663022867836"/>
+            <y:Point x="1258.7659839658163" y="-825.2663022867836"/>
           </y:Path>
           <y:LineStyle color="#FF6600" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -1991,7 +1990,9 @@ schwarz = FindISG<y:LabelModel>
     <edge id="e61" source="n41" target="n42">
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
+            <y:Point x="1971.2263479736325" y="-780.2553737386063"/>
+          </y:Path>
           <y:LineStyle color="#008080" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
           <y:BendStyle smoothed="false"/>
@@ -2002,8 +2003,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="1971.2263479736323" y="-709.3687007649737"/>
-            <y:Point x="2131.697219848632" y="-709.3687007649737"/>
+            <y:Point x="2131.697219848632" y="-780.2553737386063"/>
           </y:Path>
           <y:LineStyle color="#008080" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -2141,8 +2141,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="1971.2263479736323" y="-706.2756221516926"/>
-            <y:Point x="2220.999954223632" y="-704.5859045410152"/>
+            <y:Point x="2220.999954223632" y="-780.2553737386063"/>
           </y:Path>
           <y:LineStyle color="#008080" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -2154,8 +2153,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="1971.2263479736323" y="-704.7131221516926"/>
-            <y:Point x="2299.822219848632" y="-703.0234045410152"/>
+            <y:Point x="2299.822219848632" y="-780.2553737386063"/>
           </y:Path>
           <y:LineStyle color="#008080" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -2220,7 +2218,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:GenericEdge configuration="com.yworks.edge.framed">
           <y:Path sx="0.0" sy="0.0" tx="38.66796874999977" ty="-7.660873413086279">
-            <y:Point x="1876.4784698486321" y="-943.2971343994144"/>
+            <y:Point x="1430.8497995908165" y="-943.2971343994144"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="3.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -2231,7 +2229,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:GenericEdge configuration="com.yworks.edge.framed">
           <y:Path sx="0.0" sy="0.0" tx="36.74006562500017" ty="-5.707748413086279">
-            <y:Point x="1741.1347198486321" y="-943.2971343994144"/>
+            <y:Point x="1295.5060495908165" y="-943.2971343994144"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="3.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -2242,7 +2240,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:GenericEdge configuration="com.yworks.edge.framed">
           <y:Path sx="0.0" sy="0.0" tx="47.5177468749996" ty="6.011001586913665">
-            <y:Point x="2018.744094848632" y="-943.2971343994144"/>
+            <y:Point x="1573.1154245908162" y="-943.2971343994144"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="3.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -2253,7 +2251,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:GenericEdge configuration="com.yworks.edge.framed">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="1481.738404223632" y="-943.2971343994144"/>
+            <y:Point x="1036.1097339658163" y="-943.2971343994144"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="3.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -2579,7 +2577,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="22.075464884440862" ty="0.0">
-            <y:Point x="2496.200988769531" y="312.3380055936167"/>
+            <y:Point x="2496.200988769531" y="149.43183898925724"/>
           </y:Path>
           <y:LineStyle color="#FF00FF" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -2591,7 +2589,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="48.49312845865984" ty="0.0">
-            <y:Point x="1522.143473307293" y="312.3380055936167"/>
+            <y:Point x="1522.143473307293" y="149.43183898925724"/>
           </y:Path>
           <y:LineStyle color="#FF00FF" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -2603,7 +2601,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="19.63904317220249" ty="-8.627749226888113">
-            <y:Point x="2828.2958170572924" y="312.3380055936167"/>
+            <y:Point x="2828.2958170572924" y="149.43183898925724"/>
           </y:Path>
           <y:LineStyle color="#FF00FF" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -2615,7 +2613,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="3189.4282582600895" y="312.3380055936167"/>
+            <y:Point x="3189.4282582600895" y="149.43183898925724"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -2627,7 +2625,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="3327.6344547238414" y="312.3380055936167"/>
+            <y:Point x="3327.6344547238414" y="149.43183898925724"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -2639,7 +2637,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="3500.4261213905083" y="312.3380055936167"/>
+            <y:Point x="3500.4261213905083" y="149.43183898925724"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
@@ -2651,7 +2649,7 @@ schwarz = FindISG<y:LabelModel>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
-            <y:Point x="3051.3032582600895" y="312.3380055936167"/>
+            <y:Point x="3051.3032582600895" y="149.43183898925724"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
