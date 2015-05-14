@@ -7,28 +7,32 @@ The team members add comments to these methods, according to the
 following conventions:
 
 
-1. **Case 1:** *The implementation of the method will be replaced using
-   a jgrapht-method.*
+1. **Case 1:** The implementation of the method **will be replaced using
+   a jgrapht-method.**
    ```Java
    /**
-    REIMPLEMENT WITH:
-        - org.jgrapht.xxxx
-        - org.jgrapht.yyyy
-        - some more
+    * REIMPLEMENT WITH:
+    *   - org.jgrapht.xxxx
+    *   - org.jgrapht.yyyy
+    *   - some more
     */
    public void addEdge(int a,int b){
        ...
    }
    ```
-   If the method signature will be changed in addition to the body (e.g.
-   because we don't pass adjacency matrices as arguments anymore) we
-   also add the `@Deprecated` annotation:
+   If the **method signature will be changed** in addition to the body
+   (e.g. because we don't pass adjacency matrices as arguments anymore)
+   we also add the `@Deprecated` annotation and a comment which explains
+   the signature change:
    ```Java
    /**
-    REIMPLEMENT WITH:
-        - org.jgrapht.xxxx
-        - org.jgrapht.yyyy
-        - some more
+    * REIMPLEMENT WITH:
+    *   - org.jgrapht.xxxx
+    *   - org.jgrapht.yyyy
+    *   - some more
+    *
+    * @deprecated
+    * why did the signature change?
     */
    @Deprecated
    public void addEdge(int a,int b){
@@ -36,9 +40,10 @@ following conventions:
    }
    ```
 
-2. **Case 2:** *The method will become unused in the future because its
-   past caller is now using a jgrapht method instead.*
-   We use the class annotation in addition to the javadoc keyword.
+2. **Case 2:** The method will become unused in the future **because its
+   past caller is now using a jgrapht method instead.**
+   We use the `@Deprecated `class annotation in addition to the Javadoc
+   keyword.
    ```Java
    /**
     * @deprecated
@@ -50,13 +55,13 @@ following conventions:
    }
    ```
 
-3. **Case 3:** *The method will become unused in the future because of
-   API changes.*
+3. **Case 3:** The method will become unused in the future **because of
+   API changes.**
    Almost the same as *2.*:
    ```Java
    /**
     * @deprecated
-    * here comes a short description why the method was deprecated
+    * here comes a short description why and how the API was changed
     */
    @Deprecated
    public int getComponents(){
