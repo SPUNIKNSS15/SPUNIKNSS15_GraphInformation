@@ -13,6 +13,8 @@ package teo.isgci.appl;
 import java.util.*;
 import java.net.URL;
 import java.io.*;
+
+import org.jgrapht.experimental.subgraphisomorphism.VF2SubgraphIsomorphismInspector;
 import org.xml.sax.XMLReader;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -20,6 +22,7 @@ import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.*;
 import gnu.getopt.Getopt;
 import teo.isgci.grapht.GAlg;
+import teo.isgci.smallgraphstransition.SimpleISGCIGraph;
 import teo.isgci.xml.*;
 import teo.isgci.smallgraph.*;
 import teo.isgci.util.Itera;
@@ -785,42 +788,12 @@ contBig:            for (int j=0; j<smMem.size(); j++)
             IOException, InterruptedException {
         int i, j, n;
 
-        Process p = Runtime.getRuntime().exec("vf");
-        BufferedReader in =
-                new BufferedReader(new InputStreamReader(p.getInputStream()));
-        PrintWriter out = new PrintWriter(p.getOutputStream());
+        SimpleISGCIGraph gl = new SimpleISGCIGraph(large);
+        SimpleISGCIGraph gs = new SimpleISGCIGraph(small);
 
-        n = small.countNodes();
-        out.println(n);
-        for (i = 0; i < n-1; i++)
-            for (j = i+1; j < n; j++)
-                if (small.getEdge(i,j))
-                    out.println(i +" "+ j);
-        out.println(-1);
+        VF2SubgraphIsomorphismInspector<Integer, DefaultEdge> inspector = new VF2SubgraphIsomorphismInspector<Integer, DefaultEdge>(gl, gs);
 
-        n = large.countNodes();
-        out.println(n);
-        for (i = 0; i < n-1; i++)
-            for (j = i+1; j < n; j++)
-                if (large.getEdge(i,j))
-                    out.println(i +" "+ j);
-        out.println(-1);
-        out.close();
-        n = Integer.parseInt(in.readLine());
-        p.waitFor();
-        in.close();
-        p.getErrorStream().close();
-        if (p.exitValue() != 0  ||  n != 0  &&  n != 1) {
-            System.err.println("VFLib Error testing "+ small.getName()
-                +" and "+ large.getName());
-            return false;       // So that we can check more relations
-        }
-        // This is just for debugging
-//        System.out.print(small.getName());
-//        System.out.print(n == 1 ? " << " : " </< ");
-//        System.out.print(large.getName());
-
-        return n == 1;
+        return inspector.isSubgraphIsomorphic();
     }
 }
 
