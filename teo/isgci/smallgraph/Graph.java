@@ -160,7 +160,14 @@ public class Graph extends SmallGraph{
         return Ecnt;
     }
     
-    /** Returns the degree of the node at index <tt>v</tt> */
+    /**
+     * REIMPLEMENTED WITH:
+     *  -org.jgrapht.graph.SimpleGraph.degreeOf(V vertex)
+     *
+     * @deprecated
+     * parameter changes from int to V
+     *
+     * Returns the degree of the node at index <tt>v</tt> */
     public int degree(int v){
         if(v<0 || v>=cnt) return -1; // illegal argument
         int i,n=0;
@@ -171,7 +178,14 @@ public class Graph extends SmallGraph{
         return n;
     }
 
-    /** Returns the degree of the node at index <tt>v</tt> in the subgraph
+    /**
+     * REIMPLEMENTED WITH:
+     *  -org.jgrapht.graph.UndirectedSubgraph
+     *
+     * @deprecated
+     * parameter changes from int to V
+     *
+     * Returns the degree of the node at index <tt>v</tt> in the subgraph
      * induced by <tt>mask<tt>*/
     public int degree(int v, boolean mask[]){
         if(v<0 || v>=cnt || ! mask[v]) return -1; // illegal argument
