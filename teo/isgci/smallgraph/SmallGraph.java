@@ -10,12 +10,15 @@
 
 package teo.isgci.smallgraph;
 
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.SimpleGraph;
+
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public abstract class SmallGraph{
+public abstract class SmallGraph extends SimpleGraph {
     
     /** List of names, the first is the prime, the others are aliases */
     protected List<String> names;
@@ -31,7 +34,8 @@ public abstract class SmallGraph{
     protected Vector< Vector<SmallGraph> > induced;
     
     /** Creates a new empty SmallGraph */
-    public SmallGraph(){
+    public SmallGraph() {
+        super(DefaultEdge.class);
         names = null;
         link = null;
         complement = null;
@@ -174,9 +178,6 @@ public abstract class SmallGraph{
         
         return c;
     }
-    
-    /* Ugly hack */
-    public void addEdge(int a, int b){}
 }
     
 /* EOF */
