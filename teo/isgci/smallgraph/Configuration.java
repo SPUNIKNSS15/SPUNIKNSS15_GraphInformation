@@ -10,6 +10,10 @@
 
 package teo.isgci.smallgraph;
 
+import org.jgrapht.alg.VertexCovers;
+
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 
 public class Configuration extends SmallGraph{
@@ -73,6 +77,20 @@ public class Configuration extends SmallGraph{
     public Configuration(Configuration c, boolean mask[]){
         super();
 
+        initWithMaskedConfiguration(c, mask);
+    }
+
+    public Configuration(Configuration c, Set<Integer> includedNodes) {
+        boolean[] mask = new boolean[c.cnt];
+
+        for (int v : includedNodes) {
+            mask[v] = true;
+        }
+
+        initWithMaskedConfiguration(c, mask);
+    }
+
+    private void initWithMaskedConfiguration(Configuration c, boolean mask[]) {
         int i;
 
         cnt = 0;
@@ -606,7 +624,7 @@ public class Configuration extends SmallGraph{
 
         /* /g/ hat zwei Knoten */
         if (g.countNodes() == 2) {
-            if (g.degree(0) == 1) {
+            if (g.degreeOf(0) == 1) {
                 /* /g/ ist ein K2 */
                 for (i = 0; i < cnt - 1; i++)
                     for (j = i + 1; j < cnt; j++)
@@ -657,7 +675,7 @@ public class Configuration extends SmallGraph{
 
             for (i = 0; i < rumpf.getComponents(); i++) {
                 Configuration c =
-                        new Configuration(this, rumpf.getComponents(i));
+                        new Configuration(this, rumpf.getComponent(i));
 
                 if (c.isInducedSubgraph(g))
                     return true;
@@ -677,12 +695,15 @@ public class Configuration extends SmallGraph{
                     if (matrix[i][j] == OPTEDGE)
                         h.addEdge(i,j);
 
-            boolean maske[] = h.getVertexCover();
+            Set<Integer> vertexCover = VertexCovers.findGreedyCover(h);
+            Set<Integer> invertedCover = new HashSet<>();
+            for (int candidate = 0; candidate < cnt; candidate++) {
+                if ( !vertexCover.contains(candidate) ) {
+                    invertedCover.add(candidate);
+                }
+            }
 
-            for (i = 0; i < cnt; i++)
-                maske[i] = ! maske[i];
-
-            Configuration c = new Configuration(this, maske);
+            Configuration c = new Configuration(this, invertedCover);
 
             if (c.isInducedSubgraph(g))
                 return true;

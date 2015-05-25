@@ -308,7 +308,7 @@ public class FindISG{
         g2=null; // must be initialized due to javac
         for(i=0;i<cnt;i++){
             g1=new Graph(graph);
-            g1.delNode(i);
+            g1.removeVertex(i);
             found=false;
             for(j=candidate.size()-1;j>=0;j--){
                 g2=(Graph)candidate.elementAt(j);

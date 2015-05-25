@@ -18,7 +18,7 @@ public class SimpleISGCIGraph extends SimpleGraph<Integer,DefaultEdge> {
 
         for(int i = 1; i<graph.countNodes(); i++) {
             for (int j = 0; j < i; j++) {
-                if (graph.getEdge(i,j)) {
+                if (graph.getEdge(i,j) != null) {
                     this.addEdge(i,j);
                 }
             }

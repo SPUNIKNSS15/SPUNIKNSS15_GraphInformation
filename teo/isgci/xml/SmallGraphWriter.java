@@ -100,7 +100,7 @@ public class SmallGraphWriter {
         String edge = new String();
         for (int i=0; i<gr.countNodes(); i++)
             for (int j=i+1; j<gr.countNodes(); j++)
-                if (gr.getEdge(i,j))
+                if (gr.getEdge(i,j) != null)
                     edge+=(indent+"      "+i+" - "+j+";\n");
         writer.characters(edge+"   "+indent);
         writer.endElement(SmallGraphTags.EDGES);

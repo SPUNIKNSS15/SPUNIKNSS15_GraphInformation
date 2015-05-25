@@ -11,14 +11,14 @@
 package teo.isgci.smallgraph;
 
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.graph.ListenableUndirectedGraph;
 
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public abstract class SmallGraph extends SimpleGraph {
+public abstract class SmallGraph extends ListenableUndirectedGraph<Integer, DefaultEdge> {
     
     /** List of names, the first is the prime, the others are aliases */
     protected List<String> names;
