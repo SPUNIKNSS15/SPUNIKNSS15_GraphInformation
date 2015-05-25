@@ -145,7 +145,7 @@ public class HMTGrammar{
         /* Add edges from y */
         for (p = 0; p < y.countNodes()-1; p++)
             for (q = p+1; q < y.countNodes(); q++)
-                if (y.getEdge(p, q))
+                if (y.getEdge(p, q) != null)
                     z.addEdge(f[p], f[q]);
 
         /* Make attachment */
