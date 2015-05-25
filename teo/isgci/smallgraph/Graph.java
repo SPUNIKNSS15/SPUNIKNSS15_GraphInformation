@@ -15,7 +15,8 @@ import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.experimental.subgraphisomorphism.VF2SubgraphIsomorphismInspector;
 import org.jgrapht.graph.DefaultEdge;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Graph extends SmallGraph {
@@ -54,8 +55,7 @@ public class Graph extends SmallGraph {
     public void addNodesCount(int n) {
         is_bottom = false;
 
-        /* clear this */
-        this.removeAllVertices(this.vertexSet());
+        clear();
 
         /* fill it with n nodes */
         for(int i=0; i<n; i++) {
@@ -72,32 +72,61 @@ public class Graph extends SmallGraph {
             return;
         }
 
-        /* clear this */
-        this.removeAllVertices(this.vertexSet());
+        clear();
 
-        /* add all edges and vertices gs to this */
         Graphs.addGraph(this, gs);
-        
+
+        /* add all edges and vertices gs to this *//*
+        this.addNodesCount(gs.vertexSet().size());
+
+        for (int from : gs.vertexSet()) {
+            for (int to : gs.vertexSet()) {
+                if (gs.getEdge(from, to) != null) {
+                    this.addEdge(from, to);
+                }
+            }
+        }*/
     }
 
     public void copyFromComplement() {
         super.copyFromComplement();
 
         /* clear this */
-        this.removeAllVertices(this.vertexSet());
+        clear();
 
         /* Then rebuild from complement. */
-        for (int v : complement.vertexSet()) {
-            this.addVertex(v);
-        }
+        Graphs.addAllVertices(this, complement.vertexSet());
+
+        /*for(int i = 1; i<complement.vertexSet().size(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (complement.getEdge(i,j) == null) {
+                    this.addEdge(i,j);
+                }
+            }
+        }*/
+
         for(int from : complement.vertexSet()) {
             for (int to : complement.vertexSet()) {
-                /* cast to graph to be sure, that we use the correct method */
-                if ( ((Graph)complement).getEdge(from, to) != null ) {
+                if ( from != to && complement.getEdge(from, to) == null ) {
                     this.addEdge(from, to);
                 }
             }
         }
+    }
+
+    private void clear() {
+        /*
+        for (int i = 0; i < this.vertexSet().size(); i++) {
+            this.removeVertex(0);
+        }
+        */
+
+        this.removeAllVertices(new ArrayList<>(this.vertexSet()));
+
+        if (edgeSet().size() != 0 || vertexSet().size() != 0) {
+            System.out.println("Graph was not empty after clear. It has " + edgeSet().size() + " edges and " + vertexSet().size() + " nodes.");
+        }
+
     }
 
     public boolean getBottom(){
@@ -140,27 +169,26 @@ public class Graph extends SmallGraph {
         this.addVertex(this.vertexSet().size());
     }
 
-    @Override
+    /*@Override
     public boolean removeVertex(Integer vertexToDelete) {
-        
-        /* delete last vertex -> no shifting required */
+
+        *//* delete last vertex -> no shifting required *//*
         if (vertexToDelete == this.vertexSet().size() - 1) {
             return super.removeVertex(vertexToDelete);
         }
-        
-        /* delete vertex in between -> replace vertexToDelete with biggest vertex */
-        this.removeAllEdges(this.edgesOf(vertexToDelete));
+        *//* delete vertex in between -> replace vertexToDelete with biggest vertex *//*
+        this.removeAllEdges(new ArrayList<DefaultEdge>(this.edgesOf(vertexToDelete)));
         
         int biggest = this.vertexSet().size() - 1;
         
-        /* move edges of biggest vertex to gap and remove biggest then */
+        *//* move edges of biggest vertex to gap and remove biggest then *//*
         for (int v : this.vertexSet()) {
             if (this.getEdge(biggest, v) != null) {
                 this.addEdge(vertexToDelete, v);
             }
         }
         return super.removeVertex(biggest);
-    }
+    }*/
     
     // --------------------------------------------------------------
     public boolean isIsomorphic(Graph g){
@@ -172,7 +200,7 @@ public class Graph extends SmallGraph {
         }
 
         /* check if number of nodes and edges are equal */
-        if( !( this.vertexSet().size() == g.vertexSet().size() && this.edgeSet().size() == g.edgeSet().size() ) ) {
+        if( this.vertexSet().size() != g.vertexSet().size() || this.edgeSet().size() != g.edgeSet().size() ) {
             return false;
         }
 
