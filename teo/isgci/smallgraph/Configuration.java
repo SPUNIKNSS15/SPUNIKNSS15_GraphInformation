@@ -277,24 +277,6 @@ public class Configuration extends SmallGraph{
         this.addInduced(innerVec);
     }
 
-
-    /* Helpfunction for getGraphs() */
-    private int getSmallerNumber(int num, Vector T, int len){
-        for (int i = 0; i < T.size(); i++) {
-            int trafo[] = (int []) T.elementAt(i);
-
-            int zahl = 0;
-            for (int j = 0; j < len; j++)
-                if ((num & (1 << j)) != 0)
-                    zahl |= (1 << trafo[j]);
-
-            if (zahl < num)
-                return zahl;
-        }
-
-        return num;
-    }
-
     public Vector<Graph> getGraphs(){
         return getGraphs(100);
     }
@@ -305,7 +287,7 @@ public class Configuration extends SmallGraph{
         final int maxOptEdges = 30;
 
         int optEdges[][] = new int[maxOptEdges][2];// x=[][0], y=[][1]
-        int i, j, cntOpt = 0, power2n;
+        int i, j, cntOpt = 0, allOptionalEdges;
         Vector<Graph> confGraphs = new Vector<Graph>();
 
         long ta = 0, te;
@@ -343,22 +325,12 @@ public class Configuration extends SmallGraph{
         if (cntOpt > 1) {
             Vector automorph = getAutomorphisms();
 
-            if (DEBUG)
-                System.out.print("  Automorphismen: "+ automorph.size() +"\n");
-
             for (i = 0; i < automorph.size(); i++) {
                 int p[] = (int []) automorph.elementAt(i);
 
                 int trafo[] = new int[cntOpt];
 
-                if (DEBUG) {
-                    System.out.print("    (");
-                    for (j = 0; j < cnt; j++)
-                        System.out.print(" " + p[j] + " ");
-                    System.out.print(")  ---> ");
-                }
-
-loop:           for (j=0; j < cntOpt; j++) {
+                loop: for (j=0; j < cntOpt; j++) {
                     int x_a = optEdges[j][0];
                     int y_a = optEdges[j][1];
                     int x_b = p[x_a];
@@ -380,44 +352,22 @@ loop:           for (j=0; j < cntOpt; j++) {
 
                 /* Die Permutation /trafo/ noch invertieren */
                 int transformation[] = new int [cntOpt];
-                for (j = 0; j < cntOpt; j++)
+                for (j = 0; j < cntOpt; j++) {
                     transformation[trafo[j]] = j;
-
-                if (DEBUG){
-                    System.out.print("Trafo:  (");
-                    for (j=0; j < cntOpt; j++)
-                        System.out.print(" " + transformation[j] + " ");
-                    System.out.print(")");
                 }
 
                 /* alle außer identische Trafo zu /Transforamtionen/
                  * hinzufügen */
-                for (j = 0; j < cntOpt; j++)
+                for (j = 0; j < cntOpt; j++) {
                     if (transformation[j] != j) {
                         Transformationen.addElement(transformation);
-
-                        if (DEBUG)
-                            System.out.print(" X");
-
                         break;
                     }
-
-                if (DEBUG)
-                        System.out.print("\n");
+                }
             }
         }        /* if (cntOpt > 1) */
 
-        if (DEBUG)
-            System.out.print("  Kantenabbildungen: "
-                            + Transformationen.size() + "\n");
-
-
-        if (DEBUG) {
-            te = System.currentTimeMillis();
-            System.out.print("  Zeit bisher: " + (te - ta)/10 + "ms\n");
-        }
-
-        power2n = 1 << cntOpt;
+        allOptionalEdges = 1 << cntOpt;
 
         // Creating a graph with edges equal to edges of Configuration
         Graph vorlage = new Graph(cnt);
@@ -429,17 +379,33 @@ loop:           for (j=0; j < cntOpt; j++) {
         int zaehler = 0;
 
         /* jetzt Repräsentanten erzeugen */
-loop:   for (i=0; i < power2n; i++) {
-            /* Isomorph zu bereits erzeugten Repräsentantnen? */
-            if (getSmallerNumber(i, Transformationen, cntOpt) < i)
-                continue loop;
+        loop: for (int optionalMask=0; optionalMask < allOptionalEdges; optionalMask++) {
+
+            int permutatedBitmask;
+
+            /* getSmallerNumber */
+            for (int z = 0; z < Transformationen.size(); z++) {
+                int permutation[] = (int []) Transformationen.elementAt(z);
+
+                permutatedBitmask = 0;
+                for (int bitPosition = 0; bitPosition < cntOpt; bitPosition++) {
+                    if ((optionalMask & (1 << bitPosition)) != 0) {
+                        permutatedBitmask |= (1 << permutation[bitPosition]);
+                    }
+                }
+
+                /* Isomorph zu bereits erzeugten Repräsentantnen? */
+                if (permutatedBitmask < optionalMask) {
+                    continue loop;
+                }
+            }
 
             zaehler++;
 
             /* neuen Repräsentanten konstruieren */
             Graph rep = new Graph(vorlage);
             for (j = cntOpt - 1; j >= 0; j--)
-                if ((i & (1 << j)) != 0)
+                if ((optionalMask & (1 << j)) != 0)
                     rep.addEdge(optEdges[j][0], optEdges[j][1]);
 
             /* ueberpruefen, ob neuer Repraesentant isomorph zu bereits in
@@ -459,23 +425,8 @@ loop:   for (i=0; i < power2n; i++) {
                break;*/
 
                 /* zuviele, leere Liste zurückliefern */
-
-                if (DEBUG) {
-                    te = System.currentTimeMillis();
-                     System.out.print("  Repräsentanten: >" + maxGraphs
-                                     + " von " + power2n + "\n");
-                     System.out.print("  Zeit: " + (te - ta)/10 + "ms\n\n");
-                }
                 return null;
             }
-        }
-
-
-        if (DEBUG) {
-            te = System.currentTimeMillis();
-            System.out.print("  Repräsentanten: " + confGraphs.size()
-                            + " (" + zaehler + ") von " + power2n + "\n");
-            System.out.print("  Zeit: " + (te - ta)/10 + "ms\n\n");
         }
 
         return confGraphs;

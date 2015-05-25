@@ -166,7 +166,7 @@ public class FindISG{
                 Configuration C = (Configuration) configurations.elementAt(i);
                 Graph g = (Graph) graphs.elementAt(j);
 
-                if (!g.getName().startsWith("USG") && C.isInducedSubgraph(g)) {
+                if (!g.getName().startsWith(USG) && C.isInducedSubgraph(g)) {
 /*                    System.err.print("  XXXX " + g.getName()
                                     + " ist in allen Repräsentanten von "
                                     + C.getName() + " enthalten \n");*/
