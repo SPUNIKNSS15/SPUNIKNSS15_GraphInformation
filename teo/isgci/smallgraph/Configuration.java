@@ -71,16 +71,11 @@ public class Configuration extends SmallGraph{
         c.setComplement(this);
         return c;
     }*/
-    
-    /* Erzeugt eine von /c/ induzierte Konfiguration. Welche Knoten enthalten
-     * sind gibt /mask/ an. */
-    public Configuration(Configuration c, boolean mask[]){
+
+    /* erzeugt eine Konfiguration mit einem Subset der Knoten von c */
+    public Configuration(Configuration c, Set<Integer> includedNodes) {
         super();
 
-        initWithMaskedConfiguration(c, mask);
-    }
-
-    public Configuration(Configuration c, Set<Integer> includedNodes) {
         boolean[] mask = new boolean[c.cnt];
 
         for (int v : includedNodes) {

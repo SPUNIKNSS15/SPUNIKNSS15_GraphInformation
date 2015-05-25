@@ -137,6 +137,8 @@ public class HMTGrammar{
             if ((q = index(y.ext, i)) >= 0)
                 f[i] = x.att[q];
             else {
+                //TODO: node could not be added accidentially (see implementation in Graph.java)
+                //TODO: if we previously deleted not-last node
                 z.addNode();
                 f[i] = p++;
             }
