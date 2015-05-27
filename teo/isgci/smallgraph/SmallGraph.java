@@ -169,8 +169,12 @@ public abstract class SmallGraph extends ListenableUndirectedGraph<Integer, Defa
             }
         }
     }
-    
-    
+
+    @Override
+    public int hashCode() {
+        return this.getName().hashCode() + this.complement.getName().hashCode()*2;
+    }
+
     /** Create and return the complement of this SmallGraph */
     public SmallGraph makeComplement() {
         SmallGraph c = halfComplement();

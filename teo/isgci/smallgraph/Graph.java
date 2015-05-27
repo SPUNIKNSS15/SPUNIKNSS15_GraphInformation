@@ -16,7 +16,6 @@ import org.jgrapht.experimental.subgraphisomorphism.VF2SubgraphIsomorphismInspec
 import org.jgrapht.graph.DefaultEdge;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 
 public class Graph extends SmallGraph {
@@ -75,17 +74,6 @@ public class Graph extends SmallGraph {
         clear();
 
         Graphs.addGraph(this, gs);
-
-        /* add all edges and vertices gs to this *//*
-        this.addNodesCount(gs.vertexSet().size());
-
-        for (int from : gs.vertexSet()) {
-            for (int to : gs.vertexSet()) {
-                if (gs.getEdge(from, to) != null) {
-                    this.addEdge(from, to);
-                }
-            }
-        }*/
     }
 
     public void copyFromComplement() {
@@ -97,14 +85,6 @@ public class Graph extends SmallGraph {
         /* Then rebuild from complement. */
         Graphs.addAllVertices(this, complement.vertexSet());
 
-        /*for(int i = 1; i<complement.vertexSet().size(); i++) {
-            for (int j = 0; j < i; j++) {
-                if (complement.getEdge(i,j) == null) {
-                    this.addEdge(i,j);
-                }
-            }
-        }*/
-
         for(int from : complement.vertexSet()) {
             for (int to : complement.vertexSet()) {
                 if ( from != to && complement.getEdge(from, to) == null ) {
@@ -115,18 +95,7 @@ public class Graph extends SmallGraph {
     }
 
     private void clear() {
-        /*
-        for (int i = 0; i < this.vertexSet().size(); i++) {
-            this.removeVertex(0);
-        }
-        */
-
         this.removeAllVertices(new ArrayList<>(this.vertexSet()));
-
-        if (edgeSet().size() != 0 || vertexSet().size() != 0) {
-            System.out.println("Graph was not empty after clear. It has " + edgeSet().size() + " edges and " + vertexSet().size() + " nodes.");
-        }
-
     }
 
     public boolean getBottom(){
@@ -142,53 +111,11 @@ public class Graph extends SmallGraph {
     public int countEdges(){
         return this.edgeSet().size();
     }
-
-    /**
-     * REIMPLEMENTED WITH:
-     *  -org.jgrapht.graph.UndirectedSubgraph
-     *
-     * @deprecated
-     * parameter changes from int to V
-     *
-     * Returns the degree of the node at index <tt>v</tt> in the subgraph
-     * induced by <tt>mask<tt>*/
-    public int degree(int v, boolean mask[]){
-
-        int degree = 0;
-        /* count edges of activated nodes */
-        for (int toNode : this.vertexSet()) {
-            if (mask[toNode] && this.getEdge(v, toNode) != null) {
-                degree++;
-            }
-        }
-        return degree;
-    }
     
     /** Adds a node to the graph. */
     public void addNode(){
         this.addVertex(this.vertexSet().size());
     }
-
-    /*@Override
-    public boolean removeVertex(Integer vertexToDelete) {
-
-        *//* delete last vertex -> no shifting required *//*
-        if (vertexToDelete == this.vertexSet().size() - 1) {
-            return super.removeVertex(vertexToDelete);
-        }
-        *//* delete vertex in between -> replace vertexToDelete with biggest vertex *//*
-        this.removeAllEdges(new ArrayList<DefaultEdge>(this.edgesOf(vertexToDelete)));
-        
-        int biggest = this.vertexSet().size() - 1;
-        
-        *//* move edges of biggest vertex to gap and remove biggest then *//*
-        for (int v : this.vertexSet()) {
-            if (this.getEdge(biggest, v) != null) {
-                this.addEdge(vertexToDelete, v);
-            }
-        }
-        return super.removeVertex(biggest);
-    }*/
     
     // --------------------------------------------------------------
     public boolean isIsomorphic(Graph g){
@@ -209,22 +136,21 @@ public class Graph extends SmallGraph {
             return false;
         }
 
-        /* after checked for equal edge count, sub-isomorphy is the same as isomorphy */
-        return (new VF2SubgraphIsomorphismInspector<Integer, DefaultEdge>(this, g)).isSubgraphIsomorphic();
+        /* after checked for equal edge count, sub-isomorphism is the same as isomorphism */
+        return new VF2SubgraphIsomorphismInspector<>(this, g).isSubgraphIsomorphic();
     }
 
 
     /* liefert true, wenn g ein von this induzierter Teilgraph ist */
-    public boolean isSubIsomorphic(Graph g){
-        return (new VF2SubgraphIsomorphismInspector<Integer, DefaultEdge>(this, g)).isSubgraphIsomorphic();
+    public boolean isSubIsomorphic(Graph g) {
+        return new VF2SubgraphIsomorphismInspector<>(this, g).isSubgraphIsomorphic();
     }
 
     public int getComponents(){
         return connectivityInspector.connectedSets().size();
     }
 
-    /* liefert eine Maske zurück, die angibt welche Knoten in der i-ten
-     * Komponente enthalten sind */
+    /* returns the set of nodes in the i-th component */
     public Set<Integer> getComponent(int num){
         return connectivityInspector.connectedSets().get(num);
     }

@@ -63,14 +63,11 @@ public class Configuration extends SmallGraph{
             contains = newContains;
         }
     }
-    
-    /*public SmallGraph makeComplement() {
-        Configuration c = new Configuration(this);
-        c.complement();
-        setComplement(c);
-        c.setComplement(this);
-        return c;
-    }*/
+
+    public Configuration(Configuration c, boolean mask[]){
+        super();
+        this.initWithMaskedConfiguration(c, mask);
+    }
 
     /* erzeugt eine Konfiguration mit einem Subset der Knoten von c */
     public Configuration(Configuration c, Set<Integer> includedNodes) {
@@ -338,11 +335,20 @@ public class Configuration extends SmallGraph{
         if (cntOpt > 1) {
             Vector automorph = getAutomorphisms();
 
+            if (DEBUG)
+                System.out.print("  Automorphismen: "+ automorph.size() +"\n");
+
             for (i = 0; i < automorph.size(); i++) {
                 int p[] = (int []) automorph.elementAt(i);
 
                 int trafo[] = new int[cntOpt];
 
+                if (DEBUG) {
+                    System.out.print("    (");
+                    for (j = 0; j < cnt; j++)
+                        System.out.print(" " + p[j] + " ");
+                    System.out.print(")  ---> ");
+                }
                 loop: for (j=0; j < cntOpt; j++) {
                     int x_a = optEdges[j][0];
                     int y_a = optEdges[j][1];
@@ -369,17 +375,35 @@ public class Configuration extends SmallGraph{
                     transformation[trafo[j]] = j;
                 }
 
+                if (DEBUG) {
+                    System.out.print("Trafo:  (");
+                    for (j = 0; j < cntOpt; j++)
+                        System.out.print(" " + transformation[j] + " ");
+                    System.out.print(")");
+                }
+
                 /* alle außer identische Trafo zu /Transforamtionen/
                  * hinzufügen */
                 for (j = 0; j < cntOpt; j++) {
                     if (transformation[j] != j) {
                         Transformationen.addElement(transformation);
+                        if (DEBUG)
+                            System.out.print(" X");
                         break;
                     }
                 }
             }
         }        /* if (cntOpt > 1) */
 
+        if (DEBUG)
+            System.out.print("  Kantenabbildungen: "
+                            + Transformationen.size() + "\n");
+
+
+        if (DEBUG) {
+            te = System.currentTimeMillis();
+            System.out.print("  Zeit bisher: " + (te - ta)/10 + "ms\n");
+        }
         allOptionalEdges = 1 << cntOpt;
 
         // Creating a graph with edges equal to edges of Configuration
@@ -438,10 +462,22 @@ public class Configuration extends SmallGraph{
                break;*/
 
                 /* zuviele, leere Liste zurückliefern */
+                if (DEBUG) {
+                    te = System.currentTimeMillis();
+                     System.out.print("  Repräsentanten: >" + maxGraphs
+                                     + " von " + allOptionalEdges + "\n");
+                     System.out.print("  Zeit: " + (te - ta)/10 + "ms\n\n");
+                }
                 return null;
             }
         }
 
+        if (DEBUG) {
+            te = System.currentTimeMillis();
+            System.out.print("  Repräsentanten: " + confGraphs.size()
+                            + " (" + zaehler + ") von " + allOptionalEdges + "\n");
+            System.out.print("  Zeit: " + (te - ta)/10 + "ms\n\n");
+        }
         return confGraphs;
     }
 
