@@ -14,36 +14,31 @@ import java.util.*;
 import java.net.URL;
 import java.io.*;
 
-import org.jgrapht.experimental.subgraphisomorphism.VF2SubgraphIsomorphismInspector;
-import org.xml.sax.XMLReader;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.*;
 import gnu.getopt.Getopt;
 import teo.isgci.grapht.GAlg;
-import teo.isgci.smallgraphstransition.SimpleISGCIGraph;
 import teo.isgci.xml.*;
 import teo.isgci.smallgraph.*;
-import teo.isgci.util.Itera;
 
 public class FindISG{
-    
+
     private static Vector graphs, families, configurations, grammars;
     private static Hashtable results;
     private static SimpleDirectedGraph<Graph,DefaultEdge> resultGraph;
-    
+
     private static int usg; // Running number for unknown subgraphs
     //private static Annotation<Graph> graphAnn; // Graph in resultGraph
     private static int minCnt=4; // Minimum number of nodes in small graphs
     private static int maxCnt=0; // The largest size of graphs given in the
                                  // beginning
     private static final String USG="USG", ISG="ISG";
-    
+
     static final String XMLDECL =
         "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n" +
         "<!DOCTYPE SMALLGRAPHS SYSTEM \"smallgraphs.dtd\">\n";
-    
+
     private static boolean noComplements = false;  // Don't handle complements
 
     private static int verbose = 0;
@@ -54,7 +49,7 @@ public class FindISG{
 
         long t1,t2,ts=0;
         int c;
-        
+
         graphs = new Vector();
         families = new Vector();
         configurations = new Vector();
@@ -93,7 +88,7 @@ public class FindISG{
         String outxml = args[opts.getOptind()+1];
 
         if (verbose != 0)
-            System.out.print("Lese " + inxml + " ein");
+            System.out.println("Lese " + inxml + " ein");
 
         t1=System.currentTimeMillis();
         try{
@@ -139,7 +134,7 @@ public class FindISG{
             System.out.println("Determine subgraphs of " + ((Graph)graphs.elementAt(i)).getName());
             getSubs((Graph) graphs.elementAt(i));
         }
-        
+
         t2=System.currentTimeMillis();
 
         if (verbose != 0) {
@@ -264,7 +259,7 @@ public class FindISG{
         }
     }
 
-    
+
     /** Creates a new XML file */
     public static void makeNewXMLFile(String outFile)
                 throws IOException, SAXException{
@@ -272,7 +267,7 @@ public class FindISG{
         sgw.writeSmallGraphs(XMLDECL, graphs, grammars, families,
                 configurations, resultGraph);
     }
-   
+
 
     /**
      * Create a list of direct subgraphs for each graph and check
@@ -297,7 +292,7 @@ public class FindISG{
         results.put(graph,result);
     }
 
-    
+
     /**
      * Reads the graphs from XML format (their names, nodes, edges and aliases
      * and links, if there are any).
@@ -466,7 +461,7 @@ public class FindISG{
             if (curCnt < minCnt)
                 minCnt = curCnt;
         }
-        
+
         for (i=0; i<families.size(); i++) {
             if (families.elementAt(i) instanceof HMTFamily) {
                 if (((HMTFamily) families.elementAt(i)).getGrammar() != null) {
@@ -505,7 +500,7 @@ public class FindISG{
                 }
             }
         }
-        
+
         // Completing information about ComplementFamilies which are complement
         // to HMTFamilies with HMT-grammars
         for (i=0; i<families.size(); i++) {
@@ -513,7 +508,7 @@ public class FindISG{
                     !((Family)families.elementAt(i)).isPrimary()) {
                 HMTFamily fcomp = (HMTFamily)families.elementAt(i);
                 HMTFamily fhmt = (HMTFamily)fcomp.getComplement();
-                
+
                 //fcomp.smallmembers = new Graph[fhmt.smallmembers.length];
                 Vector smMem = fhmt.getSmallmembers();
                 Vector compSmMem = new Vector();
@@ -527,7 +522,7 @@ public class FindISG{
 
         System.out.println("checked Families");
     }
-    
+
     private static void addUSG(Graph g, Vector graphs, String type){
         usg++;
         g.addName(type+usg);
@@ -542,7 +537,7 @@ public class FindISG{
     private static int n2n(Object graph){
         return graph==null ? -1 : ((Graph)graph).countNodes();
     }
-    
+
     /** Sorts graphs by their number of nodes */
     private static void sortNum(Vector vec, int left, int right) {
         Object y;
@@ -581,7 +576,7 @@ public class FindISG{
         // Creating a Node for every graph
         for (int i=0; i<graphs.size(); i++)
             resultGraph.addVertex((Graph) graphs.elementAt(i));
-        
+
         // Creating Edges from graphs to their induced subgraphs
         for (Graph v : resultGraph.vertexSet()) {
             Vector<Graph>subs = (Vector<Graph>) results.get(v);
@@ -590,9 +585,9 @@ public class FindISG{
             for (Graph vSub: subs)
                 resultGraph.addEdge(v, vSub);
         }
-        
+
         GAlg.transitiveClosure(resultGraph);
-        
+
         // Removing Nodes of graphs with "USG" in the name
         ArrayList<Graph> remove = new ArrayList<Graph>();
         for (Graph v : resultGraph.vertexSet()) {
@@ -600,7 +595,7 @@ public class FindISG{
                 remove.add(v);
         }
         resultGraph.removeAllVertices(remove);
-        
+
         GAlg.transitiveReduction(resultGraph);
     }
 
@@ -622,16 +617,17 @@ public class FindISG{
         Vector bigSmallmemb = new Vector();
 
         /* iterate over all families in this.families */
-        for (int i=0; i<families.size(); i++)
-            if (families.elementAt(i) instanceof HMTFamily)
-                if (((HMTFamily)families.elementAt(i)).getGrammar() != null) {
-                    HMTFamily fhmt = (HMTFamily)families.elementAt(i);
-                    HMTFamily fcomp = (HMTFamily)fhmt.getComplement();
+        for (int i=0; i<families.size(); i++) {
+            if (families.elementAt(i) instanceof HMTFamily) {
+                if (((HMTFamily) families.elementAt(i)).getGrammar() != null) {
+                    HMTFamily fhmt = (HMTFamily) families.elementAt(i);
+                    HMTFamily fcomp = (HMTFamily) fhmt.getComplement();
                     Vector smMem = fhmt.getSmallmembers();
                     Vector compSmMem = new Vector();
 
                     //iterate over all of the families small members...
-                    contBig: for (int j=0; j<smMem.size(); j++) {
+                    contBig:
+                    for (int j = 0; j < smMem.size(); j++) {
 
                         if (((Graph) smMem.elementAt(j)).countNodes() > maxCnt) {
 
@@ -675,8 +671,11 @@ public class FindISG{
                         }
                     }
 
-                    ((HMTFamily)fcomp).setSmallmembers(compSmMem);
+                    ((HMTFamily) fcomp).setSmallmembers(compSmMem);
                 }
+            }
+        }
+
 
 
         ArrayList<Graph> topo = new ArrayList<Graph>();
@@ -701,6 +700,7 @@ public class FindISG{
         topological order is provided by jgrapht
          */
         for (int i=0; i<bigSmallmemb.size(); i++) {
+            System.out.println("wire up " + v.getName() + " in resultgraph");
             Graph bigGr = (Graph)bigSmallmemb.elementAt(i);
             resultGraph.addVertex(bigGr);
 
