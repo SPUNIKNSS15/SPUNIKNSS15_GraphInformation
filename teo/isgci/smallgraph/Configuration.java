@@ -10,12 +10,20 @@
 
 package teo.isgci.smallgraph;
 
-import org.jgrapht.alg.VertexCovers;
-
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Vector;
 
+/**
+ * A Configuration consists of a base graph and a set
+ * of optional edges (OPTEDGE). All graphs which can be built by
+ * adding arbitrary subsets of those edges to the base graph
+ * are part of the Configuration.
+ *
+ * Alternatively, a set of forbidden edges (NONEDGES) can
+ * be specified, which are the complement of the optional edges.
+ *
+ * Be careful not to mix both approaches, as no validity checks
+ * are made.
+ */
 public class Configuration extends SmallGraph{
     private int matrix[][];
     private int cnt;  // number of nodes in Configuration
@@ -25,13 +33,20 @@ public class Configuration extends SmallGraph{
     final static int OPTEDGE = 0;
     final static int UNKNOWN = 2;   /* XXX was soll das? */
 
-    /** Graphs contained in Configuration */
+    /* Graphs contained in Configuration */
     private Vector<SmallGraph> contains;
-    
+
+    /**
+     * Empty Configuration.
+     */
     public Configuration(){
         this(0);
     }
-    
+
+    /**
+     * Configuration with <tt>n</tt> nodes and no edges.
+     * @param n number of nodes for initialization
+     */
     public Configuration(int n){
         super();
         contains = null;
@@ -39,6 +54,10 @@ public class Configuration extends SmallGraph{
     }
     
 
+
+    /**
+     * TODO: comment this
+     */
     public void copyFromComplement() {
         int i, j;
 
@@ -63,26 +82,28 @@ public class Configuration extends SmallGraph{
             contains = newContains;
         }
     }
+    
+    /*public SmallGraph makeComplement() {
+        Configuration c = new Configuration(this);
+        c.complement();
+        setComplement(c);
+        c.setComplement(this);
+        return c;
+    }*/
 
+    /**
+     * Creates a new Configuration, which is 'induced' by c.
+     * This means copying all nodes which are specified by
+     * the bitmask <tt>mask</tt> and adding all edges between those
+     * nodes which exist in <tt>c</tt>.
+     *
+     *
+     * @param c Configuration which shall induce this
+     * @param mask determines which nodes should be taken over
+     */
     public Configuration(Configuration c, boolean mask[]){
         super();
-        this.initWithMaskedConfiguration(c, mask);
-    }
 
-    /* erzeugt eine Konfiguration mit einem Subset der Knoten von c */
-    public Configuration(Configuration c, Set<Integer> includedNodes) {
-        super();
-
-        boolean[] mask = new boolean[c.cnt];
-
-        for (int v : includedNodes) {
-            mask[v] = true;
-        }
-
-        initWithMaskedConfiguration(c, mask);
-    }
-
-    private void initWithMaskedConfiguration(Configuration c, boolean mask[]) {
         int i;
 
         cnt = 0;
@@ -117,6 +138,12 @@ public class Configuration extends SmallGraph{
         link = null;
     }
 
+    /**
+     * Initialize with n nodes and reset the internal state.
+     * Resets all edges to UNKNOWN.
+     *
+     * @param n number of nodes for initialization
+     */
     public void addNodesCount(int n){
         cnt = n;
         matrix = new int[cnt][cnt];
@@ -125,8 +152,10 @@ public class Configuration extends SmallGraph{
                 matrix[i][j] = i==j ? NONEDGE : UNKNOWN;
         contains = null;
     }
-    
-    /** Counts the nodes in this Configuration. */
+
+    /**
+     * @return the number of nodes in the Configuration
+     */
     public int countNodes(){
         return cnt;
     }
@@ -156,13 +185,24 @@ public class Configuration extends SmallGraph{
         matrix[a][b] = type;
         matrix[b][a] = type;
     }
-    
-    /** Adds an edge to Configuration */
+
+    /**
+     * Adds a new edge to the base graph, from
+     * <tt>a</tt> to <tt>b</tt>.
+     *
+     * @param a first node of the edge
+     * @param b second node of the edge
+     */
     public void addEdge(int a, int b){
         addEdge(a, b, EDGE);
     }
-    
-    /** Adds an nonedge to Configuration */
+
+    /**
+     * Adds a new forbidden edge.
+     *
+     * @param a first node of the edge
+     * @param b second node of the edge
+     */
     public void addNonedge(int a, int b){
         addEdge(a, b, NONEDGE);
     }
@@ -287,6 +327,27 @@ public class Configuration extends SmallGraph{
         this.addInduced(innerVec);
     }
 
+
+    /* Helpfunction for getGraphs() */
+    private int getSmallerNumber(int num, Vector T, int len){
+        for (int i = 0; i < T.size(); i++) {
+            int trafo[] = (int []) T.elementAt(i);
+
+            int zahl = 0;
+            for (int j = 0; j < len; j++)
+                if ((num & (1 << j)) != 0)
+                    zahl |= (1 << trafo[j]);
+
+            if (zahl < num)
+                return zahl;
+        }
+
+        return num;
+    }
+
+    /**
+     * @return the first 100 graphs in the Configuration
+     */
     public Vector<Graph> getGraphs(){
         return getGraphs(100);
     }
@@ -387,8 +448,10 @@ public class Configuration extends SmallGraph{
                 for (j = 0; j < cntOpt; j++) {
                     if (transformation[j] != j) {
                         Transformationen.addElement(transformation);
+
                         if (DEBUG)
                             System.out.print(" X");
+
                         break;
                     }
                 }
@@ -462,6 +525,7 @@ public class Configuration extends SmallGraph{
                break;*/
 
                 /* zuviele, leere Liste zurückliefern */
+
                 if (DEBUG) {
                     te = System.currentTimeMillis();
                      System.out.print("  Repräsentanten: >" + maxGraphs
@@ -472,12 +536,14 @@ public class Configuration extends SmallGraph{
             }
         }
 
+
         if (DEBUG) {
             te = System.currentTimeMillis();
             System.out.print("  Repräsentanten: " + confGraphs.size()
                             + " (" + zaehler + ") von " + allOptionalEdges + "\n");
             System.out.print("  Zeit: " + (te - ta)/10 + "ms\n\n");
         }
+
         return confGraphs;
     }
 
@@ -706,7 +772,7 @@ public class Configuration extends SmallGraph{
 
             for (i = 0; i < rumpf.getComponents(); i++) {
                 Configuration c =
-                        new Configuration(this, rumpf.getComponent(i));
+                        new Configuration(this, rumpf.getComponents(i));
 
                 if (c.isInducedSubgraph(g))
                     return true;
