@@ -381,6 +381,14 @@ public class Configuration extends SmallGraph{
         return s;
     }
 
+    /**
+     * Adds <tt>g</tt> to the internal list of induced subgraphs.
+     *
+     * @param g the induced subgraph to be added
+     *
+     * TODO:
+     *          - why not private?
+     */
     public void addInduced(Graph g){
         Vector<SmallGraph> innerVec = new Vector<SmallGraph>();
         innerVec.addElement(g);
@@ -406,14 +414,23 @@ public class Configuration extends SmallGraph{
     }
 
     /**
-     * @return the first 100 graphs in the Configuration
+     * @return the first 100 graphs of the Configuration
      */
     public Vector<Graph> getGraphs(){
         return getGraphs(100);
     }
 
-    /** Calculates Graphs from contains of Configuration */
-    public Vector<Graph> getGraphs(int maxGraphs){
+    /**
+     * Returns a list containing the first <tt>maxGraphs</tt>
+     * graphs of the Configuration.
+     *
+     * @param maxGraphs
+     * @return a Vector containing the graphs
+     *
+     * TODO:
+     *   - why Vector and not ArrayList ?
+     */
+    public Vector<Graph> getGraphs(int maxGraphs) {
         final boolean DEBUG = false; /* auf true setzen für Debug-Ausgaben */
         final int maxOptEdges = 30;
 
@@ -607,6 +624,10 @@ public class Configuration extends SmallGraph{
         return confGraphs;
     }
 
+    /**
+     * TODO: comment this
+     * @return
+     */
     public Vector getAutomorphisms(){
         final boolean DEBUG = false;
 
@@ -761,9 +782,14 @@ public class Configuration extends SmallGraph{
         return true;
     }
 
-    /* Wenn /true/ ist /g/ in allen Repräsentanten der Konfiguration enthalten.
-     * Wenn /false/ ist dies entweder nicht der Fall, oder es konnte mit den
-     * hier verwendeten einfachen Tests nicht ermittelt werden */
+    /**
+     * Checks if g is an induced subgraph of the Configuration,
+     * which means that all representative graphs of the Configuration
+     * must induce g.
+     *
+     * @param g Graph to be checked
+     * @return true, i
+     */
     public boolean isInducedSubgraph(Graph g){
         /* check if /g/ is nonempty and not the bottom-graph */
         if (g == null || g.countNodes() == 0 || g.getBottom())
@@ -871,10 +897,14 @@ public class Configuration extends SmallGraph{
 
     /**
      * Checks whether the matrices of <tt>this</tt> and <tt>c</tt>
-     * are equal if the nodes of <tt>c</tt> are reordered
+     * are equal, if the nodes of <tt>c</tt> are reordered
      * according to the permutation given by <tt>perm</tt>.
-     * If the result is true, <tt>perm</tt> contains a mapping
-     * that is needed for isomorphism (by definition).
+     *
+     * @param c the Configuration to be matched
+     * @param perm the permutation used for matching
+     * @return true, if <tt>perm</tt> reorders the nodes of c
+     *   such that the matrices of <tt>this</tt> and <tt>c</tt> are equal,
+     *   false otherwise.
      */
     private boolean check(Configuration c, int perm[]){
         // this.cnt==g.cnt is checked before
