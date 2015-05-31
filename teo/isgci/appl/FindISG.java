@@ -700,8 +700,8 @@ public class FindISG{
         topological order is provided by jgrapht
          */
         for (int i=0; i<bigSmallmemb.size(); i++) {
-            System.out.println("wire up " + v.getName() + " in resultgraph");
             Graph bigGr = (Graph)bigSmallmemb.elementAt(i);
+            System.out.println("wire up " + bigGr.getName() + " in resultgraph");
             resultGraph.addVertex(bigGr);
 
             for (Graph v : topo) {

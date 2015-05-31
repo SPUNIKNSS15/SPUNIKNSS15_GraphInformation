@@ -75,8 +75,7 @@ public class SmallGraphReader extends DefaultHandler {
     /** Return the parsed graphsets */
     public Collection<SmallGraph> getGraphs() {
         HashSet<SmallGraph> gs = new HashSet<SmallGraph>(graphs.values());
-        return Collections.unmodifiableSet(
-                new HashSet<SmallGraph>(graphs.values()));
+        return Collections.unmodifiableSet(gs);
     }
 
     
