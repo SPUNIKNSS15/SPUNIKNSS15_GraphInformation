@@ -52,7 +52,6 @@ public class Configuration extends SmallGraph{
         contains = null;
         addNodesCount(n);
     }
-    
 
 
     /**
@@ -396,15 +395,20 @@ public class Configuration extends SmallGraph{
     }
 
 
-    /* Helpfunction for getGraphs() */
+    /* Helpfunction for getGraphs()
+    * TODO: comment this method!
+    * */
     private int getSmallerNumber(int num, Vector T, int len){
         for (int i = 0; i < T.size(); i++) {
             int trafo[] = (int []) T.elementAt(i);
 
             int zahl = 0;
             for (int j = 0; j < len; j++)
-                if ((num & (1 << j)) != 0)
+                // if j-th digit of num == 1
+                if ((num & (1 << j)) != 0) {
+                    // x <- number with trafo[j]-th digit == 1, others 0
                     zahl |= (1 << trafo[j]);
+                }
 
             if (zahl < num)
                 return zahl;
@@ -421,79 +425,64 @@ public class Configuration extends SmallGraph{
     }
 
     /**
-     * Returns a list containing the first <tt>maxGraphs</tt>
-     * graphs of the Configuration.
+     * Returns a list containing all graphs of the
+     * Configuration.
      *
-     * @param maxGraphs
-     * @return a Vector containing the graphs
+     * @param maxGraphs amount of graphs to calculate
+     * @return a Vector containing the graphs or null if
+     *    if more than <tt>maxGraphs</tt> were built
      *
      * TODO:
      *   - why Vector and not ArrayList ?
      */
     public Vector<Graph> getGraphs(int maxGraphs) {
-        final boolean DEBUG = false; /* auf true setzen für Debug-Ausgaben */
+        // because we have signed 32 bit Integers
+        // we restrict our calculations to 30 optional edges
         final int maxOptEdges = 30;
 
-        int optEdges[][] = new int[maxOptEdges][2];// x=[][0], y=[][1]
+        // optEdges contains a representation of all optional edges,
+        // indexed by the occurence in the matrix from left to right,
+        // top down.
+        int optEdges[][] = new int[maxOptEdges][2]; // x=[][0], y=[][1]
         int i, j, cntOpt = 0, allOptionalEdges;
         Vector<Graph> confGraphs = new Vector<Graph>();
 
-        long ta = 0, te;
-
-        if (DEBUG) {
-            System.out.print("Name: " + getName() + "\n");
-            System.out.print("  " + this.toString() + "\n");
-            System.out.print("  Knoten: " + cnt + "\n");
-            ta = System.currentTimeMillis();
-        }
-
+        // fill optEdges array
         for (i=0; i<cnt-1; i++)
             for (j=i+1; j<cnt; j++)
                 if (matrix[i][j] == OPTEDGE) {
                     if (cntOpt == maxOptEdges){
-                        if (DEBUG)
-                            System.out.print("  mehr als " + maxOptEdges
-                                    + " optionale Kanten\n\n");
                         return null;
                     }
                     optEdges[cntOpt][0] = i;
                     optEdges[cntOpt++][1] = j;
                 }
 
-        if (DEBUG) {
-            System.out.print("  optionale Kanten: " + cntOpt + "\n");
-            for (i=0; i < cntOpt; i++)
-                System.out.print("    " + i + ": " + optEdges[i][0]
-                                + " = " + optEdges[i][1] + "\n");
-        }
-
+        // vector to store all automorphisms (except identity)
         Vector Transformationen = new Vector();
 
-        /* es gibt tatsächlich eine Konfiguration ohne optionale Kanten... */
+        // there exist configurations without optional edges...
         if (cntOpt > 1) {
+            // get vector of all permutations which are automorphisms
             Vector automorph = getAutomorphisms();
 
-            if (DEBUG)
-                System.out.print("  Automorphismen: "+ automorph.size() +"\n");
-
+            // iterate over all such permutations p ...
             for (i = 0; i < automorph.size(); i++) {
                 int p[] = (int []) automorph.elementAt(i);
 
+                // trafo stores the respective permutation of the optional edges:
+                // entry trafo[j] = k means, that the current automorphism p
+                // maps an optional edge, namely optEdges[j] == (x, y) to another
+                // optional edge, namely optEdges[k] == (p[x], p[y])
                 int trafo[] = new int[cntOpt];
 
-                if (DEBUG) {
-                    System.out.print("    (");
-                    for (j = 0; j < cnt; j++)
-                        System.out.print(" " + p[j] + " ");
-                    System.out.print(")  ---> ");
-                }
-                loop: for (j=0; j < cntOpt; j++) {
+loop:           for (j=0; j < cntOpt; j++) {
                     int x_a = optEdges[j][0];
                     int y_a = optEdges[j][1];
                     int x_b = p[x_a];
                     int y_b = p[y_a];
 
-                    /* Suche Kante x_b - y_b in optEdges */
+                    // Search the edge (x_b, y_b) in optEdges
                     for (int k = 0; k < cntOpt; k++) {
                         if (optEdges[k][0] == x_b && optEdges[k][1] == y_b
                                 || optEdges[k][1] == x_b
@@ -503,122 +492,94 @@ public class Configuration extends SmallGraph{
                         }
                     }
 
+                    // If the permutation of edge j is not in optEdges
+                    // something goes utterly wrong.
+
                     System.err.print("Denkfehler in Configuration."
                                     + "getGraphs()!!!\n");
                 }
 
-                /* Die Permutation /trafo/ noch invertieren */
+                // transformation is the inverse permutation of trafo
                 int transformation[] = new int [cntOpt];
                 for (j = 0; j < cntOpt; j++) {
                     transformation[trafo[j]] = j;
                 }
 
-                if (DEBUG) {
-                    System.out.print("Trafo:  (");
-                    for (j = 0; j < cntOpt; j++)
-                        System.out.print(" " + transformation[j] + " ");
-                    System.out.print(")");
-                }
-
-                /* alle außer identische Trafo zu /Transforamtionen/
-                 * hinzufügen */
-                for (j = 0; j < cntOpt; j++) {
+                // add 'transformation' to Transformationen, if
+                // it is not just the identity function
+                for (j = 0; j < cntOpt; j++)
                     if (transformation[j] != j) {
                         Transformationen.addElement(transformation);
-
-                        if (DEBUG)
-                            System.out.print(" X");
-
                         break;
                     }
-                }
             }
-        }        /* if (cntOpt > 1) */
-
-        if (DEBUG)
-            System.out.print("  Kantenabbildungen: "
-                            + Transformationen.size() + "\n");
-
-
-        if (DEBUG) {
-            te = System.currentTimeMillis();
-            System.out.print("  Zeit bisher: " + (te - ta)/10 + "ms\n");
         }
-        allOptionalEdges = 1 << cntOpt;
 
-        // Creating a graph with edges equal to edges of Configuration
-        Graph vorlage = new Graph(cnt);
+        // ASSERTION HERE: Transformationen contains all permutations of the optional
+        // edges which are not just the identity
+
+        // Create the base graph of this configuration.
+        // It is used as a shape for all representatives,
+        Graph shape = new Graph(cnt);
         for (i=0; i<cnt; i++)
             for (j=i+1; j<cnt; j++)
                 if (matrix[i][j] == EDGE)
-                    vorlage.addEdge(i, j);
+                    shape.addEdge(i, j);
 
-        int zaehler = 0;
 
-        /* jetzt Repräsentanten erzeugen */
-        loop: for (int optionalMask=0; optionalMask < allOptionalEdges; optionalMask++) {
+        // the limit of *optionalMask* (see loop below)
+        allOptionalEdges = 1 << cntOpt;
 
-            int permutatedBitmask;
+        // *optionalMask* is used to represent all possible representatives of
+        // the Configuration
+loop:   for (int optionalMask=0; optionalMask < allOptionalEdges; optionalMask++) {
+            int permutedBitmask;
 
-            /* getSmallerNumber */
+            // look at all isomorphic representatives using the automorphisms
+            // on the optional edges
+            // (was formerly the method getSmallerNumber)
             for (int z = 0; z < Transformationen.size(); z++) {
                 int permutation[] = (int []) Transformationen.elementAt(z);
 
-                permutatedBitmask = 0;
+                permutedBitmask = 0;
                 for (int bitPosition = 0; bitPosition < cntOpt; bitPosition++) {
+                    // if optEdges[bitPosition] is turned on
                     if ((optionalMask & (1 << bitPosition)) != 0) {
-                        permutatedBitmask |= (1 << permutation[bitPosition]);
+                        permutedBitmask |= (1 << permutation[bitPosition]);
                     }
                 }
 
-                /* Isomorph zu bereits erzeugten Repräsentantnen? */
-                if (permutatedBitmask < optionalMask) {
+                // if permutedBitmask < optionalMask, then optionalMask is
+                // isomorphic to a representative that we have already stored
+                if (permutedBitmask < optionalMask) {
                     continue loop;
                 }
             }
 
-            zaehler++;
+            // ASSERTION HERE: optionalMask specifies a representative
+            // which is *not* isomorphic to already constructed
+            // representatives
 
-            /* neuen Repräsentanten konstruieren */
-            Graph rep = new Graph(vorlage);
+            // construct the new representative from the base graph shape
+            // using optionalMask
+            Graph rep = new Graph(shape);
             for (j = cntOpt - 1; j >= 0; j--)
                 if ((optionalMask & (1 << j)) != 0)
                     rep.addEdge(optEdges[j][0], optEdges[j][1]);
 
-            /* ueberpruefen, ob neuer Repraesentant isomorph zu bereits in
-             * Liste enthaltenen Repraesentanten ist. Der obige Test deckt
-             * nicht alle Fälle ab.*/
+            // check if new representative is isomorphic to any previously
+            // added graphs. This is still possible. (why?)
             for (j = 0; j < confGraphs.size(); j++)
                if (confGraphs.elementAt(j).isIsomorphic(rep))
-                   continue loop;        /* ein goto */
+                   continue loop;
 
-            /* was neues */
+            // new representative, can finally be added :)
             confGraphs.addElement(rep);
 
             if (confGraphs.size() > maxGraphs) {
-               /* zuviele, bottom-Graph erzeugen und raus */
-               /*rep.setBottom();
-               System.err.print("Erzeuge Bottom-Graph\n");
-               break;*/
-
-                /* zuviele, leere Liste zurückliefern */
-
-                if (DEBUG) {
-                    te = System.currentTimeMillis();
-                     System.out.print("  Repräsentanten: >" + maxGraphs
-                                     + " von " + allOptionalEdges + "\n");
-                     System.out.print("  Zeit: " + (te - ta)/10 + "ms\n\n");
-                }
+                // too many representatives.
                 return null;
             }
-        }
-
-
-        if (DEBUG) {
-            te = System.currentTimeMillis();
-            System.out.print("  Repräsentanten: " + confGraphs.size()
-                            + " (" + zaehler + ") von " + allOptionalEdges + "\n");
-            System.out.print("  Zeit: " + (te - ta)/10 + "ms\n\n");
         }
 
         return confGraphs;
@@ -807,7 +768,7 @@ public class Configuration extends SmallGraph{
 
         /* /g/ hat zwei Knoten */
         if (g.countNodes() == 2) {
-            if (g.degreeOf(0) == 1) {
+            if (g.degree(0) == 1) {
                 /* /g/ ist ein K2 */
                 for (i = 0; i < cnt - 1; i++)
                     for (j = i + 1; j < cnt; j++)
