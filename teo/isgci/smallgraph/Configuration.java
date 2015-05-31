@@ -12,6 +12,18 @@ package teo.isgci.smallgraph;
 
 import java.util.Vector;
 
+/**
+ * A Configuration consists of a base graph and a set
+ * of optional edges (OPTEDGE). All graphs which can be built by
+ * adding arbitrary subsets of those edges to the base graph
+ * are part of the Configuration.
+ *
+ * Alternatively, a set of forbidden edges (NONEDGES) can
+ * be specified, which are the complement of the optional edges.
+ *
+ * Be careful not to mix both approaches, as no validity checks
+ * are made.
+ */
 public class Configuration extends SmallGraph{
     private int matrix[][];
     private int cnt;  // number of nodes in Configuration
@@ -21,20 +33,30 @@ public class Configuration extends SmallGraph{
     final static int OPTEDGE = 0;
     final static int UNKNOWN = 2;   /* XXX was soll das? */
 
-    /** Graphs contained in Configuration */
+    /* Graphs contained in Configuration */
     private Vector<SmallGraph> contains;
-    
+
+    /**
+     * Empty Configuration.
+     */
     public Configuration(){
         this(0);
     }
-    
+
+    /**
+     * Configuration with <tt>n</tt> nodes and no edges.
+     * @param n number of nodes for initialization
+     */
     public Configuration(int n){
         super();
         contains = null;
         addNodesCount(n);
     }
-    
 
+
+    /**
+     * TODO: comment this
+     */
     public void copyFromComplement() {
         int i, j;
 
@@ -67,9 +89,17 @@ public class Configuration extends SmallGraph{
         c.setComplement(this);
         return c;
     }*/
-    
-    /* Erzeugt eine von /c/ induzierte Konfiguration. Welche Knoten enthalten
-     * sind gibt /mask/ an. */
+
+    /**
+     * Creates a new Configuration, which is 'induced' by c.
+     * This means copying all nodes which are specified by
+     * the bitmask <tt>mask</tt> and adding all edges between those
+     * nodes which exist in <tt>c</tt>.
+     *
+     *
+     * @param c Configuration which shall induce this
+     * @param mask determines which nodes should be taken over
+     */
     public Configuration(Configuration c, boolean mask[]){
         super();
 
@@ -107,6 +137,12 @@ public class Configuration extends SmallGraph{
         link = null;
     }
 
+    /**
+     * Initialize with n nodes and reset the internal state.
+     * Resets all edges to UNKNOWN.
+     *
+     * @param n number of nodes for initialization
+     */
     public void addNodesCount(int n){
         cnt = n;
         matrix = new int[cnt][cnt];
@@ -115,8 +151,10 @@ public class Configuration extends SmallGraph{
                 matrix[i][j] = i==j ? NONEDGE : UNKNOWN;
         contains = null;
     }
-    
-    /** Counts the nodes in this Configuration. */
+
+    /**
+     * @return the number of nodes in the Configuration
+     */
     public int countNodes(){
         return cnt;
     }
@@ -146,13 +184,24 @@ public class Configuration extends SmallGraph{
         matrix[a][b] = type;
         matrix[b][a] = type;
     }
-    
-    /** Adds an edge to Configuration */
+
+    /**
+     * Adds a new edge to the base graph, from
+     * <tt>a</tt> to <tt>b</tt>.
+     *
+     * @param a first node of the edge
+     * @param b second node of the edge
+     */
     public void addEdge(int a, int b){
         addEdge(a, b, EDGE);
     }
-    
-    /** Adds an nonedge to Configuration */
+
+    /**
+     * Adds a new forbidden edge.
+     *
+     * @param a first node of the edge
+     * @param b second node of the edge
+     */
     public void addNonedge(int a, int b){
         addEdge(a, b, NONEDGE);
     }
@@ -278,15 +327,20 @@ public class Configuration extends SmallGraph{
     }
 
 
-    /* Helpfunction for getGraphs() */
+    /* Helpfunction for getGraphs()
+    * TODO: comment this method!
+    * */
     private int getSmallerNumber(int num, Vector T, int len){
         for (int i = 0; i < T.size(); i++) {
             int trafo[] = (int []) T.elementAt(i);
 
             int zahl = 0;
             for (int j = 0; j < len; j++)
-                if ((num & (1 << j)) != 0)
+                // if j-th digit of num == 1
+                if ((num & (1 << j)) != 0) {
+                    // x <- number with trafo[j]-th digit == 1, others 0
                     zahl |= (1 << trafo[j]);
+                }
 
             if (zahl < num)
                 return zahl;
@@ -295,6 +349,9 @@ public class Configuration extends SmallGraph{
         return num;
     }
 
+    /**
+     * @return the first 100 graphs in the Configuration
+     */
     public Vector<Graph> getGraphs(){
         return getGraphs(100);
     }
