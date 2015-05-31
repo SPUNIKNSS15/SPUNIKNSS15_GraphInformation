@@ -97,7 +97,6 @@ public class Configuration extends SmallGraph{
      * the bitmask <tt>mask</tt> and adding all edges between those
      * nodes which exist in <tt>c</tt>.
      *
-     *
      * @param c Configuration which shall induce this
      * @param mask determines which nodes should be taken over
      */
@@ -206,17 +205,33 @@ public class Configuration extends SmallGraph{
     public void addNonedge(int a, int b){
         addEdge(a, b, NONEDGE);
     }
-    
-    /** Adds an optedge to Configuration */
+
+    /**
+     * Adds a new optedge
+     *
+     * @param a first node of the edge
+     * @param b second node of the edge
+     */
     public void addOptedge(int a, int b){
         addEdge(a, b, OPTEDGE);
     }
-    
+
+    /**
+     *
+     * @param a first node of the edge
+     * @param b second node of the edge
+     * @return returns the edge type
+     */
     public int getEdge(int a, int b){
         return matrix[a][b];
     }
-    
-    /** Counts the edges of type <tt>type</tt> in Configuration */
+
+    /**
+     * Counts the edges of type <tt>type</tt> in Configuration
+     *
+     * @param type edge type
+     * @return number of type <tt>type</tt> in Configuration
+     */
     public int countEdges(int type){
         int i, j, n=0;
         for (i=0; i<cnt; i++)
@@ -225,25 +240,36 @@ public class Configuration extends SmallGraph{
                     n++;
         return n;
     }
-    
-    /** Counts the edges in Configuration */
+
+    /**
+     *
+     * @return number of edges in Configuration
+     */
     public int countEdges(){
         return countEdges(EDGE);
     }
 
-    /** Counts the nonedges in Configuration */
+    /**
+     *
+     * @return number of forbidden edges in Configuration
+     */
     public int countNonedges(){
         return countEdges(NONEDGE);
     }
 
-    /** Counts the optedges in Configuration */
+    /**
+     *
+     * @return number of optedges in Configuration
+     */
     public int countOptedges(){
         return countEdges(OPTEDGE);
     }
 
-    /** 
-     * Returns the degree of type <tt>type</tt> of the node at index
-     * <tt>v</tt>.
+    /**
+     *
+     * @param v node index which should be considered
+     * @param type <tt>type</tt>
+     * @return degree of type <tt>type</tt> of the node at index <tt>v</tt>
      */
     public int degree(int v, int type){
         if (v<0 || v>=cnt) return -1; // illegal argument
@@ -255,8 +281,12 @@ public class Configuration extends SmallGraph{
         return n;
     }
 
-    /** 
-     * Returns the degree of type <tt>type</tt> of the node at index
+    /**
+     *
+     * @param v node idex which should be considered
+     * @param type <tt>type</tt> which should be counted
+     * @param mask which specifies the induced Configuration
+     * @return degree of type <tt>type</tt> of the node at index
      * <tt>v</tt> in the subgraph induced by <tt>mask<tt>.
      */
     public int degree(int v, int type, boolean mask[]){
@@ -269,42 +299,72 @@ public class Configuration extends SmallGraph{
         return n;
     }
 
-    /** Returns the degree of the node at index <tt>v</tt> */
+    /**
+     *
+     * @param v node index which should be considered
+     * @return the degree of the node at index <tt>v</tt>
+     */
     public int degree(int v){
         return degree(v, EDGE);
     }
 
-    /** Returns the degree of the node at index <tt>v</tt> in the subgraph
-     * induced by <tt>mask<tt>. */
+    /**
+     *
+     * @param v node index which should be considered
+     * @param mask which specifies the induced Configuration
+     * @return the degree of the node at index <tt>v</tt> in the subgraph
+     * induced by <tt>mask<tt>.
+     */
     public int degree(int v, boolean mask[]){
         return degree(v, EDGE, mask);
     }
 
-    /** Returns the optDegree of the node at index <tt>v</tt> */
+    /**
+     *
+     * @param v node index which should be considered
+     * @return the optDegree of the node at index <tt>v</tt>
+     */
     public int optDegree(int v){
         return degree(v, OPTEDGE);
     }
 
-    /** Returns the optDegree of the node at index <tt>v</tt> in the subgraph
-     * induced by <tt>mask<tt> */
+    /**
+     *
+     * @param v node index which should be considered
+     * @param mask which specifies the induced Configuration
+     * @return the optDegree of the node at index <tt>v</tt> in the subgraph
+     * induced by <tt>mask<tt>
+     */
     public int optDegree(int v, boolean mask[]){
         return degree(v, OPTEDGE, mask);
     }
-    
-    /** Adds contains <tt>elt</tt> to Configuration */
+
+    /**
+     * Adds contains <tt>elt</tt> to Configuration
+     * @param elt Graph which should be added
+     */
     public void addContains(Graph elt){
         if (contains == null)
             contains = new Vector<SmallGraph>(2,2);
         if (!contains.contains(elt))
             contains.addElement(elt);
     }
-    
-    /** Returns Vector contains */
+
+    /**
+     *
+     * @return Vector contains
+     */
     public Vector<SmallGraph> getContains(){
         return contains;
     }
 
-
+    /**
+     * converts the Configuration to String
+     * edges displayed with '-'
+     * optedges displayed with '='
+     *
+     * @return the Configuration as String
+     */
     public String toString(){
         if(cnt == 0)
             return "";
