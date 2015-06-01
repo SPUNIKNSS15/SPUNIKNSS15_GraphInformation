@@ -28,24 +28,23 @@ compareDocuments old new = compareNodeNames old new
                          ++ "\n\n Compare Inclusion Tree\n\n"
     			         ++ compareInclusionTree old new
                          ++ "\n\n Compare Children \n\n" 
-                         ++ compareChildren old new
-			
+                         ++ compareChildren old new			
 
 compareNodeNames :: String -> String -> String
 compareNodeNames old new
   | oldNames == newNames = "Both XMLs have the same smallgraphs!"
   | otherwise = "Not the same smallgraphs contained!\nNot in old xml: \n" 
-                  ++ "Anzahl: " ++ (show $ length notInOld) ++ "\n" ++ notInOld
+                  ++ "Anzahl: " ++ (show $ length notInOld) ++ "\n" ++ (foldWithComma notInOld)
                   ++ "\n----------------------\nNot in new XML:\n"
-                  ++ "Anzahl: " ++ (show $ length notInNew) ++ "\n" ++ notInNew
+                  ++ "Anzahl: " ++ (show $ length notInNew) ++ "\n" ++ (foldWithComma notInNew)
     where 
       getNames = sort . filter (/= []) . runLA ( xreadDoc >>> getChildren >>> getAttrValue "name" )
       oldNames = getNames old
       newNames = getNames new
       foldWithComma = foldr ((++).(++) ", " ) " " 
-      notInOld = foldWithComma (filter (`notElem` oldNames) newNames)
-      notInNew = foldWithComma (filter (`notElem` newNames) oldNames)
-
+      notInOld = filter (`notElem` oldNames) newNames
+      notInNew = filter (`notElem` newNames) oldNames
+      configurationContainesOld = runLA ( xreadDoc >>> getChildren >>> hasName "configuration" >>> getChildren >>> hasName "contains" >>> getChildren >>> getText ) old
 
 
 compareChildren :: String -> String -> String
@@ -57,9 +56,7 @@ compareChildren old new = foldr ((++).(++) "\n----\n" ) " " . map show . filter 
       getNames = sort . filter (/= []) . runLA ( xreadDoc >>> getChildren >>> getAttrValue "name" )
       oldNames = getNames old
       newNames = getNames new
-      inBoth   = filter (\x -> (concat $ runLA (getAttrValue "name") x) `elem` newNames)  
-
-
+      inBoth   = filter (\x -> (concat $ runLA (getAttrValue "name") x) `elem` newNames)
 
 
 compareInclusionTree :: String -> String -> String                                                  
@@ -77,5 +74,5 @@ compareInclusionTree old new
 		  newSub	= runLA ( getIncls >>> getAttrValue "sub"   ) new
 		  oldTree	= sort $ zip oldSuper oldSub
 		  newTree	= sort $ zip newSuper newSub
-		  notInOld	= (filter (`notElem` oldTree) newTree)
-		  notInNew	= (filter (`notElem` newTree) oldTree)
+		  notInOld	= filter (`notElem` oldTree) newTree
+		  notInNew	= filter (`notElem` newTree) oldTree
