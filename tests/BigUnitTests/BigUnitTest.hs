@@ -49,7 +49,7 @@ compareNodeNames old new
 
 
 compareChildren :: String -> String -> String
-compareChildren old new = foldr ((++).(++) "\n----\n" ) " " . map show . filter (`notElem` newSmallgraphs) . inBoth
+compareChildren old new = foldr ((++).(++) "\n----\n" ) " " . map show . filter (`notElem` newSmallgraphs) . inBoth $ oldSmallgraphs
     where
       childList = runLA ( xreadDoc >>> getChildren >>> ((getName >>> isA (/= "incl")) `guards` this) )
       oldSmallgraphs = childList old
@@ -57,12 +57,13 @@ compareChildren old new = foldr ((++).(++) "\n----\n" ) " " . map show . filter 
       getNames = sort . filter (/= []) . runLA ( xreadDoc >>> getChildren >>> getAttrValue "name" )
       oldNames = getNames old
       newNames = getNames new
-      inBoth =  filter (\x -> (concat $ runLA (getAttrValue "name") x) `elem` newNames) $ oldSmallgraphs
+      inBoth   = filter (\x -> (concat $ runLA (getAttrValue "name") x) `elem` newNames)  
 
 
 
- compareInclusionTree :: String -> String -> String                                                  
- compareInclusionTree old new
+
+compareInclusionTree :: String -> String -> String                                                  
+compareInclusionTree old new
 	 | oldTree	== newTree = "Both XMLs have the same inclusion tree!"
 	 | otherwise	=  "Not the same inclusion tree in old and new xml!\n"
 			 ++ "Anzahl: " ++ (show $ length notInOld) ++ "\n" ++ (show $ notInOld)
