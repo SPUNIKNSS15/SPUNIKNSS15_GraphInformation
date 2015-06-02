@@ -85,14 +85,6 @@ public class Configuration extends SmallGraph{
             contains = newContains;
         }
     }
-    
-    /*public SmallGraph makeComplement() {
-        Configuration c = new Configuration(this);
-        c.complement();
-        setComplement(c);
-        c.setComplement(this);
-        return c;
-    }*/
 
     /**
      * Creates a new Configuration, which is 'induced' by c.
