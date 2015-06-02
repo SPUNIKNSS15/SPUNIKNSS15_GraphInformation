@@ -10,6 +10,10 @@
 
 package teo.isgci.smallgraph;
 
+import org.jgrapht.alg.VertexCovers;
+
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -97,10 +101,16 @@ public class Configuration extends SmallGraph{
      * nodes which exist in <tt>c</tt>.
      *
      * @param c Configuration which shall induce this
-     * @param mask determines which nodes should be taken over
+     * @param includedNodes determines which nodes should be taken over
      */
-    public Configuration(Configuration c, boolean mask[]){
+    public Configuration(Configuration c, Set<Integer> includedNodes){
         super();
+
+        boolean[] mask = new boolean[c.cnt];
+
+        for (int v : includedNodes) {
+            mask[v] = true;
+        }
 
         int i;
 
@@ -780,7 +790,7 @@ loop:   for (int optionalMask=0; optionalMask < allOptionalEdges; optionalMask++
 
         /* /g/ hat zwei Knoten */
         if (g.countNodes() == 2) {
-            if (g.degree(0) == 1) {
+            if (g.degreeOf(0) == 1) {
                 /* /g/ ist ein K2 */
                 for (i = 0; i < cnt - 1; i++)
                     for (j = i + 1; j < cnt; j++)
@@ -831,7 +841,7 @@ loop:   for (int optionalMask=0; optionalMask < allOptionalEdges; optionalMask++
 
             for (i = 0; i < rumpf.getComponents(); i++) {
                 Configuration c =
-                        new Configuration(this, rumpf.getComponents(i));
+                        new Configuration(this, rumpf.getComponent(i));
 
                 if (c.isInducedSubgraph(g))
                     return true;
