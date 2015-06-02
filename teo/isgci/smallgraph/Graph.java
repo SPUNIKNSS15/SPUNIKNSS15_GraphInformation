@@ -383,14 +383,34 @@ loop:       while (true) {
      * and the list of edges.
      */
     public String toString(){
-        if(cnt==0) return "";
-        int i,j;
-        String s="{"+String.valueOf(cnt)+"}\n";
-        s += namesToString() + "\n";
-        for(i=0;i<cnt;i++)
-            for(j=0;j<i;j++)
-                if(matrix[i][j])
-                    s+=(j+" - "+i+"\n");
+//        if(cnt==0) return "([], [])";
+//        String s="{"+String.valueOf(cnt)+"}\n";
+//        s += namesToString() + "\n";
+        String s = "([";
+        int no = 0;
+        for (; no < cnt - 1; no++) {
+            s += String.valueOf(no) + ", ";
+        }
+        if (no != 0)
+            s += String.valueOf(no);
+
+        s += "], [";
+        boolean fst = true;
+
+        for(int i = 0; i < cnt - 1; i++) {
+            for (int j = 0; j < i; j++) {
+                if (matrix[i][j]) {
+                    if (fst) {
+                        s += "{" + j + " - " + i + "}";
+                        fst = false;
+                    } else {
+                        s += ", {" + j + " - " + i + "}";
+                    }
+                }
+            }
+        }
+
+        s += "])";
         return s;
     }
     
