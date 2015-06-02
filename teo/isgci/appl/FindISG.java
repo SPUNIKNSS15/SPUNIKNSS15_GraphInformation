@@ -337,7 +337,17 @@ public class FindISG{
         for (ci = 0; ci < configurations.size(); ci++) {
             Configuration c = (Configuration) configurations.elementAt(ci);
 
-            Vector contained = c.getGraphs();
+            Vector<Graph> contained = c.getGraphs();
+
+            System.out.println(c);
+            System.out.println("All contained graphs:");
+
+            for (Graph g : contained) {
+                System.out.println(g.toString());
+            }
+
+            System.out.println("");
+
         /* das ist genau dann der Fall, wenn es zuviele Repräsentanten gibt */
             if (contained == null) {
                System.err.print("Warning: " + c.getName()
