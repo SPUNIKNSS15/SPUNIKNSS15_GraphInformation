@@ -397,7 +397,7 @@ loop:       while (true) {
         s += "], [";
         boolean fst = true;
 
-        for(int i = 0; i < cnt - 1; i++) {
+        for(int i = 0; i < cnt; i++) {
             for (int j = 0; j < i; j++) {
                 if (matrix[i][j]) {
                     if (fst) {
