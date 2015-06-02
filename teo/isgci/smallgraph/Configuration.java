@@ -206,7 +206,7 @@ public class Configuration extends SmallGraph{
     }
 
     /**
-     * Adds a new optedge
+     * Adds a new optional edge.
      *
      * @param a first node of the edge
      * @param b second node of the edge
@@ -226,10 +226,10 @@ public class Configuration extends SmallGraph{
     }
 
     /**
-     * Counts the edges of type <tt>type</tt> in Configuration
+     * Counts the edges of type <tt>type</tt>.
      *
      * @param type edge type
-     * @return number of type <tt>type</tt> in Configuration
+     * @return number of edges of type <tt>type</tt>
      */
     public int countEdges(int type){
         int i, j, n=0;
@@ -242,7 +242,7 @@ public class Configuration extends SmallGraph{
 
     /**
      *
-     * @return number of edges in Configuration
+     * @return number of normal edges
      */
     public int countEdges(){
         return countEdges(EDGE);
@@ -250,7 +250,7 @@ public class Configuration extends SmallGraph{
 
     /**
      *
-     * @return number of forbidden edges in Configuration
+     * @return number of forbidden edges
      */
     public int countNonedges(){
         return countEdges(NONEDGE);
@@ -258,16 +258,17 @@ public class Configuration extends SmallGraph{
 
     /**
      *
-     * @return number of optedges in Configuration
+     * @return number of optional edges
      */
     public int countOptedges(){
         return countEdges(OPTEDGE);
     }
 
     /**
+     * Calculates the degree of a node according to an edge type.
      *
-     * @param v node index which should be considered
-     * @param type <tt>type</tt>
+     * @param v node index
+     * @param type edge type to be counted
      * @return degree of type <tt>type</tt> of the node at index <tt>v</tt>
      */
     public int degree(int v, int type){
@@ -281,12 +282,14 @@ public class Configuration extends SmallGraph{
     }
 
     /**
+     * Calculates the degree of a node in an induced configuration
+     * according to an edge type.
      *
-     * @param v node idex which should be considered
-     * @param type <tt>type</tt> which should be counted
-     * @param mask which specifies the induced Configuration
+     * @param v node index
+     * @param type edge type to be counted
+     * @param mask which specifies the induced configuration
      * @return degree of type <tt>type</tt> of the node at index
-     * <tt>v</tt> in the subgraph induced by <tt>mask<tt>.
+     * <tt>v</tt> in the subgraph induced by <tt>mask<tt>
      */
     public int degree(int v, int type, boolean mask[]){
         if (v<0 || v>=cnt || !mask[v]) return -1; // illegal argument
@@ -299,8 +302,9 @@ public class Configuration extends SmallGraph{
     }
 
     /**
+     * Calculates the normal-edge-degree of a node.
      *
-     * @param v node index which should be considered
+     * @param v node index
      * @return the degree of the node at index <tt>v</tt>
      */
     public int degree(int v){
@@ -308,19 +312,22 @@ public class Configuration extends SmallGraph{
     }
 
     /**
+     * Calculates the normal-edge-degree of a node in an induced
+     * configuration.
      *
-     * @param v node index which should be considered
-     * @param mask which specifies the induced Configuration
+     * @param v node index
+     * @param mask which specifies the induced configuration
      * @return the degree of the node at index <tt>v</tt> in the subgraph
-     * induced by <tt>mask<tt>.
+     * induced by <tt>mask<tt>
      */
     public int degree(int v, boolean mask[]){
         return degree(v, EDGE, mask);
     }
 
     /**
+     * Calculates the optional-edge-degree of a node.
      *
-     * @param v node index which should be considered
+     * @param v node index
      * @return the optDegree of the node at index <tt>v</tt>
      */
     public int optDegree(int v){
@@ -328,19 +335,25 @@ public class Configuration extends SmallGraph{
     }
 
     /**
+     * Calculates the optional-edge-degree of a node in an induced
+     * configuration.
      *
-     * @param v node index which should be considered
-     * @param mask which specifies the induced Configuration
-     * @return the optDegree of the node at index <tt>v</tt> in the subgraph
-     * induced by <tt>mask<tt>
+     * @param v node index
+     * @param mask which specifies the induced configuration
+     * @return the degree of the node at index <tt>v</tt> in the subgraph
+     *   induced by <tt>mask<tt>
      */
     public int optDegree(int v, boolean mask[]){
         return degree(v, OPTEDGE, mask);
     }
 
     /**
-     * Adds contains <tt>elt</tt> to Configuration
-     * @param elt Graph which should be added
+     * Adds the graph <tt>elt</tt> to the list of contained
+     * graphs.
+     *
+     * @param elt graph to be added
+     *
+     * TODO: why not private?
      */
     public void addContains(Graph elt){
         if (contains == null)
@@ -351,18 +364,18 @@ public class Configuration extends SmallGraph{
 
     /**
      *
-     * @return Vector contains
+     * @return the list of contained graphs
      */
     public Vector<SmallGraph> getContains(){
         return contains;
     }
 
     /**
-     * converts the Configuration to String
-     * edges displayed with '-'
-     * optedges displayed with '='
+     * Creates a String representation of this Configuration.
+     * edges displayed with '-'.
+     * optional edges displayed with '='.
      *
-     * @return the Configuration as String
+     * @return the Configuration as a string
      */
     public String toString(){
         if(cnt == 0)
@@ -385,8 +398,7 @@ public class Configuration extends SmallGraph{
      *
      * @param g the induced subgraph to be added
      *
-     * TODO:
-     *          - why not private?
+     * TODO: why not private?
      */
     public void addInduced(Graph g){
         Vector<SmallGraph> innerVec = new Vector<SmallGraph>();
