@@ -401,10 +401,10 @@ loop:       while (true) {
             for (int j = 0; j < i; j++) {
                 if (matrix[i][j]) {
                     if (fst) {
-                        s += "{" + j + " - " + i + "}";
+                        s += "{" + j + "," + i + "}";
                         fst = false;
                     } else {
-                        s += ", {" + j + " - " + i + "}";
+                        s += ", {" + j + "," + i + "}";
                     }
                 }
             }
