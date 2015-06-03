@@ -1,9 +1,12 @@
 package tests.configuration;
 
+import org.junit.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import teo.isgci.smallgraph.Configuration;
+import teo.isgci.smallgraph.Graph;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -11,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +33,9 @@ public class ConfigurationTest {
 
     private Pattern noNodesPattern;
     private Pattern namePattern;
+    private Pattern nodesPattern;
+    private Pattern edgesPattern;
+
 
     private Configuration conf;
 
@@ -38,6 +43,12 @@ public class ConfigurationTest {
         // patterns for parsing the Configuration spec
         noNodesPattern = Pattern.compile("\\{[0-9]*\\}");
         namePattern = Pattern.compile("\\[.*\\]");
+
+        // patterns for parsing the Graph spec
+        nodesPattern = Pattern.compile("\\[(([0-9]+,\\ )*[0-9]+)*\\]");
+        // the edges pattern only works if the first occurrence of the nodes pattern
+        // is removed from the matched string first
+        edgesPattern = Pattern.compile("\\[.*\\]");
     }
 
     @Before
@@ -66,7 +77,7 @@ public class ConfigurationTest {
     }
 
     private String cutFirstAndLast(String s) {
-        return s.substring(1, s.length()-1);
+        return s.substring(1, s.length() - 1);
     }
 
     /**
@@ -74,6 +85,8 @@ public class ConfigurationTest {
      * using a string representation. If a, b are nodes then
      * "a - b" specifies a normal edge and
      * "a = b" an optional edge.
+     *
+     * See teo.isgci.smallgraph.Configuration.toString().
      *
      * @param edge string representation of the edge
      */
@@ -91,8 +104,8 @@ public class ConfigurationTest {
             return;
         }
 
-        Integer node1 = new Integer(nodes[0]);
-        Integer node2 = new Integer(nodes[1]);
+        int node1 = new Integer(nodes[0]);
+        int node2 = new Integer(nodes[1]);
 
         if (!optional) {
             conf.addEdge(node1, node2);
@@ -116,23 +129,53 @@ public class ConfigurationTest {
             String edgeSpec = confSpec.replace("\n", "").split("] ")[1];
             String[] edges = edgeSpec.split("; ");
 
-            System.out.println("noNodes: " + noNodes);
             conf.addNodesCount(noNodes);
-
-            System.out.println("name: " + name);
             conf.addName(name);
 
             for (String edge : edges) {
-                System.out.println("edge: " + edge);
                 addEdgeFromString(edge);
             }
-
-            System.out.println("how it looks:");
-            System.out.println(conf);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Create a graph from a string representation.
+     *
+     * @param graphSpec string representation of the graph, given by
+     *                  org.jgrapht.graph.AbstractGraph.toString().
+     * @return the newly created graph
+     */
+    private Graph createGraphFromString(String graphSpec) {
+        try {
+            String[] nodeSpecs = cutFirstAndLast(matchRegex(nodesPattern, graphSpec)).split(", ");
+
+            String edges = matchRegex(edgesPattern,
+                    graphSpec.replaceFirst(nodesPattern.pattern(), ""));
+
+            String[] edgeSpecs = cutFirstAndLast(edges).split(", ");
+
+            Graph g = new Graph(nodeSpecs.length);
+
+            // split produces array containing the empty string, if edges are empty
+            if (!edges.equals("[]")) {
+                for (String edgeSpec : edgeSpecs) {
+                    addGraphEdgeFromString(g, edgeSpec);
+                }
+            }
+            return g;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void addGraphEdgeFromString(Graph g, String edgeSpec) {
+        String[] nodes = cutFirstAndLast(edgeSpec).split(",");
+        g.addEdge(new Integer(nodes[0]), new Integer(nodes[1]));
     }
 
     /**
@@ -143,7 +186,7 @@ public class ConfigurationTest {
      *
      * @param sampleNo the number of the sample to parse
      */
-    private void testConfigurationSample(int sampleNo) {
+    private void testGetGraphsConfigurationSample(int sampleNo) {
         String file = String.format("tests/configuration/configurations/sample-configuration%02d", sampleNo);
 
         // Parse the sample configuration
@@ -153,8 +196,31 @@ public class ConfigurationTest {
             String[] parts = confSample.split("All contained graphs:");
             setupConfigurationFromString(parts[0]);
 
-            ArrayList<String> confGraphs = new ArrayList<String>(Arrays.asList(parts[1].split("\\n")));
-            Collections.sort(confGraphs);
+            ArrayList<Graph> confGraphs = new ArrayList<>();
+            ArrayList<String> graphSpecs = new ArrayList<>(Arrays.asList(parts[1].trim().split("\\n")));
+
+            // create all graphs which are known to be in the configuration
+            for (String graphSpec : graphSpecs) {
+                confGraphs.add(createGraphFromString(graphSpec));
+            }
+
+            ArrayList<Graph> calculatedGraphs= new ArrayList<>(conf.getGraphs());
+
+            // search isomorphic Graph in calculatedGraphs for
+            // each graph in confGraphs. Then drop both.
+            for (Graph sampleGraph : new ArrayList<>(confGraphs)) {
+                for (Graph calculatedGraph : new ArrayList<>(calculatedGraphs)) {
+                    if (sampleGraph.isIsomorphic(calculatedGraph)) {
+                        confGraphs.remove(sampleGraph);
+                        calculatedGraphs.remove(calculatedGraph);
+                    }
+                }
+            }
+
+            // if both lists are empty, for each graph in confGraphs exists exactly one
+            // isomorphic graph in calculatedGraphs
+            Assert.assertTrue(confGraphs.isEmpty());
+            Assert.assertTrue(calculatedGraphs.isEmpty());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -166,7 +232,7 @@ public class ConfigurationTest {
     @Test
     public void testGetGraphs() throws Exception {
         for (int sampleNo = 0; sampleNo < numSamples; sampleNo++) {
-            testConfigurationSample(sampleNo);
+            testGetGraphsConfigurationSample(sampleNo);
         }
     }
 
