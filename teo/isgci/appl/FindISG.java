@@ -339,6 +339,7 @@ public class FindISG{
 
             Vector<Graph> contained = c.getGraphs();
 
+            // -- Additional output to determine all graphs of a configuration -- //
             System.out.println(c);
             System.out.println("All contained graphs:");
 
@@ -347,6 +348,8 @@ public class FindISG{
             }
 
             System.out.println("");
+
+            // ------------------------------------------------------------------ //
 
         /* das ist genau dann der Fall, wenn es zuviele Repräsentanten gibt */
             if (contained == null) {
