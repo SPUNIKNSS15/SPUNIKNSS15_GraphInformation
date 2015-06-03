@@ -298,9 +298,6 @@ public class FindISG{
      * and links, if there are any).
      */
     private static void readXMLFile(String file) throws Exception{
-
-        System.out.println("------ STARTING TO READ XML FILE ------");
-
         SmallGraphReader handler = new SmallGraphReader();
         int i, j, ci;
 
@@ -394,16 +391,8 @@ public class FindISG{
         for (ci = 0; ci < configurations.size(); ci++) {
             Configuration c = (Configuration) configurations.elementAt(ci);
 
-            System.out.println(c);
-            System.out.println("All contained graphs:");
-
             /* returns null when there are >100 representatives */
-            Vector<Graph> contained = c.getGraphs(100);
-            for (Graph g : contained) {
-                System.out.println(g.toString());
-            }
-
-            System.out.println("");
+            Vector contained = c.getGraphs(100);
 
             if (contained == null) {
                System.out.print("Warning: " + c.getName()
