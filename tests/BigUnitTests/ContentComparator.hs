@@ -26,8 +26,12 @@ cmdlineOpts argv
 outputCollector :: String -> String -> String
 outputCollector old new =  "Length: "++(show $ length $ getSimpleNames old) ++"\n"
                             ++ (show $ getSimpleNames old) ++ "\n"
-                            ++ (show $ nceTriples old) 
+                            ++ (show $ nceTriples old) ++ "\n"
+                            ++ (show $ matchSimples old new)
+                         
 
+
+ 
 
 -- nceTriples old Takes an XML document, parses it and returns a tree containing all <simple>s
 getSimples :: ArrowXml a => a String XmlTree
@@ -63,18 +67,19 @@ nceTriples x = builder $ getSimpleNames x
 		builder (y:ys) = (y, getNodesByName y x, getEdgesByName y x) : builder ys
 
 
-
 matchSimples :: String -> String -> [(String, String)]
 matchSimples old new = match (nceTriples old) (nceTriples new)
     where
-        match []           []             = []
-        match ((x,y,z):xs) []             = (x, "no matching graph") : (match xs [])
-        match []           ((a,b,c):ys)         = ("no matching graph", a) : (match [] ys)
-        match ((x,y,z):xs) ((a,b,c):ys)   = if (y,z) `elem` (map (\(l,m,n) -> (m,n)) ((a,b,c):ys))
-                                            then [("a", "b")]
-                                            else [("c", "d")]
+        match  _ [] = []
+        match []  _ = []
+        match ((xn,xc,xe):xs) ys = if (tfilter xc xe ys) /= []  && length (tfilter xc xe ys) == 1
+                                then (xn, fst_3 $ (tfilter xc xe ys)!!0 ) : match xs ys
+                                else match xs ys                   
+        tfilter xc xe ys = filter ((==xc).snd_3) $ filter ((==xe).trd_3) ys
 
 
-        
+fst_3  (x,_,_) = x
+snd_3  (_,x,_) = x
+trd_3  (_,_,x) = x
 
 
