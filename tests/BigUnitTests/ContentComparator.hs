@@ -23,13 +23,16 @@ cmdlineOpts argv
     = return (argv!!0, argv!!1)
 
 
-outputCollector :: String -> String -> String
-outputCollector old new =  "Length: "++(show $ length $ getSimpleNames old) ++"\n"
-                            ++ (show $ getSimpleNames old) ++ "\n"
-                            ++ (show $ nceTriples old) ++ "\n"
-                            ++ (show $ matchSimples old new)
+--outputCollector :: String -> String -> String
+--outputCollector old new =  "Length: "++(show $ length $ getSimpleNames old) ++"\n"
+--                            ++ (show $ getSimpleNames old) ++ "\n"
+--                            ++ (show $ nceTriples old) ++ "\n"
+--                            ++ (show $ matchSimples old new)
                          
-
+outputCollector :: String -> String -> String
+outputCollector old new =  "#simples in fst arg: " ++ (show $ length $ getSimpleNames old) ++ "\n"
+                        ++ "#simples in snd arg: " ++ (show $ length $ getSimpleNames new) ++ "\n"
+                        ++ "#matches fst \\cap snd: " ++ (show $ length $ matchSimples old new) ++ "\n" 
 
  
 
@@ -75,7 +78,8 @@ matchSimples old new = match (nceTriples old) (nceTriples new)
         match ((xn,xc,xe):xs) ys = if (tfilter xc xe ys) /= []  && length (tfilter xc xe ys) == 1
                                 then (xn, fst_3 $ (tfilter xc xe ys)!!0 ) : match xs ys
                                 else match xs ys                   
-        tfilter xc xe ys = filter ((==xc).snd_3) $ filter ((==xe).trd_3) ys
+--        tfilter xc xe ys = filter ((==xc).snd_3) $ filter ((==xe).trd_3) ys
+        tfilter xc xe ys = filter (\z -> (((==xc).snd_3) z) && (((==xe).trd_3) z)) ys 
 
 
 fst_3  (x,_,_) = x
