@@ -26,13 +26,13 @@ import java.util.regex.Pattern;
 public class ConfigurationTest {
 
     // place to look for configuration samples
-    private String samplePath = "tests/data/configsamples/oldimpl/";
+    private final String samplePath = "tests/data/configsamples/";
 
     // number of available configuration samples
-    private int numSamples = 54;
+    private final int numSamples = 54;
 
-    private String normalEdgeSep = "-";
-    private String optionalEdgeSep = "=";
+    private final String normalEdgeSep = "-";
+    private final String optionalEdgeSep = "=";
 
     private Pattern noNodesPattern;
     private Pattern namePattern;
@@ -48,8 +48,9 @@ public class ConfigurationTest {
 
         // patterns for parsing the Graph spec
         nodesPattern = Pattern.compile("\\[(([0-9]+,\\ )*[0-9]+)*\\]");
-        // the edges pattern only works if the first occurrence of the nodes pattern
-        // is removed from the matched string first
+        // the following edges pattern only works if the first
+        // occurrence of nodesPattern is removed from the matched
+        // string first
         edgesPattern = Pattern.compile("\\[.*\\]");
     }
 
@@ -188,7 +189,7 @@ public class ConfigurationTest {
     }
 
     /**
-     * Reads in a sample from "tests/configuration/configurations" and
+     * Reads in a sample from "tests/data/configsamples" and
      * sets up the internal Configuration object according to the sample spec.
      * Then Configuration.getGraphs() is matched against the graphs in the
      * sample.
@@ -202,11 +203,14 @@ public class ConfigurationTest {
         try {
             String confSample = new String(Files.readAllBytes(Paths.get(file)), StandardCharsets.UTF_8);
 
-            String[] parts = confSample.split("All contained graphs:");
-            setupConfigurationFromString(parts[0]);
+            String[] parts = confSample.split("contains");
+            String confSpec = parts[0];
+            String contained = parts[1].split("induces")[0];
+
+            setupConfigurationFromString(confSpec);
 
             ArrayList<Graph> confGraphs = new ArrayList<>();
-            ArrayList<String> graphSpecs = new ArrayList<>(Arrays.asList(parts[1].trim().split("\\n")));
+            ArrayList<String> graphSpecs = new ArrayList<>(Arrays.asList(contained.trim().split("\\n")));
 
             // create all graphs which are known to be in the configuration
             for (String graphSpec : graphSpecs) {
@@ -255,11 +259,6 @@ public class ConfigurationTest {
 
     @Test
     public void testGetGraphs1() throws Exception {
-
-    }
-
-    @Test
-    public void testIsInducedSubgraph() throws Exception {
 
     }
 }

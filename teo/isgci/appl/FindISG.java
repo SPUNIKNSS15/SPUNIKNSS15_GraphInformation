@@ -136,18 +136,34 @@ public class FindISG{
         }
 
         t1=System.currentTimeMillis();
-        for (int i = 0; i < configurations.size(); i++)
+
+        System.out.println("---- All configuration samples ----");
+
+        for (int i = 0; i < configurations.size(); i++) {
+            Configuration conf = (Configuration) configurations.elementAt(i);
+            Vector<Graph> contained = conf.getGraphs();
+
+
+            System.out.println(conf);
+            System.out.println("contains");
+
+            for (Graph g : contained) {
+                System.out.println(g);
+            }
+
+            System.out.println("induces");
+
             for (int j = 0; j < graphs.size(); j++) {
-                Configuration C = (Configuration) configurations.elementAt(i);
                 Graph g = (Graph) graphs.elementAt(j);
 
-                if (!g.getName().startsWith("USG") && C.isInducedSubgraph(g)) {
-/*                    System.err.print("  XXXX " + g.getName()
-                                    + " ist in allen Repräsentanten von "
-                                    + C.getName() + " enthalten \n");*/
-                    C.addInduced(g);
+                if (!g.getName().startsWith("USG") && conf.isInducedSubgraph(g)) {
+                    System.out.println(g);
+                    conf.addInduced(g);
                 }
             }
+
+            System.out.println("");
+        }
 
         t2=System.currentTimeMillis();
 
@@ -338,18 +354,6 @@ public class FindISG{
             Configuration c = (Configuration) configurations.elementAt(ci);
 
             Vector<Graph> contained = c.getGraphs();
-
-            // -- Additional output to determine all graphs of a configuration -- //
-            System.out.println(c);
-            System.out.println("All contained graphs:");
-
-            for (Graph g : contained) {
-                System.out.println(g.toString());
-            }
-
-            System.out.println("");
-
-            // ------------------------------------------------------------------ //
 
         /* das ist genau dann der Fall, wenn es zuviele Repräsentanten gibt */
             if (contained == null) {
