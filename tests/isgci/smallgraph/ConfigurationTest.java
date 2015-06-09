@@ -45,14 +45,17 @@ public class ConfigurationTest {
      * of a configuration sample and the current implementation.
      */
     private class RepDiff {
-        private final int sampleNo;
+        public final int sampleNo;
+        public final int both;
         public final ArrayList<Graph> sampleOnly;
         public final ArrayList<Graph> internalOnly;
 
         public RepDiff(int sampleNo,
+                       int both,
                        ArrayList<Graph> sampleOnly,
                        ArrayList<Graph> internalOnly) {
             this.sampleNo = sampleNo;
+            this.both = both;
             this.sampleOnly = sampleOnly;
             this.internalOnly = internalOnly;
         }
@@ -244,6 +247,7 @@ public class ConfigurationTest {
             }
 
             ArrayList<Graph> calculatedGraphs= new ArrayList<>(conf.getGraphs());
+            int both = 0;
 
             // search isomorphic Graph in calculatedGraphs for
             // each graph in confGraphs. Then drop both.
@@ -252,11 +256,12 @@ public class ConfigurationTest {
                     if (sampleGraph.isIsomorphic(calculatedGraph)) {
                         confGraphs.remove(sampleGraph);
                         calculatedGraphs.remove(calculatedGraph);
+                        both++;
                     }
                 }
             }
 
-            return new RepDiff(sampleNo, confGraphs, calculatedGraphs);
+            return new RepDiff(sampleNo, both, confGraphs, calculatedGraphs);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -270,7 +275,7 @@ public class ConfigurationTest {
      * of Configuration.getGraphs() against the correct set of graphs
      * using isomorphism tests.
      *
-     * Counts and Prints the number of Failures
+     * Prints detailed info on unmatched graphs.
      *
      * See data/configsamples/README.md for info on the sample files.
      *
@@ -291,17 +296,18 @@ public class ConfigurationTest {
 
         if (diffList.size() > 0) {
             System.out.println("Some samples could not be matched.\n");
-            System.out.format("%20s%20s%15s\n", "Sample no", "In Sample only", "Internal only");
+            System.out.format("%20s%20s%15s%15s\n", "Sample no", "In Sample only", "Internal only", "Both");
 
             for (RepDiff d : diffList) {
-                System.out.format("%20s%20d%15d\n", d.sampleNo, d.sampleOnly.size(), d.internalOnly.size());
+                System.out.format("%20s%20d%15d%15d\n", d.sampleNo, d.sampleOnly.size(), d.internalOnly.size(), d.both);
             }
 
             System.out.println();
-            System.out.format("%10s%10s%20s%15s\n", "Total:",
+            System.out.format("%10s%10d%20d%15d%15d\n", "Total:",
                             diffList.size(),
+                            diffList.stream().map(d -> d.sampleOnly.size()).reduce(0, Integer::sum),
                             diffList.stream().map(d -> d.internalOnly.size()).reduce(0, Integer::sum),
-                            diffList.stream().map(d -> d.sampleOnly.size()).reduce(0, Integer::sum));
+                            diffList.stream().map(d -> d.both).reduce(0, Integer::sum));
         } else {
             System.out.println("All samples could be matched.");
         }
