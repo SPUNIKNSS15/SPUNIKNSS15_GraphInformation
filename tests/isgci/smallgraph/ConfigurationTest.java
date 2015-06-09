@@ -195,8 +195,10 @@ public class ConfigurationTest {
      * sample.
      *
      * @param sampleNo the number of the sample to parse
+     * @return true if for each graph in confGraphs exists exactly one isomorphic graph in calculatedGraphs
+     *          false if not
      */
-    private void testGetGraphsConfigurationSample(int sampleNo) {
+    private boolean testGetGraphsConfigurationSample(int sampleNo) {
         String file = String.format(samplePath + "sample-configuration-%02d", sampleNo);
 
         // Parse the sample configuration
@@ -232,12 +234,14 @@ public class ConfigurationTest {
 
             // if both lists are empty, for each graph in confGraphs exists exactly one
             // isomorphic graph in calculatedGraphs
-            Assert.assertTrue(confGraphs.isEmpty());
-            Assert.assertTrue(calculatedGraphs.isEmpty());
+            if(confGraphs.isEmpty() && calculatedGraphs.isEmpty() ) {
+                return true;
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     /**
@@ -246,15 +250,28 @@ public class ConfigurationTest {
      * of Configuration.getGraphs() against the correct set of graphs
      * using isomorphism tests.
      *
+     * Counts and Prints the number of Failures
+     *
      * See data/configsamples/README.md for info on the sample files.
      *
      * @throws Exception
+     * @fails counts number of Failures
      */
     @Test
     public void testGetGraphs() throws Exception {
+
+        int fails = 0;
+
         for (int sampleNo = 0; sampleNo < numSamples; sampleNo++) {
-            testGetGraphsConfigurationSample(sampleNo);
+            if(! testGetGraphsConfigurationSample(sampleNo)){
+                fails++;
+            }
         }
+
+        System.out.println("Number of Failures: " + fails);
+
+        Assert.assertTrue(fails == 0);
+
     }
 
     @Test
