@@ -13,7 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +39,31 @@ public class ConfigurationTest {
     private Pattern edgesPattern;
 
     private Configuration conf;
+
+    /**
+     * Class describing the differences between the representatives
+     * of a configuration sample and the current implementation.
+     */
+    private class RepDiff {
+        private final int sampleNo;
+        public final ArrayList<Graph> sampleOnly;
+        public final ArrayList<Graph> internalOnly;
+
+        public RepDiff(int sampleNo,
+                       ArrayList<Graph> sampleOnly,
+                       ArrayList<Graph> internalOnly) {
+            this.sampleNo = sampleNo;
+            this.sampleOnly = sampleOnly;
+            this.internalOnly = internalOnly;
+        }
+
+        /**
+         * @return true if sampleOnly and internalOnly are both empty
+         */
+        public boolean isMatch() {
+            return sampleOnly.isEmpty() && internalOnly.isEmpty();
+        }
+    }
 
     public ConfigurationTest() {
         // patterns for parsing the Configuration spec
@@ -195,10 +219,10 @@ public class ConfigurationTest {
      * sample.
      *
      * @param sampleNo the number of the sample to parse
-     * @return true if for each graph in confGraphs exists exactly one isomorphic graph in calculatedGraphs
-     *          false if not
+     * @return a RepDiff object containing the representatives which could not be
+     * matched
      */
-    private boolean testGetGraphsConfigurationSample(int sampleNo) {
+    private RepDiff testGetGraphsConfigurationSample(int sampleNo) {
         String file = String.format(samplePath + "sample-configuration-%02d", sampleNo);
 
         // Parse the sample configuration
@@ -232,16 +256,12 @@ public class ConfigurationTest {
                 }
             }
 
-            // if both lists are empty, for each graph in confGraphs exists exactly one
-            // isomorphic graph in calculatedGraphs
-            if(confGraphs.isEmpty() && calculatedGraphs.isEmpty() ) {
-                return true;
-            }
+            return new RepDiff(sampleNo, confGraphs, calculatedGraphs);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 
     /**
@@ -255,31 +275,38 @@ public class ConfigurationTest {
      * See data/configsamples/README.md for info on the sample files.
      *
      * @throws Exception
-     * @fails counts number of Failures
-     * @failsList contains all samplNumbers which lead to failures
      */
     @Test
     public void testGetGraphs() throws Exception {
-
-        int fails = 0;
-        List<Integer> failsList = new ArrayList<Integer>();
-
+        ArrayList<RepDiff> diffList = new ArrayList<>();
 
         for (int sampleNo = 0; sampleNo < numSamples; sampleNo++) {
-            if(! testGetGraphsConfigurationSample(sampleNo)){
-                fails++;
-                failsList.add(sampleNo);
+            RepDiff d = testGetGraphsConfigurationSample(sampleNo);
+            if (!d.isMatch()) {
+                diffList.add(d);
             }
         }
 
-        //if Failures existing, print the count of Failures and the List of failing Sampls
-        if (fails > 0) {
-            System.out.println("Count of Failures: " + fails);
-            System.out.println("SamplNumbers which lead to an Error: " + failsList.toString());
+        System.out.println("--- Testing getGraphs() ---");
+
+        if (diffList.size() > 0) {
+            System.out.println("Some samples could not be matched.\n");
+            System.out.format("%20s%20s%15s\n", "Sample no", "In Sample only", "Internal only");
+
+            for (RepDiff d : diffList) {
+                System.out.format("%20s%20d%15d\n", d.sampleNo, d.sampleOnly.size(), d.internalOnly.size());
+            }
+
+            System.out.println();
+            System.out.format("%10s%10s%20s%15s\n", "Total:",
+                            diffList.size(),
+                            diffList.stream().map(d -> d.internalOnly.size()).reduce(0, Integer::sum),
+                            diffList.stream().map(d -> d.sampleOnly.size()).reduce(0, Integer::sum));
+        } else {
+            System.out.println("All samples could be matched.");
         }
 
-        Assert.assertTrue(fails == 0);
-
+        Assert.assertTrue(diffList.isEmpty());
     }
 
     @Test
