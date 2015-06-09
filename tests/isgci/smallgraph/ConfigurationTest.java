@@ -1,10 +1,9 @@
 package tests.isgci.smallgraph;
 
-import org.junit.Assert;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import teo.isgci.smallgraph.Configuration;
 import teo.isgci.smallgraph.Graph;
 
@@ -26,13 +25,13 @@ import java.util.regex.Pattern;
 public class ConfigurationTest {
 
     // place to look for configuration samples
-    private String samplePath = "tests/data/configsamples/oldimpl/";
+    private final String samplePath = "tests/data/configsamples/";
 
     // number of available configuration samples
-    private int numSamples = 54;
+    private final int numSamples = 54;
 
-    private String normalEdgeSep = "-";
-    private String optionalEdgeSep = "=";
+    private final String normalEdgeSep = "-";
+    private final String optionalEdgeSep = "=";
 
     private Pattern noNodesPattern;
     private Pattern namePattern;
@@ -41,6 +40,31 @@ public class ConfigurationTest {
 
     private Configuration conf;
 
+    /**
+     * Class describing the differences between the representatives
+     * of a configuration sample and the current implementation.
+     */
+    private class RepDiff {
+        private final int sampleNo;
+        public final ArrayList<Graph> sampleOnly;
+        public final ArrayList<Graph> internalOnly;
+
+        public RepDiff(int sampleNo,
+                       ArrayList<Graph> sampleOnly,
+                       ArrayList<Graph> internalOnly) {
+            this.sampleNo = sampleNo;
+            this.sampleOnly = sampleOnly;
+            this.internalOnly = internalOnly;
+        }
+
+        /**
+         * @return true if sampleOnly and internalOnly are both empty
+         */
+        public boolean isMatch() {
+            return sampleOnly.isEmpty() && internalOnly.isEmpty();
+        }
+    }
+
     public ConfigurationTest() {
         // patterns for parsing the Configuration spec
         noNodesPattern = Pattern.compile("\\{[0-9]*\\}");
@@ -48,8 +72,9 @@ public class ConfigurationTest {
 
         // patterns for parsing the Graph spec
         nodesPattern = Pattern.compile("\\[(([0-9]+,\\ )*[0-9]+)*\\]");
-        // the edges pattern only works if the first occurrence of the nodes pattern
-        // is removed from the matched string first
+        // the following edges pattern only works if the first
+        // occurrence of nodesPattern is removed from the matched
+        // string first
         edgesPattern = Pattern.compile("\\[.*\\]");
     }
 
@@ -188,25 +213,30 @@ public class ConfigurationTest {
     }
 
     /**
-     * Reads in a sample from "tests/configuration/configurations" and
+     * Reads in a sample from "tests/data/configsamples" and
      * sets up the internal Configuration object according to the sample spec.
      * Then Configuration.getGraphs() is matched against the graphs in the
      * sample.
      *
      * @param sampleNo the number of the sample to parse
+     * @return a RepDiff object containing the representatives which could not be
+     * matched
      */
-    private void testGetGraphsConfigurationSample(int sampleNo) {
+    private RepDiff testGetGraphsConfigurationSample(int sampleNo) {
         String file = String.format(samplePath + "sample-configuration-%02d", sampleNo);
 
         // Parse the sample configuration
         try {
             String confSample = new String(Files.readAllBytes(Paths.get(file)), StandardCharsets.UTF_8);
 
-            String[] parts = confSample.split("All contained graphs:");
-            setupConfigurationFromString(parts[0]);
+            String[] parts = confSample.split("contains");
+            String confSpec = parts[0];
+            String contained = parts[1].split("induces")[0];
+
+            setupConfigurationFromString(confSpec);
 
             ArrayList<Graph> confGraphs = new ArrayList<>();
-            ArrayList<String> graphSpecs = new ArrayList<>(Arrays.asList(parts[1].trim().split("\\n")));
+            ArrayList<String> graphSpecs = new ArrayList<>(Arrays.asList(contained.trim().split("\\n")));
 
             // create all graphs which are known to be in the configuration
             for (String graphSpec : graphSpecs) {
@@ -226,14 +256,12 @@ public class ConfigurationTest {
                 }
             }
 
-            // if both lists are empty, for each graph in confGraphs exists exactly one
-            // isomorphic graph in calculatedGraphs
-            Assert.assertTrue(confGraphs.isEmpty());
-            Assert.assertTrue(calculatedGraphs.isEmpty());
+            return new RepDiff(sampleNo, confGraphs, calculatedGraphs);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     /**
@@ -242,24 +270,47 @@ public class ConfigurationTest {
      * of Configuration.getGraphs() against the correct set of graphs
      * using isomorphism tests.
      *
+     * Counts and Prints the number of Failures
+     *
      * See data/configsamples/README.md for info on the sample files.
      *
      * @throws Exception
      */
     @Test
     public void testGetGraphs() throws Exception {
+        ArrayList<RepDiff> diffList = new ArrayList<>();
+
         for (int sampleNo = 0; sampleNo < numSamples; sampleNo++) {
-            testGetGraphsConfigurationSample(sampleNo);
+            RepDiff d = testGetGraphsConfigurationSample(sampleNo);
+            if (!d.isMatch()) {
+                diffList.add(d);
+            }
         }
+
+        System.out.println("--- Testing getGraphs() ---");
+
+        if (diffList.size() > 0) {
+            System.out.println("Some samples could not be matched.\n");
+            System.out.format("%20s%20s%15s\n", "Sample no", "In Sample only", "Internal only");
+
+            for (RepDiff d : diffList) {
+                System.out.format("%20s%20d%15d\n", d.sampleNo, d.sampleOnly.size(), d.internalOnly.size());
+            }
+
+            System.out.println();
+            System.out.format("%10s%10s%20s%15s\n", "Total:",
+                            diffList.size(),
+                            diffList.stream().map(d -> d.internalOnly.size()).reduce(0, Integer::sum),
+                            diffList.stream().map(d -> d.sampleOnly.size()).reduce(0, Integer::sum));
+        } else {
+            System.out.println("All samples could be matched.");
+        }
+
+        Assert.assertTrue(diffList.isEmpty());
     }
 
     @Test
     public void testGetGraphs1() throws Exception {
-
-    }
-
-    @Test
-    public void testIsInducedSubgraph() throws Exception {
 
     }
 }
