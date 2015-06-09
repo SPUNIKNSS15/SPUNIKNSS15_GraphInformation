@@ -1,10 +1,9 @@
 package tests.isgci.smallgraph;
 
-import org.junit.Assert;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import teo.isgci.smallgraph.Configuration;
 import teo.isgci.smallgraph.Graph;
 
@@ -14,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -256,19 +256,27 @@ public class ConfigurationTest {
      *
      * @throws Exception
      * @fails counts number of Failures
+     * @failsList contains all samplNumbers which lead to failures
      */
     @Test
     public void testGetGraphs() throws Exception {
 
         int fails = 0;
+        List<Integer> failsList = new ArrayList<Integer>();
+
 
         for (int sampleNo = 0; sampleNo < numSamples; sampleNo++) {
             if(! testGetGraphsConfigurationSample(sampleNo)){
                 fails++;
+                failsList.add(sampleNo);
             }
         }
 
-        System.out.println("Number of Failures: " + fails);
+        //if Failures existing, print the count of Failures and the List of failing Sampls
+        if (fails > 0) {
+            System.out.println("Count of Failures: " + fails);
+            System.out.println("SamplNumbers which lead to an Error: " + failsList.toString());
+        }
 
         Assert.assertTrue(fails == 0);
 
