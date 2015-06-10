@@ -9,12 +9,12 @@
  */
 
 package teo.isgci.smallgraph;
-
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.experimental.subgraphisomorphism.VF2SubgraphIsomorphismInspector;
 import org.jgrapht.graph.DefaultEdge;
-
+import org.jgrapht.graph.ListenableUndirectedGraph;
+import org.jgrapht.graph.SimpleGraph;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -22,8 +22,9 @@ public class Graph extends SmallGraph {
 
     //to retrieve component count and mask
     private ConnectivityInspector<Integer, DefaultEdge> connectivityInspector;
-
+    private ListenableUndirectedGraph<Integer, DefaultEdge> graph;
     private boolean is_bottom;
+    private ListenableUndirectedGraph<Integer, DefaultEdge> complement;
 
     /** Creates a new graph without nodes. */
     public Graph(){
@@ -33,12 +34,11 @@ public class Graph extends SmallGraph {
     /** Creates a new graph with <tt>n</tt> nodes. */
     public Graph(int n){
         super();
+        graph = new ListenableUndirectedGraph<Integer, DefaultEdge>( new SimpleGraph<Integer, DefaultEdge>(DefaultEdge.class));
 
-        connectivityInspector = new ConnectivityInspector<>(this);
-
+        connectivityInspector = new ConnectivityInspector<>(this.graph);
         /* make connectivity inspector be notified at changes */
-        this.addGraphListener(connectivityInspector);
-
+        this.graph.addGraphListener(connectivityInspector);
         addNodesCount(n);
     }
 
@@ -58,12 +58,12 @@ public class Graph extends SmallGraph {
 
         /* fill it with n nodes */
         for(int i=0; i<n; i++) {
-            this.addVertex(i);
+            graph.addVertex(i);
         }
     }
     
     /** Copy the contents of gs into this. */
-    private void copyFrom(SmallGraph gs){
+    private void copyFrom(Graph gs){
 
         /* bottom graphs are empty */
         if ( ((Graph)gs).is_bottom ) {
@@ -73,7 +73,7 @@ public class Graph extends SmallGraph {
 
         clear();
 
-        Graphs.addGraph(this, gs);
+        Graphs.addGraph(graph, gs.graph);
     }
 
     public void copyFromComplement() {
@@ -83,19 +83,19 @@ public class Graph extends SmallGraph {
         clear();
 
         /* Then rebuild from complement. */
-        Graphs.addAllVertices(this, complement.vertexSet());
+        Graphs.addAllVertices(graph, complement.vertexSet());
 
         for(int from : complement.vertexSet()) {
             for (int to : complement.vertexSet()) {
                 if ( from != to && complement.getEdge(from, to) == null ) {
-                    this.addEdge(from, to);
+                    graph.addEdge(from, to);
                 }
             }
         }
     }
 
     private void clear() {
-        this.removeAllVertices(new ArrayList<>(this.vertexSet()));
+        graph.removeAllVertices(new ArrayList<>(graph.vertexSet()));
     }
 
     public boolean getBottom(){
@@ -104,17 +104,19 @@ public class Graph extends SmallGraph {
     
     /** Counts the nodes in this graph. */
     public int countNodes(){
-        return this.vertexSet().size();
+        return graph.vertexSet().size();
     }
     
     /** Counts the edges in this graph. */
     public int countEdges(){
-        return this.edgeSet().size();
+        return graph.edgeSet().size();
     }
+
+
     
     /** Adds a node to the graph. */
     public void addNode(){
-        this.addVertex(this.vertexSet().size());
+        graph.addVertex(graph.vertexSet().size());
     }
     
     // --------------------------------------------------------------
@@ -127,7 +129,7 @@ public class Graph extends SmallGraph {
         }
 
         /* check if number of nodes and edges are equal */
-        if( this.vertexSet().size() != g.vertexSet().size() || this.edgeSet().size() != g.edgeSet().size() ) {
+        if( graph.vertexSet().size() != g.graph.vertexSet().size() || graph.edgeSet().size() != g.graph.edgeSet().size() ) {
             return false;
         }
 
@@ -137,13 +139,13 @@ public class Graph extends SmallGraph {
         }
 
         /* after checked for equal edge count, sub-isomorphism is the same as isomorphism */
-        return new VF2SubgraphIsomorphismInspector<>(this, g).isSubgraphIsomorphic();
+        return new VF2SubgraphIsomorphismInspector<>(graph, g.graph).isSubgraphIsomorphic();
     }
 
 
     /* liefert true, wenn g ein von this induzierter Teilgraph ist */
     public boolean isSubIsomorphic(Graph g) {
-        return new VF2SubgraphIsomorphismInspector<>(this, g).isSubgraphIsomorphic();
+        return new VF2SubgraphIsomorphismInspector<>(graph, g.graph).isSubgraphIsomorphic();
     }
 
     public int getComponents(){
@@ -154,6 +156,7 @@ public class Graph extends SmallGraph {
     public Set<Integer> getComponent(int num){
         return connectivityInspector.connectedSets().get(num);
     }
-}
 
+    public ListenableUndirectedGraph<Integer, DefaultEdge> getGraph() { return this.graph; }
+}
 /* EOF */
