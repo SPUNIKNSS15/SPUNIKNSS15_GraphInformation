@@ -2,7 +2,8 @@ VF2 Cases of failure
 ====================
 
 VF2 does not seem to recognize isomorphisms on the following pairs of graphs whom
-we know to be isomorphic:
+we know to be isomorphic (isomorphisms validated by the getGraphs() unit test and
+SubgraphIsomorphismTestUtils):
 
 ```
 ([0, 1, 2, 3, 4, 5], [{0,1}, {1,2}, {2,3}, {2,4}, {0,5}, {3,5}]) and
