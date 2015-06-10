@@ -314,9 +314,4 @@ public class ConfigurationTest {
 
         Assert.assertTrue(diffList.isEmpty());
     }
-
-    @Test
-    public void testGetGraphs1() throws Exception {
-
-    }
 }
