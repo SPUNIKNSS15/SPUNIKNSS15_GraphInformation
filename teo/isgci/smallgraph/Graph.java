@@ -11,6 +11,7 @@
 package teo.isgci.smallgraph;
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.ConnectivityInspector;
+import org.jgrapht.alg.VertexCovers;
 import org.jgrapht.experimental.subgraphisomorphism.VF2SubgraphIsomorphismInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.ListenableUndirectedGraph;
@@ -93,6 +94,14 @@ public class Graph extends SmallGraph {
             }
         }
     }
+
+    public void addEdge(int x, int y) { graph.addEdge(new Integer(x), new Integer(y)); }
+
+    public boolean getEdge(int x, int y) { return graph.containsEdge(x,y); }
+
+    public Set<Integer> getVertexCover() { return VertexCovers.findGreedyCover(graph); }
+
+    public int degree(int v) { return graph.degreeOf(v); }
 
     private void clear() {
         graph.removeAllVertices(new ArrayList<>(graph.vertexSet()));

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public abstract class SmallGraph extends ListenableUndirectedGraph<Integer, DefaultEdge> {
+public abstract class SmallGraph {
     
     /** List of names, the first is the prime, the others are aliases */
     protected List<String> names;
@@ -35,7 +35,6 @@ public abstract class SmallGraph extends ListenableUndirectedGraph<Integer, Defa
     
     /** Creates a new empty SmallGraph */
     public SmallGraph() {
-        super(DefaultEdge.class);
         names = null;
         link = null;
         complement = null;

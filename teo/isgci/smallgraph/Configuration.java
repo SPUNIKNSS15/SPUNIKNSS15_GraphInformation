@@ -837,7 +837,7 @@ public class Configuration extends SmallGraph{
 
         /* /g/ hat zwei Knoten */
         if (g.countNodes() == 2) {
-            if (g.degreeOf(0) == 1) {
+            if (g.degree(0) == 1) {
                 /* /g/ ist ein K2 */
                 for (i = 0; i < cnt - 1; i++)
                     for (j = i + 1; j < cnt; j++)
@@ -908,7 +908,8 @@ public class Configuration extends SmallGraph{
                     if (matrix[i][j] == OPTEDGE)
                         h.addEdge(i,j);
 
-            Set<Integer> vertexCover = VertexCovers.findGreedyCover(h);
+            Set<Integer> vertexCover = h.getVertexCover();
+
             Set<Integer> invertedCover = new HashSet<>();
             for (int candidate = 0; candidate < cnt; candidate++) {
                 if ( !vertexCover.contains(candidate) ) {

@@ -147,7 +147,7 @@ public class HMTGrammar{
         /* Add edges from y */
         for (p = 0; p < y.countNodes()-1; p++)
             for (q = p+1; q < y.countNodes(); q++)
-                if (y.getEdge(p, q) != null)
+                if (y.getEdge(p, q))
                     z.addEdge(f[p], f[q]);
 
         /* Make attachment */
@@ -194,7 +194,7 @@ public class HMTGrammar{
          * order. That is, if att(0) = 0, att(5) = 1, att(2) = 2, then
          * att=[0,5,2].
          * If the graph has no att (ext), use null.
-         */
+         */ boolean
         public HMTGraph(Graph graph, int[] ext, int[] att){
             super(graph);
             if (att != null  &&  att.length != type  ||
