@@ -27,7 +27,6 @@ public class Graph extends SmallGraph {
     private boolean is_bottom;
     private ListenableUndirectedGraph<Integer, DefaultEdge> complement;
 
-
     /** Creates a new graph without nodes. */
     public Graph(){
         this(0);
@@ -73,13 +72,12 @@ public class Graph extends SmallGraph {
     private void copyFrom(Graph gs){
 
         /* bottom graphs are empty */
-        if ( ((Graph)gs).is_bottom ) {
+        if ( gs.is_bottom ) {
             is_bottom = true;
             return;
         }
 
         clear();
-
         Graphs.addGraph(graph, gs.graph);
     }
 
@@ -91,11 +89,12 @@ public class Graph extends SmallGraph {
         clear();
 
         /* Then rebuild from complement. */
-        Graphs.addAllVertices(graph, complement.vertexSet());
 
-        for(int from : complement.vertexSet()) {
-            for (int to : complement.vertexSet()) {
-                if ( from != to && complement.getEdge(from, to) == null ) {
+        Graphs.addAllVertices(graph, ((Graph)complement).graph.vertexSet());
+
+        for(int from : ((Graph)complement).graph.vertexSet()) {
+            for (int to : ((Graph)complement).graph.vertexSet()) {
+                if ( from != to && ((Graph)complement).graph.getEdge(from, to) == null ) {
                     graph.addEdge(from, to);
                 }
             }
