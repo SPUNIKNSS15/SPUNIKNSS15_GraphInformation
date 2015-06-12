@@ -72,13 +72,13 @@ public class Graph extends SmallGraph {
     private void copyFrom(Graph gs){
 
         /* bottom graphs are empty */
-        if ( gs.is_bottom ) {
+        if ( ((Graph)gs).is_bottom ) {
             is_bottom = true;
             return;
         }
 
         clear();
-        Graphs.addGraph(graph, gs.graph);
+        Graphs.addGraph(graph, ((Graph)gs).graph);
     }
 
     public void copyFromComplement() {
@@ -90,7 +90,7 @@ public class Graph extends SmallGraph {
 
         /* Then rebuild from complement. */
 
-        Graphs.addAllVertices(graph, ((Graph)complement).graph.vertexSet());
+        Graphs.addAllVertices(graph, ((Graph) complement).graph.vertexSet());
 
         for(int from : ((Graph)complement).graph.vertexSet()) {
             for (int to : ((Graph)complement).graph.vertexSet()) {
