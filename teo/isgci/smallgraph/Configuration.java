@@ -16,6 +16,18 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
+/**
+ * A Configuration consists of a base graph and a set
+ * of optional edges (OPTEDGE). All graphs which can be built by
+ * adding arbitrary subsets of those edges to the base graph
+ * are part of the Configuration.
+ *
+ * Alternatively, a set of forbidden edges (NONEDGES) can
+ * be specified, which are the complement of the optional edges.
+ *
+ * Be careful not to mix both approaches, as no validity checks
+ * are made.
+ */
 public class Configuration extends SmallGraph{
     private int matrix[][];
     private int cnt;  // number of nodes in Configuration
@@ -27,18 +39,27 @@ public class Configuration extends SmallGraph{
 
     /** Graphs contained in Configuration */
     private Vector<SmallGraph> contains;
-    
+
+    /**
+     * Empty Configuration.
+     */
     public Configuration(){
         this(0);
     }
-    
+
+    /**
+     * Configuration with <tt>n</tt> nodes and no edges.
+     * @param n number of nodes for initialization
+     */
     public Configuration(int n){
         super();
         contains = null;
         addNodesCount(n);
     }
-    
 
+    /**
+     * TODO: comment this
+     */
     public void copyFromComplement() {
         int i, j;
 
@@ -69,7 +90,15 @@ public class Configuration extends SmallGraph{
         this.initWithMaskedConfiguration(c, mask);
     }
 
-    /* erzeugt eine Konfiguration mit einem Subset der Knoten von c */
+    /**
+     * Creates a new Configuration, which is 'induced' by c.
+     * This means copying all nodes which are specified by
+     * the bitmask <tt>mask</tt> and adding all edges between those
+     * nodes which exist in <tt>c</tt>.
+     *
+     * @param c Configuration which shall induce this
+     * @param includedNodes determines which nodes should be taken over
+     */
     public Configuration(Configuration c, Set<Integer> includedNodes) {
         super();
 
@@ -117,6 +146,12 @@ public class Configuration extends SmallGraph{
         link = null;
     }
 
+    /**
+     * Initialize with n nodes and reset the internal state.
+     * Resets all edges to UNKNOWN.
+     *
+     * @param n number of nodes for initialization
+     */
     public void addNodesCount(int n){
         cnt = n;
         matrix = new int[cnt][cnt];
@@ -125,13 +160,15 @@ public class Configuration extends SmallGraph{
                 matrix[i][j] = i==j ? NONEDGE : UNKNOWN;
         contains = null;
     }
-    
-    /** Counts the nodes in this Configuration. */
+
+    /**
+     * @return the number of nodes in the Configuration
+     */
     public int countNodes(){
         return cnt;
     }
-    
-    /** 
+
+    /**
      * Adds an edge to the Configuration.
      * <tt>type</tt> shows which edge should be added.
      */
@@ -156,27 +193,54 @@ public class Configuration extends SmallGraph{
         matrix[a][b] = type;
         matrix[b][a] = type;
     }
-    
-    /** Adds an edge to Configuration */
+
+    /**
+     * Adds a new edge to the base graph, from
+     * <tt>a</tt> to <tt>b</tt>.
+     *
+     * @param a first node of the edge
+     * @param b second node of the edge
+     */
     public void addEdge(int a, int b){
         addEdge(a, b, EDGE);
     }
-    
-    /** Adds an nonedge to Configuration */
+
+    /**
+     * Adds a new forbidden edge.
+     *
+     * @param a first node of the edge
+     * @param b second node of the edge
+     */
     public void addNonedge(int a, int b){
         addEdge(a, b, NONEDGE);
     }
-    
-    /** Adds an optedge to Configuration */
+
+    /**
+     * Adds a new optional edge.
+     *
+     * @param a first node of the edge
+     * @param b second node of the edge
+     */
     public void addOptedge(int a, int b){
         addEdge(a, b, OPTEDGE);
     }
-    
+
+    /**
+     *
+     * @param a first node of the edge
+     * @param b second node of the edge
+     * @return returns the edge type
+     */
     public int getEdge(int a, int b){
         return matrix[a][b];
     }
-    
-    /** Counts the edges of type <tt>type</tt> in Configuration */
+
+    /**
+     * Counts the edges of type <tt>type</tt>.
+     *
+     * @param type edge type
+     * @return number of edges of type <tt>type</tt>
+     */
     public int countEdges(int type){
         int i, j, n=0;
         for (i=0; i<cnt; i++)
@@ -185,25 +249,37 @@ public class Configuration extends SmallGraph{
                     n++;
         return n;
     }
-    
-    /** Counts the edges in Configuration */
+
+    /**
+     *
+     * @return number of normal edges
+     */
     public int countEdges(){
         return countEdges(EDGE);
     }
 
-    /** Counts the nonedges in Configuration */
+    /**
+     *
+     * @return number of forbidden edges
+     */
     public int countNonedges(){
         return countEdges(NONEDGE);
     }
 
-    /** Counts the optedges in Configuration */
+    /**
+     *
+     * @return number of optional edges
+     */
     public int countOptedges(){
         return countEdges(OPTEDGE);
     }
 
-    /** 
-     * Returns the degree of type <tt>type</tt> of the node at index
-     * <tt>v</tt>.
+    /**
+     * Calculates the degree of a node according to an edge type.
+     *
+     * @param v node index
+     * @param type edge type to be counted
+     * @return degree of type <tt>type</tt> of the node at index <tt>v</tt>
      */
     public int degree(int v, int type){
         if (v<0 || v>=cnt) return -1; // illegal argument
@@ -215,9 +291,15 @@ public class Configuration extends SmallGraph{
         return n;
     }
 
-    /** 
-     * Returns the degree of type <tt>type</tt> of the node at index
-     * <tt>v</tt> in the subgraph induced by <tt>mask<tt>.
+    /**
+     * Calculates the degree of a node in an induced configuration
+     * according to an edge type.
+     *
+     * @param v node index
+     * @param type edge type to be counted
+     * @param mask which specifies the induced configuration
+     * @return degree of type <tt>type</tt> of the node at index
+     * <tt>v</tt> in the subgraph induced by <tt>mask<tt>
      */
     public int degree(int v, int type, boolean mask[]){
         if (v<0 || v>=cnt || !mask[v]) return -1; // illegal argument
@@ -229,42 +311,82 @@ public class Configuration extends SmallGraph{
         return n;
     }
 
-    /** Returns the degree of the node at index <tt>v</tt> */
+    /**
+     * Calculates the normal-edge-degree of a node.
+     *
+     * @param v node index
+     * @return the degree of the node at index <tt>v</tt>
+     */
     public int degree(int v){
         return degree(v, EDGE);
     }
 
-    /** Returns the degree of the node at index <tt>v</tt> in the subgraph
-     * induced by <tt>mask<tt>. */
+    /**
+     * Calculates the normal-edge-degree of a node in an induced
+     * configuration.
+     *
+     * @param v node index
+     * @param mask which specifies the induced configuration
+     * @return the degree of the node at index <tt>v</tt> in the subgraph
+     * induced by <tt>mask<tt>
+     */
     public int degree(int v, boolean mask[]){
         return degree(v, EDGE, mask);
     }
 
-    /** Returns the optDegree of the node at index <tt>v</tt> */
+    /**
+     * Calculates the optional-edge-degree of a node.
+     *
+     * @param v node index
+     * @return the optDegree of the node at index <tt>v</tt>
+     */
     public int optDegree(int v){
         return degree(v, OPTEDGE);
     }
 
-    /** Returns the optDegree of the node at index <tt>v</tt> in the subgraph
-     * induced by <tt>mask<tt> */
+    /**
+     * Calculates the optional-edge-degree of a node in an induced
+     * configuration.
+     *
+     * @param v node index
+     * @param mask which specifies the induced configuration
+     * @return the degree of the node at index <tt>v</tt> in the subgraph
+     *   induced by <tt>mask<tt>
+     */
     public int optDegree(int v, boolean mask[]){
         return degree(v, OPTEDGE, mask);
     }
-    
-    /** Adds contains <tt>elt</tt> to Configuration */
+
+    /**
+     * Adds the graph <tt>elt</tt> to the list of contained
+     * graphs.
+     *
+     * @param elt graph to be added
+     *
+     * TODO: why not private?
+     */
     public void addContains(Graph elt){
         if (contains == null)
             contains = new Vector<SmallGraph>(2,2);
         if (!contains.contains(elt))
             contains.addElement(elt);
     }
-    
-    /** Returns Vector contains */
+
+    /**
+     *
+     * @return the list of contained graphs
+     */
     public Vector<SmallGraph> getContains(){
         return contains;
     }
 
-
+    /**
+     * Creates a String representation of this Configuration.
+     * edges displayed with '-'.
+     * optional edges displayed with '='.
+     *
+     * @return the Configuration as a string
+     */
     public String toString(){
         if(cnt == 0)
             return "";
@@ -281,21 +403,46 @@ public class Configuration extends SmallGraph{
         return s;
     }
 
+    /**
+     * Adds <tt>g</tt> to the internal list of induced subgraphs.
+     *
+     * @param g the induced subgraph to be added
+     *
+     * TODO: why not private?
+     */
     public void addInduced(Graph g){
         Vector<SmallGraph> innerVec = new Vector<SmallGraph>();
         innerVec.addElement(g);
         this.addInduced(innerVec);
     }
 
+    /**
+     * @return all representatives of the configuration, if less than 100
+     */
     public Vector<Graph> getGraphs(){
         return getGraphs(100);
     }
 
-    /** Calculates Graphs from contains of Configuration */
+    /**
+     * Returns a list containing all graphs of the
+     * Configuration.
+     *
+     * @param maxGraphs amount of graphs to calculate
+     * @return a Vector containing the graphs or null if
+     *    if more than <tt>maxGraphs</tt> were built
+     *
+     * TODO:
+     *   - why Vector and not ArrayList ?
+     */
     public Vector<Graph> getGraphs(int maxGraphs){
         final boolean DEBUG = false; /* auf true setzen für Debug-Ausgaben */
+        /* because we have signed 32 bit Integers as bitmask for optional edges
+         we restrict our calculations to 30 optional edges */
         final int maxOptEdges = 30;
 
+        /* optEdges contains a representation of all optional edges,
+        indexed by the occurence in the matrix from left to right,
+        top down. */
         int optEdges[][] = new int[maxOptEdges][2];// x=[][0], y=[][1]
         int i, j, cntOpt = 0, allOptionalEdges;
         Vector<Graph> confGraphs = new Vector<Graph>();
@@ -309,6 +456,7 @@ public class Configuration extends SmallGraph{
             ta = System.currentTimeMillis();
         }
 
+        // fill optEdges array
         for (i=0; i<cnt-1; i++)
             for (j=i+1; j<cnt; j++)
                 if (matrix[i][j] == OPTEDGE) {
@@ -329,18 +477,26 @@ public class Configuration extends SmallGraph{
                                 + " = " + optEdges[i][1] + "\n");
         }
 
+        // vector to store all automorphisms (except identity)
         Vector Transformationen = new Vector();
 
-        /* es gibt tatsächlich eine Konfiguration ohne optionale Kanten... */
+        // there exist configurations without optional edges...
         if (cntOpt > 1) {
+            // get vector of all permutations which are automorphisms
             Vector automorph = getAutomorphisms();
 
-            if (DEBUG)
-                System.out.print("  Automorphismen: "+ automorph.size() +"\n");
+            if (DEBUG) {
+                System.out.print("  Automorphismen: " + automorph.size() + "\n");
+            }
 
+            // iterate over all such permutations p ...
             for (i = 0; i < automorph.size(); i++) {
                 int p[] = (int []) automorph.elementAt(i);
 
+                /* trafo stores the respective permutation of the optional edges:
+                 entry trafo[j] = k means, that the current automorphism p
+                 maps an optional edge, namely optEdges[j] == (x, y) to another
+                 optional edge, namely optEdges[k] == (p[x], p[y]) */
                 int trafo[] = new int[cntOpt];
 
                 if (DEBUG) {
@@ -355,9 +511,9 @@ public class Configuration extends SmallGraph{
                     int x_b = p[x_a];
                     int y_b = p[y_a];
 
-                    /* Suche Kante x_b - y_b in optEdges */
+                    /* Search the edge (x_b, y_b) in optEdges */
                     for (int k = 0; k < cntOpt; k++) {
-                        if (optEdges[k][0] == x_b && optEdges[k][1] == y_b
+                    if (optEdges[k][0] == x_b && optEdges[k][1] == y_b
                                 || optEdges[k][1] == x_b
                                 && optEdges[k][0] == y_b) {
                             trafo[j]=k;
@@ -365,11 +521,13 @@ public class Configuration extends SmallGraph{
                         }
                     }
 
+                    /* If the permutation of edge j is not in optEdges
+                     something goes utterly wrong. */
                     System.err.print("Denkfehler in Configuration."
                                     + "getGraphs()!!!\n");
                 }
 
-                /* Die Permutation /trafo/ noch invertieren */
+                /* transformation is the inverse permutation of trafo */
                 int transformation[] = new int [cntOpt];
                 for (j = 0; j < cntOpt; j++) {
                     transformation[trafo[j]] = j;
@@ -382,8 +540,8 @@ public class Configuration extends SmallGraph{
                     System.out.print(")");
                 }
 
-                /* alle außer identische Trafo zu /Transforamtionen/
-                 * hinzufügen */
+                /* add 'transformation' to Transformationen, if
+                 it is not just the identity function */
                 for (j = 0; j < cntOpt; j++) {
                     if (transformation[j] != j) {
                         Transformationen.addElement(transformation);
@@ -404,23 +562,32 @@ public class Configuration extends SmallGraph{
             te = System.currentTimeMillis();
             System.out.print("  Zeit bisher: " + (te - ta)/10 + "ms\n");
         }
+
+        // the limit of *optionalMask* (see loop below)
         allOptionalEdges = 1 << cntOpt;
 
-        // Creating a graph with edges equal to edges of Configuration
-        Graph vorlage = new Graph(cnt);
+        // ASSERTION HERE: Transformationen contains all permutations of the optional
+        // edges which are not just the identity
+
+        // Create the base graph of this configuration.
+        // It is used as a shape for all representatives,
+        Graph shape = new Graph(cnt);
         for (i=0; i<cnt; i++)
             for (j=i+1; j<cnt; j++)
                 if (matrix[i][j] == EDGE)
-                    vorlage.addEdge(i, j);
+                    shape.addEdge(i, j);
 
         int zaehler = 0;
 
-        /* jetzt Repräsentanten erzeugen */
+        /* *optionalMask* is used to represent all possible representatives of
+         the Configuration */
         loop: for (int optionalMask=0; optionalMask < allOptionalEdges; optionalMask++) {
 
             int permutatedBitmask;
 
-            /* getSmallerNumber */
+            /* getSmallerNumber: look at all isomorphic representatives using the automorphisms
+             on the optional edges
+             (was formerly the method getSmallerNumber) */
             for (int z = 0; z < Transformationen.size(); z++) {
                 int permutation[] = (int []) Transformationen.elementAt(z);
 
@@ -431,7 +598,8 @@ public class Configuration extends SmallGraph{
                     }
                 }
 
-                /* Isomorph zu bereits erzeugten Repräsentantnen? */
+                // if permutedBitmask < optionalMask, then optionalMask is
+                // isomorphic to a representative that we have already stored
                 if (permutatedBitmask < optionalMask) {
                     continue loop;
                 }
@@ -439,20 +607,24 @@ public class Configuration extends SmallGraph{
 
             zaehler++;
 
-            /* neuen Repräsentanten konstruieren */
-            Graph rep = new Graph(vorlage);
+            /* ASSERTION HERE: optionalMask specifies a representative
+             which is *not* isomorphic to already constructed
+             representatives
+
+             construct the new representative from the base graph shape
+             using optionalMask */
+            Graph rep = new Graph(shape);
             for (j = cntOpt - 1; j >= 0; j--)
                 if ((optionalMask & (1 << j)) != 0)
                     rep.addEdge(optEdges[j][0], optEdges[j][1]);
 
-            /* ueberpruefen, ob neuer Repraesentant isomorph zu bereits in
-             * Liste enthaltenen Repraesentanten ist. Der obige Test deckt
-             * nicht alle Fälle ab.*/
+            /* check if new representative is isomorphic to any previously
+             added graphs. This is still possible. (why?) */
             for (j = 0; j < confGraphs.size(); j++)
                if (confGraphs.elementAt(j).isIsomorphic(rep))
                    continue loop;        /* ein goto */
 
-            /* was neues */
+            /* new representative, can finally be added */
             confGraphs.addElement(rep);
 
             if (confGraphs.size() > maxGraphs) {
@@ -481,6 +653,10 @@ public class Configuration extends SmallGraph{
         return confGraphs;
     }
 
+    /**
+     * TODO: comment this
+     * @return
+     */
     public Vector getAutomorphisms(){
         final boolean DEBUG = false;
 
@@ -635,9 +811,15 @@ public class Configuration extends SmallGraph{
         return true;
     }
 
-    /* Wenn /true/ ist /g/ in allen Repräsentanten der Konfiguration enthalten.
-     * Wenn /false/ ist dies entweder nicht der Fall, oder es konnte mit den
-     * hier verwendeten einfachen Tests nicht ermittelt werden */
+    /**
+     * Checks if g is an induced subgraph of the Configuration,
+     * which means that all representative graphs of the Configuration
+     * must induce g. When this fails, it is either not an induces subgraph
+     * or it cannot be checked with this simple test
+     *
+     * @param g Graph to be checked
+     * @return true, i
+     */
     public boolean isInducedSubgraph(Graph g){
         /* check if /g/ is nonempty and not the bottom-graph */
         if (g == null || g.countNodes() == 0 || g.getBottom())
@@ -745,10 +927,14 @@ public class Configuration extends SmallGraph{
 
     /**
      * Checks whether the matrices of <tt>this</tt> and <tt>c</tt>
-     * are equal if the nodes of <tt>c</tt> are reordered
+     * are equal, if the nodes of <tt>c</tt> are reordered
      * according to the permutation given by <tt>perm</tt>.
-     * If the result is true, <tt>perm</tt> contains a mapping
-     * that is needed for isomorphism (by definition).
+     *
+     * @param c the Configuration to be matched
+     * @param perm the permutation used for matching
+     * @return true, if <tt>perm</tt> reorders the nodes of c
+     *   such that the matrices of <tt>this</tt> and <tt>c</tt> are equal,
+     *   false otherwise.
      */
     private boolean check(Configuration c, int perm[]){
         // this.cnt==g.cnt is checked before
