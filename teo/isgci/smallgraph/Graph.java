@@ -27,6 +27,7 @@ public class Graph extends SmallGraph {
     private boolean is_bottom;
     private ListenableUndirectedGraph<Integer, DefaultEdge> complement;
 
+
     /** Creates a new graph without nodes. */
     public Graph(){
         this(0);
@@ -54,13 +55,18 @@ public class Graph extends SmallGraph {
      */
     public void addNodesCount(int n) {
         is_bottom = false;
-
+        graph = new ListenableUndirectedGraph<Integer, DefaultEdge>( new SimpleGraph<Integer, DefaultEdge>(DefaultEdge.class));
         clear();
 
         /* fill it with n nodes */
         for(int i=0; i<n; i++) {
             graph.addVertex(i);
         }
+
+        /* make connectivity inspector be notified at changes */
+        connectivityInspector = new ConnectivityInspector<>(this.graph);
+        this.graph.addGraphListener(connectivityInspector);
+
     }
     
     /** Copy the contents of gs into this. */
@@ -78,6 +84,7 @@ public class Graph extends SmallGraph {
     }
 
     public void copyFromComplement() {
+
         super.copyFromComplement();
 
         /* clear this */
