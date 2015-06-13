@@ -1,0 +1,1704 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SMALLGRAPHS>
+  <simple name="ISG47">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 2;
+      1 - 3;
+      1 - 4;
+      1 - 5;
+      2 - 3;
+      2 - 4;
+      2 - 5;
+      3 - 4;
+      3 - 5;
+      4 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG48"/>
+  </simple>
+  <simple name="ISG41">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 2;
+      1 - 3;
+      1 - 4;
+      1 - 5;
+      2 - 3;
+      2 - 4;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG42"/>
+  </simple>
+  <simple name="ISG37">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 2;
+      1 - 3;
+      1 - 5;
+      2 - 3;
+      2 - 4;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG38"/>
+  </simple>
+  <simple name="ISG39">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 2;
+      1 - 3;
+      1 - 5;
+      2 - 3;
+      2 - 4;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG40"/>
+  </simple>
+  <simple name="ISG45">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 2;
+      1 - 3;
+      1 - 4;
+      1 - 5;
+      2 - 3;
+      2 - 4;
+      2 - 5;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG46"/>
+  </simple>
+  <simple name="ISG43">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 3;
+      1 - 4;
+      1 - 5;
+      2 - 3;
+      2 - 4;
+      2 - 5;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG44"/>
+  </simple>
+  <simple name="ISG15">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 2;
+      1 - 3;
+      2 - 3;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG16"/>
+  </simple>
+  <simple name="ISG121">
+    <nodes count="7"/>
+    <edges>
+      0 - 2;
+      0 - 4;
+      0 - 5;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      2 - 6;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG122"/>
+  </simple>
+  <simple name="ISG219">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG220"/>
+  </simple>
+  <simple name="ISG213">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 4;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG214"/>
+  </simple>
+  <simple name="ISG215">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 4;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG216"/>
+  </simple>
+  <simple name="ISG269">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 4;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+      4 - 5;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG270"/>
+  </simple>
+  <simple name="ISG265">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+      4 - 5;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG266"/>
+  </simple>
+  <simple name="ISG263">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+      4 - 5;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG264"/>
+  </simple>
+  <simple name="ISG267">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 6;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+      4 - 5;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG268"/>
+  </simple>
+  <simple name="ISG17">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      1 - 2;
+      1 - 3;
+      1 - 4;
+      2 - 3;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG18"/>
+  </simple>
+  <simple name="ISG3">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 2;
+      0 - 3;
+      1 - 3;
+      2 - 3;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG4"/>
+  </simple>
+  <simple name="ISG1">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 3;
+      1 - 3;
+      2 - 3;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG2"/>
+  </simple>
+  <simple name="ISG5">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      1 - 3;
+      2 - 3;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG6"/>
+  </simple>
+  <simple name="ISG11">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      1 - 2;
+      1 - 3;
+      2 - 3;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG12"/>
+  </simple>
+  <simple name="ISG7">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 3;
+      2 - 3;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG8"/>
+  </simple>
+  <simple name="ISG9">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 2;
+      0 - 3;
+      1 - 2;
+      1 - 3;
+      2 - 3;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG10"/>
+  </simple>
+  <simple name="ISG23">
+    <nodes count="6"/>
+    <edges>
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 2;
+      1 - 3;
+      1 - 4;
+      1 - 5;
+      2 - 3;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG24"/>
+  </simple>
+  <simple name="ISG33">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 2;
+      0 - 3;
+      0 - 5;
+      1 - 2;
+      1 - 3;
+      1 - 4;
+      2 - 3;
+      2 - 4;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG34"/>
+  </simple>
+  <simple name="ISG27">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      1 - 2;
+      1 - 3;
+      1 - 4;
+      2 - 3;
+      2 - 4;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG28"/>
+  </simple>
+  <simple name="ISG29">
+    <nodes count="6"/>
+    <edges>
+      0 - 3;
+      0 - 5;
+      1 - 2;
+      1 - 3;
+      1 - 4;
+      2 - 3;
+      2 - 4;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG30"/>
+  </simple>
+  <simple name="ISG31">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 3;
+      0 - 5;
+      1 - 2;
+      1 - 3;
+      1 - 4;
+      2 - 3;
+      2 - 4;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG32"/>
+  </simple>
+  <simple name="ISG25">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 2;
+      1 - 3;
+      1 - 4;
+      1 - 5;
+      2 - 3;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG26"/>
+  </simple>
+  <simple name="ISG35">
+    <nodes count="6"/>
+    <edges>
+      0 - 1;
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 2;
+      1 - 3;
+      1 - 4;
+      2 - 3;
+      2 - 4;
+      3 - 4;
+      3 - 5;
+   </edges>
+    <link address="XC11"/>
+    <complement name="ISG36"/>
+  </simple>
+  <simple name="ISG119">
+    <nodes count="7"/>
+    <edges>
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 3;
+      2 - 6;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG120"/>
+  </simple>
+  <simple name="ISG155">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 6;
+      2 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG156"/>
+  </simple>
+  <simple name="ISG117">
+    <nodes count="7"/>
+    <edges>
+      0 - 2;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 3;
+      2 - 6;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG118"/>
+  </simple>
+  <simple name="ISG131">
+    <nodes count="7"/>
+    <edges>
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      2 - 6;
+      3 - 4;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG132"/>
+  </simple>
+  <simple name="ISG153">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      1 - 6;
+      2 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG154"/>
+  </simple>
+  <simple name="ISG129">
+    <nodes count="7"/>
+    <edges>
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      2 - 6;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG130"/>
+  </simple>
+  <simple name="ISG135">
+    <nodes count="7"/>
+    <edges>
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      2 - 6;
+      3 - 4;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG136"/>
+  </simple>
+  <simple name="ISG133">
+    <nodes count="7"/>
+    <edges>
+      0 - 2;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      2 - 6;
+      3 - 4;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG134"/>
+  </simple>
+  <simple name="ISG125">
+    <nodes count="7"/>
+    <edges>
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      2 - 6;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG126"/>
+  </simple>
+  <simple name="ISG123">
+    <nodes count="7"/>
+    <edges>
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      2 - 6;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG124"/>
+  </simple>
+  <simple name="ISG127">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      2 - 6;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG128"/>
+  </simple>
+  <simple name="ISG109">
+    <nodes count="7"/>
+    <edges>
+      0 - 4;
+      0 - 5;
+      1 - 6;
+      2 - 3;
+      2 - 6;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG110"/>
+  </simple>
+  <simple name="ISG115">
+    <nodes count="7"/>
+    <edges>
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 3;
+      2 - 6;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG116"/>
+  </simple>
+  <simple name="ISG113">
+    <nodes count="7"/>
+    <edges>
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 6;
+      2 - 3;
+      2 - 6;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG114"/>
+  </simple>
+  <simple name="ISG111">
+    <nodes count="7"/>
+    <edges>
+      0 - 2;
+      0 - 4;
+      0 - 5;
+      1 - 6;
+      2 - 3;
+      2 - 6;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG112"/>
+  </simple>
+  <simple name="ISG227">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 4;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG228"/>
+  </simple>
+  <simple name="ISG229">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 6;
+      2 - 5;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG230"/>
+  </simple>
+  <simple name="ISG223">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG224"/>
+  </simple>
+  <simple name="ISG225">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 4;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG226"/>
+  </simple>
+  <simple name="ISG237">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG238"/>
+  </simple>
+  <simple name="ISG239">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG240"/>
+  </simple>
+  <simple name="ISG231">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 5;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG232"/>
+  </simple>
+  <simple name="ISG233">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG234"/>
+  </simple>
+  <simple name="ISG235">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG236"/>
+  </simple>
+  <simple name="ISG221">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 6;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG222"/>
+  </simple>
+  <simple name="ISG211">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG212"/>
+  </simple>
+  <simple name="ISG207">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG208"/>
+  </simple>
+  <simple name="ISG209">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 6;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG210"/>
+  </simple>
+  <simple name="ISG217">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG218"/>
+  </simple>
+  <simple name="ISG245">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      3 - 6;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG246"/>
+  </simple>
+  <simple name="ISG243">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 6;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG244"/>
+  </simple>
+  <simple name="ISG249">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG250"/>
+  </simple>
+  <simple name="ISG247">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 6;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG248"/>
+  </simple>
+  <simple name="ISG241">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 5;
+      3 - 6;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG242"/>
+  </simple>
+  <simple name="ISG257">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG258"/>
+  </simple>
+  <simple name="ISG259">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 4;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG260"/>
+  </simple>
+  <simple name="ISG261">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 6;
+      4 - 5;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG262"/>
+  </simple>
+  <simple name="ISG251">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG252"/>
+  </simple>
+  <simple name="ISG253">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG254"/>
+  </simple>
+  <simple name="ISG255">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+      5 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG256"/>
+  </simple>
+  <simple name="ISG173">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 6;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+   </edges>
+    <link address=""/>
+    <complement name="ISG174"/>
+  </simple>
+  <simple name="ISG175">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+   </edges>
+    <link address=""/>
+    <complement name="ISG176"/>
+  </simple>
+  <simple name="ISG169">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+   </edges>
+    <link address=""/>
+    <complement name="ISG170"/>
+  </simple>
+  <simple name="ISG171">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+   </edges>
+    <link address=""/>
+    <complement name="ISG172"/>
+  </simple>
+  <simple name="ISG177">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 4;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      3 - 4;
+   </edges>
+    <link address=""/>
+    <complement name="ISG178"/>
+  </simple>
+  <simple name="ISG179">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 6;
+      1 - 6;
+      2 - 5;
+      3 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG180"/>
+  </simple>
+  <simple name="ISG159">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG160"/>
+  </simple>
+  <simple name="ISG161">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 6;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG162"/>
+  </simple>
+  <simple name="ISG157">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG158"/>
+  </simple>
+  <simple name="ISG165">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 4;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG166"/>
+  </simple>
+  <simple name="ISG167">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+   </edges>
+    <link address=""/>
+    <complement name="ISG168"/>
+  </simple>
+  <simple name="ISG163">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG164"/>
+  </simple>
+  <simple name="ISG197">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG198"/>
+  </simple>
+  <simple name="ISG201">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 4;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG202"/>
+  </simple>
+  <simple name="ISG199">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG200"/>
+  </simple>
+  <simple name="ISG195">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 6;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG196"/>
+  </simple>
+  <simple name="ISG205">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 5;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG206"/>
+  </simple>
+  <simple name="ISG203">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 6;
+      2 - 5;
+      3 - 6;
+      4 - 5;
+   </edges>
+    <link address=""/>
+    <complement name="ISG204"/>
+  </simple>
+  <simple name="ISG187">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      3 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG188"/>
+  </simple>
+  <simple name="ISG189">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 3;
+      2 - 5;
+      3 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG190"/>
+  </simple>
+  <simple name="ISG185">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG186"/>
+  </simple>
+  <simple name="ISG181">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 5;
+      3 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG182"/>
+  </simple>
+  <simple name="ISG183">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      1 - 4;
+      1 - 6;
+      2 - 5;
+      3 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG184"/>
+  </simple>
+  <simple name="ISG193">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG194"/>
+  </simple>
+  <simple name="ISG191">
+    <nodes count="7"/>
+    <edges>
+      0 - 3;
+      0 - 4;
+      0 - 6;
+      1 - 6;
+      2 - 5;
+      3 - 4;
+      3 - 6;
+   </edges>
+    <link address=""/>
+    <complement name="ISG192"/>
+  </simple>
+  <simple name="ISG145">
+    <nodes count="8"/>
+    <edges>
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 3;
+      1 - 4;
+      1 - 5;
+      1 - 6;
+      2 - 5;
+      2 - 7;
+      3 - 4;
+      3 - 5;
+      3 - 7;
+      4 - 6;
+      4 - 7;
+      5 - 7;
+   </edges>
+    <link address=""/>
+    <complement name="ISG146"/>
+  </simple>
+  <simple name="ISG149">
+    <nodes count="8"/>
+    <edges>
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 3;
+      1 - 4;
+      1 - 5;
+      1 - 6;
+      2 - 5;
+      2 - 7;
+      3 - 4;
+      3 - 5;
+      3 - 6;
+      3 - 7;
+      4 - 6;
+      4 - 7;
+      5 - 7;
+   </edges>
+    <link address=""/>
+    <complement name="ISG150"/>
+  </simple>
+  <simple name="ISG147">
+    <nodes count="8"/>
+    <edges>
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 3;
+      1 - 4;
+      1 - 5;
+      1 - 6;
+      2 - 5;
+      2 - 6;
+      2 - 7;
+      3 - 4;
+      3 - 5;
+      3 - 7;
+      4 - 6;
+      4 - 7;
+      5 - 7;
+   </edges>
+    <link address=""/>
+    <complement name="ISG148"/>
+  </simple>
+  <simple name="ISG151">
+    <nodes count="8"/>
+    <edges>
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      1 - 3;
+      1 - 4;
+      1 - 5;
+      1 - 6;
+      2 - 5;
+      2 - 6;
+      2 - 7;
+      3 - 4;
+      3 - 5;
+      3 - 6;
+      3 - 7;
+      4 - 6;
+      4 - 7;
+      5 - 7;
+   </edges>
+    <link address=""/>
+    <complement name="ISG152"/>
+  </simple>
+  <simple name="ISG137">
+    <nodes count="9"/>
+    <edges>
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      0 - 7;
+      1 - 3;
+      1 - 4;
+      1 - 5;
+      1 - 6;
+      1 - 7;
+      2 - 5;
+      2 - 6;
+      2 - 8;
+      3 - 5;
+      3 - 7;
+      3 - 8;
+      4 - 6;
+      4 - 7;
+      4 - 8;
+      5 - 8;
+      6 - 8;
+   </edges>
+    <link address=""/>
+    <complement name="ISG138"/>
+  </simple>
+  <simple name="ISG139">
+    <nodes count="9"/>
+    <edges>
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      0 - 7;
+      1 - 3;
+      1 - 4;
+      1 - 5;
+      1 - 6;
+      1 - 7;
+      2 - 5;
+      2 - 6;
+      2 - 7;
+      2 - 8;
+      3 - 5;
+      3 - 7;
+      3 - 8;
+      4 - 6;
+      4 - 7;
+      4 - 8;
+      5 - 8;
+      6 - 8;
+   </edges>
+    <link address=""/>
+    <complement name="ISG140"/>
+  </simple>
+  <simple name="ISG143">
+    <nodes count="9"/>
+    <edges>
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      0 - 7;
+      1 - 3;
+      1 - 4;
+      1 - 5;
+      1 - 6;
+      1 - 7;
+      2 - 5;
+      2 - 6;
+      2 - 7;
+      2 - 8;
+      3 - 5;
+      3 - 6;
+      3 - 7;
+      3 - 8;
+      4 - 6;
+      4 - 7;
+      4 - 8;
+      5 - 8;
+      6 - 8;
+   </edges>
+    <link address=""/>
+    <complement name="ISG144"/>
+  </simple>
+  <simple name="ISG141">
+    <nodes count="9"/>
+    <edges>
+      0 - 2;
+      0 - 3;
+      0 - 4;
+      0 - 5;
+      0 - 6;
+      0 - 7;
+      1 - 3;
+      1 - 4;
+      1 - 5;
+      1 - 6;
+      1 - 7;
+      2 - 5;
+      2 - 6;
+      2 - 8;
+      3 - 5;
+      3 - 6;
+      3 - 7;
+      3 - 8;
+      4 - 6;
+      4 - 7;
+      4 - 8;
+      5 - 8;
+      6 - 8;
+   </edges>
+    <link address=""/>
+    <complement name="ISG142"/>
+  </simple>
+</SMALLGRAPHS>
+
