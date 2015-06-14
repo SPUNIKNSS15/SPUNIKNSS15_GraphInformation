@@ -10,6 +10,8 @@
 
 package teo.isgci.smallgraph;
 
+import org.jgrapht.EdgeFactory;
+import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.ListenableUndirectedGraph;
 import org.jgrapht.graph.SimpleGraph;
@@ -35,10 +37,6 @@ public class Configuration extends SmallGraph{
 
     private ListenableUndirectedGraph<Integer, DefaultEdge> base;
     private ArrayList<DefaultEdge> optEdges;
-
-
-
-    private int cnt;  // number of nodes in Configuration
     
     final static int EDGE = 1;
     final static int NONEDGE = -1;
@@ -76,12 +74,36 @@ public class Configuration extends SmallGraph{
      */
     public Configuration(Configuration c, Set<Integer> includedNodes) {
         super();
-        boolean[] mask = new boolean[c.cnt];
-        for (int v : includedNodes) {
-            mask[v] = true;
-        }
+        addNodesCount(includedNodes.size());
+        ClassBasedEdgeFactory<Integer, DefaultEdge> ef = new ClassBasedEdgeFactory<>(DefaultEdge.class);
 
-        initWithMaskedConfiguration(c, mask);
+        int k = -1;
+        outer: for (int i = 0; i < c.base.vertexSet().size(); i++) {
+
+            if (includedNodes.contains(i)) {
+                k++;
+            } else {
+                continue outer;
+            }
+            int l = -1;
+
+            inner: for (int j = 0; j < c.base.vertexSet().size(); j++) {
+                if (includedNodes.contains(j)) {
+                    l++;
+                } else {
+                    continue inner;
+                }
+
+                if (c.base.containsEdge(i, j)) {
+                    base.addEdge(k, l);
+                } else if (c.optEdges.contains(ef.createEdge(i,j))) {
+                    optEdges.add(ef.createEdge(k,l));
+                }
+            }
+        }
+        contains = null;
+        induced = null;
+        link = null;
     }
 
     /**
@@ -100,76 +122,12 @@ public class Configuration extends SmallGraph{
     }
 
 
-
-
-
-
-
-
-    /**
-     * TODO: comment this
-     */
-    public void copyFromComplement() {
-        int i, j;
-
-        super.copyFromComplement();
-        //---- First copy the definition
-        Configuration c = (Configuration) complement;
-        cnt = c.cnt;
-        matrix = new int[cnt][cnt];
-        for (i=0; i<cnt; i++)
-            for (j=0; j<cnt; j++)
-                matrix[i][j] = c.matrix[i][j];
-        contains = (c.contains != null) ? (Vector) c.contains.clone() : null;
-
-        //--- Then complement it
-        for(i=0; i<cnt; i++)
-            for(j=0; j<cnt; j++)
-                if(i!=j) matrix[i][j] = -matrix[i][j];
-        if (contains != null) {
-            Vector<SmallGraph> newContains = new Vector<SmallGraph>();
-            for (SmallGraph g : contains)
-                newContains.add(g.getComplement());
-            contains = newContains;
-        }
-    }
-
-
-
-
     private void initWithMaskedConfiguration(Configuration c, boolean mask[]) {
         int i;
-
-        cnt = 0;
-        for (i = 0; i < c.cnt; i++)
-            if (mask[i])
-                cnt++;
-
-        matrix = new int[cnt][cnt];
-
         int j, k, l;
 
-        k = -1;
-        for (i = 0; i < c.cnt; i++) {
-            if (mask[i])
-                k++;
-            else
-                continue;
 
-            l = -1;
-            for (j = 0; j < c.cnt; j++) {
-                if (mask[j])
-                    l++;
-                else
-                    continue;
 
-                matrix[k][l] = c.matrix[i][j];
-            }
-        }
-
-        contains = null;
-        induced = null;
-        link = null;
     }
 
 
