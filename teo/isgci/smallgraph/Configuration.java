@@ -220,12 +220,17 @@ public class Configuration extends SmallGraph{
      * @return number of edges of type <tt>type</tt>
      */
     public int countEdges(int type){
-        int i, j, n=0;
-        for (i=0; i<cnt; i++)
-            for (j=0; j<i; j++)
-                if (matrix[i][j] == type)
-                    n++;
-        return n;
+
+        if (type == EDGE) {
+            return base.edgeSet().size();
+        } else if (type == OPTEDGE) {
+            return optEdges.size();
+        } else if (type == NONEDGE) {
+            return nonEdges.size();
+        } else {
+            return (int)Math.pow(2, base.vertexSet().size())
+                    - base.edgeSet().size() - optEdges.size() - nonEdges.size();
+        }
     }
 
     /**
