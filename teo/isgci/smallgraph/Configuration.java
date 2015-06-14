@@ -224,7 +224,7 @@ public class Configuration extends SmallGraph{
         } else if (type == NONEDGE) {
             return nonEdges.edgeSet().size();
         } else {
-            return (int)Math.pow(2, base.vertexSet().size())
+            return (base.vertexSet().size() * (base.vertexSet().size() -1) / 2)
                     - base.edgeSet().size() - optEdges.edgeSet().size() - nonEdges.edgeSet().size();
         }
     }
@@ -284,38 +284,19 @@ public class Configuration extends SmallGraph{
         int n = 0;
         if (type == EDGE) {
             /* EDGE degree is just v's degree in base */
-            for (int i = 0; i < base.vertexSet().size(); i++) {
-                if( mask[i] && base.containsEdge(v, i)) {
-                    n++;
-                }
-            }
-            return n;
+            return base.degreeOf(v);
 
         } else if (type == OPTEDGE) {
             /* OPTEDGE degree is the amount of incident optedges */
-            for (int i = 0; i < base.vertexSet().size(); i++) {
-                if( mask[i] && optEdges.containsEdge(v, i))  {
-                    n++;
-                }
-            }
-            return n;
+            return optEdges.degreeOf(v);
 
         } else if (type == NONEDGE) {
             /* NONEDGE degree is the amount of incident nonedges */
-            for (int i = 0; i < base.vertexSet().size(); i++) {
-                if( mask[i] && nonEdges.containsEdge(v, i)) {
-                    n++;
-                }
-            }
-            /* return n+1 because every node has a nonedge to itself, but this can't be expressed in our graphs */
-            return n + 1;
+            return nonEdges.degreeOf(v) + 1;
 
         } else {
-            /* UNKNOWN degree is the amount of nodes minus the EDGE, OPTEDGE and NONEDGE degree.
-             * This is correct, as n-1 is the maximum degree of a node in a graph containing n nodes,
-             * as we count the NONEDGE of a node to itself explicitely.
-             */
-            return base.vertexSet().size() - degree(v, EDGE, mask)
+            /* UNKNOWN degree is the maximum degree (nodescount -1 ) minus the EDGE, OPTEDGE and NONEDGE degree. */
+            return base.vertexSet().size()  - degree(v, EDGE, mask)
                     - degree(v, OPTEDGE, mask) - degree(v, NONEDGE, mask);
         }
     }
@@ -449,7 +430,7 @@ public class Configuration extends SmallGraph{
      *   - why Vector and not ArrayList ?
      */
     public Vector<Graph> getGraphs(int maxGraphs){
-        final boolean DEBUG = false; /* auf true setzen für Debug-Ausgaben */
+        final boolean DEBUG = true; /* auf true setzen für Debug-Ausgaben */
         /* because we have signed 32 bit Integers as bitmask for optional edges
          we restrict our calculations to 30 optional edges */
         final int maxOptEdges = 30;
