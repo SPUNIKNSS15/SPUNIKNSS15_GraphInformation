@@ -32,12 +32,10 @@ import java.util.*;
  */
 public class Configuration extends SmallGraph{
 
-    ClassBasedEdgeFactory<Integer, DefaultEdge> ef = new ClassBasedEdgeFactory<>(DefaultEdge.class);
     private ListenableUndirectedGraph<Integer, DefaultEdge> base;
-    private ArrayList<DefaultEdge> optEdges;
-    private ArrayList<DefaultEdge> nonEdges;
+    private ListenableUndirectedGraph<Integer, DefaultEdge> optEdges;
+    private ListenableUndirectedGraph<Integer, DefaultEdge> nonEdges;
 
-    
     final static int EDGE = 1;
     final static int NONEDGE = -1;
     final static int OPTEDGE = 0;
@@ -96,8 +94,8 @@ public class Configuration extends SmallGraph{
 
                 if (c.base.containsEdge(i, j)) {
                     base.addEdge(k, l);
-                } else if (c.optEdges.contains(ef.createEdge(i,j))) {
-                    optEdges.add(ef.createEdge(k,l));
+                } else if (c.optEdges.containsEdge(i,j)) {
+                    optEdges.addEdge(k,l);
                 }
             }
         }
@@ -114,13 +112,12 @@ public class Configuration extends SmallGraph{
      */
     public void addNodesCount(int n){
         base = new ListenableUndirectedGraph<>(new SimpleGraph<>(DefaultEdge.class));
-        nonEdges = new ArrayList<>();
-        optEdges = new ArrayList<>();
+        nonEdges = new ListenableUndirectedGraph<>(new SimpleGraph<>(DefaultEdge.class));
+        optEdges = new ListenableUndirectedGraph<>(new SimpleGraph<>(DefaultEdge.class));
         for (int i = 0; i < n; i++) {
             base.addVertex(i);
-        }
-        for (int i = 0; i < n; i++) {
-            nonEdges.add(ef.createEdge(i, i));
+            optEdges.addVertex(i);
+            nonEdges.addVertex(i);
         }
         contains = null;
     }
@@ -145,20 +142,16 @@ public class Configuration extends SmallGraph{
         if (source == dest) return;
         if (source<0 || dest<0 || source>=base.vertexSet().size() || dest>=base.vertexSet().size()) return;
 
-        DefaultEdge edge = ef.createEdge(source, dest);
-        DefaultEdge invEdge = ef.createEdge(source, dest);
-        optEdges.remove(edge);
-        optEdges.remove(invEdge);
-        nonEdges.remove(edge);
-        nonEdges.remove(invEdge);
-        base.removeEdge(edge);
+        optEdges.removeEdge(source, dest);
+        nonEdges.removeEdge(source, dest);
+        base.removeEdge(source, dest);
 
         if (type == EDGE) {
             base.addEdge(source, dest);
         } else if (type == OPTEDGE) {
-            optEdges.add(edge);
+            optEdges.addEdge(source, dest);
         } else {
-            nonEdges.add(edge);
+            nonEdges.addEdge(source, dest);
         }
     }
 
@@ -207,9 +200,9 @@ public class Configuration extends SmallGraph{
 
         if (base.containsEdge(source, dest)) {
             return EDGE;
-        } else if (optEdges.contains(ef.createEdge(source, dest))) {
+        } else if (optEdges.containsEdge(source, dest)) {
             return OPTEDGE;
-        } else if (nonEdges.contains(ef.createEdge(source, dest))) {
+        } else if (nonEdges.containsEdge(source, dest)) {
             return NONEDGE;
         } else {
             return UNKNOWN;
@@ -227,12 +220,12 @@ public class Configuration extends SmallGraph{
         if (type == EDGE) {
             return base.edgeSet().size();
         } else if (type == OPTEDGE) {
-            return optEdges.size();
+            return optEdges.edgeSet().size();
         } else if (type == NONEDGE) {
-            return nonEdges.size();
+            return nonEdges.edgeSet().size();
         } else {
             return (int)Math.pow(2, base.vertexSet().size())
-                    - base.edgeSet().size() - optEdges.size() - nonEdges.size();
+                    - base.edgeSet().size() - optEdges.edgeSet().size() - nonEdges.edgeSet().size();
         }
     }
 
@@ -292,7 +285,7 @@ public class Configuration extends SmallGraph{
         if (type == EDGE) {
             /* EDGE degree is just v's degree in base */
             for (int i = 0; i < base.vertexSet().size(); i++) {
-                if( mask[i] && (base.containsEdge(ef.createEdge(v, i)) || base.containsEdge(ef.createEdge(i,v))) ) {
+                if( mask[i] && base.containsEdge(v, i)) {
                     n++;
                 }
             }
@@ -301,7 +294,7 @@ public class Configuration extends SmallGraph{
         } else if (type == OPTEDGE) {
             /* OPTEDGE degree is the amount of incident optedges */
             for (int i = 0; i < base.vertexSet().size(); i++) {
-                if( mask[i] && (optEdges.contains(ef.createEdge(i,v)) || optEdges.contains(ef.createEdge(v,i))) ) {
+                if( mask[i] && optEdges.containsEdge(v, i))  {
                     n++;
                 }
             }
@@ -310,18 +303,20 @@ public class Configuration extends SmallGraph{
         } else if (type == NONEDGE) {
             /* NONEDGE degree is the amount of incident nonedges */
             for (int i = 0; i < base.vertexSet().size(); i++) {
-                if( mask[i] && (nonEdges.contains(ef.createEdge(i, v)) || nonEdges.contains(ef.createEdge(i, v)))) {
+                if( mask[i] && nonEdges.containsEdge(v, i)) {
                     n++;
                 }
             }
-            return n;
+            /* return n+1 because every node has a nonedge to itself, but this can't be expressed in our graphs */
+            return n + 1;
 
         } else {
             /* UNKNOWN degree is the amount of nodes minus the EDGE, OPTEDGE and NONEDGE degree.
              * This is correct, as n-1 is the maximum degree of a node in a graph containing n nodes,
              * as we count the NONEDGE of a node to itself explicitely.
              */
-            return base.vertexSet().size() - degree(v, EDGE, mask) - degree(v, OPTEDGE, mask) - degree(v, NONEDGE, mask);
+            return base.vertexSet().size() - degree(v, EDGE, mask)
+                    - degree(v, OPTEDGE, mask) - degree(v, NONEDGE, mask);
         }
     }
 
@@ -415,7 +410,7 @@ public class Configuration extends SmallGraph{
                 if(base.containsEdge(i,j)) {
                     s += (j + " - " + i + "; ");
                 /* whereas .equals (used by ArrayList.contains) returns true for (i, j) if and only if (i,j) was added */
-                } else if(optEdges.contains(ef.createEdge(i,j)) || optEdges.contains(ef.createEdge(j,i))) {
+                } else if(optEdges.containsEdge(i, j)) {
                     s += (j + " = " + i + "; ");
                 }
             }
@@ -459,10 +454,10 @@ public class Configuration extends SmallGraph{
          we restrict our calculations to 30 optional edges */
         final int maxOptEdges = 30;
 
-        /* optEdegeMask contains a representation of all optional edges,
+        /* optEdgeList contains a representation of all optional edges,
         indexed by the occurence in the matrix from left to right,
         top down. */
-        int optEdegeMask[][] = new int[maxOptEdges][2];// x=[][0], y=[][1]
+        int optEdgeList[][] = new int[maxOptEdges][2];// x=[][0], y=[][1]
         int i, j, cntOpt = 0, allOptionalEdges;
         Vector<Graph> confGraphs = new Vector<Graph>();
 
@@ -475,25 +470,25 @@ public class Configuration extends SmallGraph{
             ta = System.currentTimeMillis();
         }
 
-        // fill optEdegeMask array
+        // fill optEdgeList array
         for (i=0; i<base.vertexSet().size()-1; i++)
             for (j=i+1; j<base.vertexSet().size(); j++)
-                if (optEdges.contains(ef.createEdge(i, j)) || optEdges.contains(ef.createEdge(j, i))) {
+                if (optEdges.containsEdge(i, j))  {
                     if (cntOpt == maxOptEdges){
                         if (DEBUG)
                             System.out.print("  mehr als " + maxOptEdges
                                     + " optionale Kanten\n\n");
                         return null;
                     }
-                    optEdegeMask[cntOpt][0] = i;
-                    optEdegeMask[cntOpt++][1] = j;
+                    optEdgeList[cntOpt][0] = i;
+                    optEdgeList[cntOpt++][1] = j;
                 }
 
         if (DEBUG) {
             System.out.print("  optionale Kanten: " + cntOpt + "\n");
             for (i=0; i < cntOpt; i++)
-                System.out.print("    " + i + ": " + optEdegeMask[i][0]
-                                + " = " + optEdegeMask[i][1] + "\n");
+                System.out.print("    " + i + ": " + optEdgeList[i][0]
+                                + " = " + optEdgeList[i][1] + "\n");
         }
 
         // vector to store all automorphisms (except identity)
@@ -514,8 +509,8 @@ public class Configuration extends SmallGraph{
 
                 /* trafo stores the respective permutation of the optional edges:
                  entry trafo[j] = k means, that the current automorphism p
-                 maps an optional edge, namely optEdegeMask[j] == (x, y) to another
-                 optional edge, namely optEdegeMask[k] == (p[x], p[y]) */
+                 maps an optional edge, namely optEdgeList[j] == (x, y) to another
+                 optional edge, namely optEdgeList[k] == (p[x], p[y]) */
                 int trafo[] = new int[cntOpt];
 
                 if (DEBUG) {
@@ -525,22 +520,22 @@ public class Configuration extends SmallGraph{
                     System.out.print(")  ---> ");
                 }
                 loop: for (j=0; j < cntOpt; j++) {
-                    int x_a = optEdegeMask[j][0];
-                    int y_a = optEdegeMask[j][1];
+                    int x_a = optEdgeList[j][0];
+                    int y_a = optEdgeList[j][1];
                     int x_b = p[x_a];
                     int y_b = p[y_a];
 
-                    /* Search the edge (x_b, y_b) in optEdegeMask */
+                    /* Search the edge (x_b, y_b) in optEdgeList */
                     for (int k = 0; k < cntOpt; k++) {
-                    if (optEdegeMask[k][0] == x_b && optEdegeMask[k][1] == y_b
-                                || optEdegeMask[k][1] == x_b
-                                && optEdegeMask[k][0] == y_b) {
-                            trafo[j]=k;
-                            continue loop;
-                        }
+                        if (optEdgeList[k][0] == x_b && optEdgeList[k][1] == y_b
+                                    || optEdgeList[k][1] == x_b
+                                    && optEdgeList[k][0] == y_b) {
+                                trafo[j]=k;
+                                continue loop;
+                            }
                     }
 
-                    /* If the permutation of edge j is not in optEdegeMask
+                    /* If the permutation of edge j is not in optEdgeList
                      something goes utterly wrong. */
                     System.err.print("Denkfehler in Configuration."
                                     + "getGraphs()!!!\n");
@@ -635,7 +630,7 @@ public class Configuration extends SmallGraph{
             Graph rep = new Graph(shape);
             for (j = cntOpt - 1; j >= 0; j--)
                 if ((optionalMask & (1 << j)) != 0)
-                    rep.addEdge(optEdegeMask[j][0], optEdegeMask[j][1]);
+                    rep.addEdge(optEdgeList[j][0], optEdgeList[j][1]);
 
             /* check if new representative is isomorphic to any previously
              added graphs. This is still possible. (why?) */
@@ -866,9 +861,9 @@ public class Configuration extends SmallGraph{
                 /* /g/ ist ein 2K1 */
                 for (i = 0; i < base.vertexSet().size() - 1; i++)
                     for (j = i + 1; j < base.vertexSet().size(); j++)
-                        if (!base.containsEdge(i, j) && !(optEdges.contains(ef.createEdge(i, j)) ||
-                                optEdges.contains(ef.createEdge(j, i))))
+                        if (!base.containsEdge(i, j) && !optEdges.containsEdge(i, j) ) {
                             return true;
+                        }
             }
 
             return false;   /* keine aufwändigeren Tests für diesen Fall */
@@ -896,7 +891,7 @@ public class Configuration extends SmallGraph{
 
                 for (i = 0; i < base.vertexSet().size() - 1; i++)
                     for (j = i + 1; j < base.vertexSet().size(); j++)
-                        if ( optEdges.contains(ef.createEdge(i,j)) || optEdges.contains(ef.createEdge(j,i)))
+                        if ( optEdges.containsEdge(i,j))
                         {
                             rumpf.addEdge(i, j);
                             return rumpf.isSubIsomorphic(g);
@@ -926,7 +921,7 @@ public class Configuration extends SmallGraph{
 
             for (i = 0; i < base.vertexSet().size() - 1; i++)
                 for (j = i + 1; j < base.vertexSet().size(); j++)
-                    if ( optEdges.contains(ef.createEdge(i, j)) || optEdges.contains(ef.createEdge(j, i))) {
+                    if ( optEdges.containsEdge(i, j)) {
                         h.addEdge(i, j);
                     }
 
@@ -965,12 +960,9 @@ public class Configuration extends SmallGraph{
         for (i=0; i<base.vertexSet().size(); i++)
             for (j=i+1; j<base.vertexSet().size(); j++)
                 if (    base.containsEdge(i,j) != c.base.containsEdge(perm[i], perm[j]) &&
-                                optEdges.contains(ef.createEdge(i,j))  != optEdges.contains(ef.createEdge(perm[i], perm[j])) &&
-                                optEdges.contains(ef.createEdge(j, i)) != optEdges.contains(ef.createEdge(perm[j], perm[i])) &&
-                                nonEdges.contains(ef.createEdge(i,j)) != nonEdges.contains(ef.createEdge(perm[i], perm[j]))  &&
-                                nonEdges.contains(ef.createEdge(j,i)) != nonEdges.contains(ef.createEdge(perm[j], perm[i]))
+                        optEdges.containsEdge(i,j) != c.optEdges.containsEdge(perm[i], perm[j]) &&
+                        nonEdges.containsEdge(i,j) != c.nonEdges.containsEdge(perm[i], perm[j])
                         //matrix[i][j] != c.matrix[perm[i]][perm[j]]
-
                         ) {
                     return false;
                 }
