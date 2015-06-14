@@ -9,10 +9,12 @@
  */
 
 package teo.isgci.smallgraph;
+
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.alg.VertexCovers;
-import org.jgrapht.experimental.subgraphisomorphism.VF2SubgraphIsomorphismInspector;
+import org.jgrapht.alg.isomorphism.VF2GraphIsomorphismInspector;
+import org.jgrapht.alg.isomorphism.VF2SubgraphIsomorphismInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.ListenableUndirectedGraph;
 import org.jgrapht.graph.SimpleGraph;
@@ -189,32 +191,20 @@ public class Graph extends SmallGraph {
         return graph.edgeSet().size();
     }
 
-    
-    // --------------------------------------------------------------
-    //TODO: to be replaced
+    /**
+     *
+     * @param g
+     * @return
+     */
     public boolean isIsomorphic(Graph g){
-        final boolean DEBUG = false;
 
         /* check if one of both is the bottom-graph*/
         if (g.is_bottom || is_bottom) {
             return false;
         }
 
-        /* check if number of nodes and edges are equal */
-        if( graph.vertexSet().size() != g.graph.vertexSet().size() || graph.edgeSet().size() != g.graph.edgeSet().size() ) {
-            return false;
-        }
-
-        //TODO: do we need this? Maybe this is only overhead... (tassilo :D)?
-        if (connectivityInspector.connectedSets().size() != g.connectivityInspector.connectedSets().size()) {
-            return false;
-        }
-
-        /* after checked for equal edge count, sub-isomorphism is the same as isomorphism */
-        return new VF2SubgraphIsomorphismInspector<>(graph, g.graph).isSubgraphIsomorphic();
+        return new VF2GraphIsomorphismInspector<>(graph, g.graph).isomorphismExists();
     }
-
-
 
     /**
      * checks if a graph <tt>g</tt> is induced Subgraph
@@ -223,7 +213,7 @@ public class Graph extends SmallGraph {
      * @return true if g is induced Subgraph, else false
      */
     public boolean isSubIsomorphic(Graph g) {
-        return new VF2SubgraphIsomorphismInspector<>(graph, g.graph).isSubgraphIsomorphic();
+        return new VF2SubgraphIsomorphismInspector<>(graph, g.graph).isomorphismExists();
     }
 
     /**
