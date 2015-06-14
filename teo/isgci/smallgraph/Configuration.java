@@ -122,21 +122,11 @@ public class Configuration extends SmallGraph{
     }
 
 
-    private void initWithMaskedConfiguration(Configuration c, boolean mask[]) {
-        int i;
-        int j, k, l;
-
-
-
-    }
-
-
-
     /**
      * @return the number of nodes in the Configuration
      */
     public int countNodes(){
-        return cnt;
+        return base.vertexSet().size();
     }
 
     /**
