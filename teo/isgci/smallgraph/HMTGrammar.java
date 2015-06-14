@@ -194,7 +194,7 @@ public class HMTGrammar{
          * order. That is, if att(0) = 0, att(5) = 1, att(2) = 2, then
          * att=[0,5,2].
          * If the graph has no att (ext), use null.
-         */ boolean
+         */
         public HMTGraph(Graph graph, int[] ext, int[] att){
             super(graph);
             if (att != null  &&  att.length != type  ||

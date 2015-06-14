@@ -25,7 +25,7 @@ public class Graph extends SmallGraph {
     private ConnectivityInspector<Integer, DefaultEdge> connectivityInspector;
     private ListenableUndirectedGraph<Integer, DefaultEdge> graph;
     private boolean is_bottom;
-    private ListenableUndirectedGraph<Integer, DefaultEdge> complement;
+
 
     /** Creates a new graph without nodes. */
     public Graph(){
