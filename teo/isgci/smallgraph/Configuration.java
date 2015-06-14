@@ -37,6 +37,8 @@ public class Configuration extends SmallGraph{
 
     private ListenableUndirectedGraph<Integer, DefaultEdge> base;
     private ArrayList<DefaultEdge> optEdges;
+    private ArrayList<DefaultEdge> nonEdges;
+
     
     final static int EDGE = 1;
     final static int NONEDGE = -1;
@@ -133,26 +135,29 @@ public class Configuration extends SmallGraph{
      * Adds an edge to the Configuration.
      * <tt>type</tt> shows which edge should be added.
      */
-    private void addEdge(int a, int b, int type){
+    private void addEdge(int source, int dest, int type){
         if (type != EDGE && type != NONEDGE && type != OPTEDGE) {
             System.out.println("Wrong type of edge!");
             return;
         }
-        if (a == b) return;
-        if (a<0 || b<0 || a>=cnt || b>=cnt) return;
-        if (matrix[a][b]==type || matrix[b][a]==type) {
-            String s = new String();
-            if (type == EDGE)
-                s = "Edge";
-            else if (type == NONEDGE)
-                s = "Nonedge";
-            else if (type == OPTEDGE)
-                s = "Optedge";
-            System.err.println(getName() +":"+ s +" \""+ a +"-"+ b +
-                    "\" already exists!");
+        if (source == dest) return;
+        if (source<0 || dest<0 || source>=base.vertexSet().size() || dest>=base.vertexSet().size()) return;
+
+        ClassBasedEdgeFactory<Integer, DefaultEdge> ef = new ClassBasedEdgeFactory<>(DefaultEdge.class);
+
+        if (type == EDGE) {
+            optEdges.remove(ef.createEdge(source, dest));
+            nonEdges.remove(ef.createEdge(source, dest));
+            base.addEdge(source, dest);
+        } else if (type == OPTEDGE) {
+            base.removeEdge(source, dest);
+            optEdges.remove(ef.createEdge(source, dest));
+            optEdges.add(ef.createEdge(source, dest));
+        } else {
+            base.removeEdge(source, dest);
+            nonEdges.remove(ef.createEdge(source, dest));
+            nonEdges.add(ef.createEdge(source, dest));
         }
-        matrix[a][b] = type;
-        matrix[b][a] = type;
     }
 
     /**
