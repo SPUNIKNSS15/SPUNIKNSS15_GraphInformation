@@ -192,8 +192,8 @@ public class Configuration extends SmallGraph{
 
     /**
      *
-     * @param a first node of the edge
-     * @param b second node of the edge
+     * @param source first node of the edge
+     * @param dest second node of the edge
      * @return returns the edge type
      */
     public int getEdge(int source, int dest){
@@ -399,18 +399,23 @@ public class Configuration extends SmallGraph{
      * @return the Configuration as a string
      */
     public String toString(){
-        if(cnt == 0)
+        if(base.vertexSet().size() == 0)
             return "";
 
         int i,j;
-        String s="{"+String.valueOf(cnt)+"} ";
+        String s="{"+String.valueOf(base.vertexSet().size())+"} ";
         s += namesToString() + " ";
-        for(i=0;i<cnt;i++)
-            for(j=0;j<i;j++)
-                if(matrix[i][j] == EDGE)
-                    s+=(j+" - "+i+"; ");
-                else if(matrix[i][j] == OPTEDGE)
-                    s+=(j+" = "+i+"; ");
+        /* These for loops are a reminder from the matrix implementation to preserve output order */
+        for(i=0; i<base.vertexSet().size(); i++)
+            for(j=0; j<i; j++) {
+                /* containsEdge(i,j) returns true in an undirected graph, iff the edge (i, j) or (j, i) was added */
+                if(base.containsEdge(i,j)) {
+                    s += (j + " - " + i + "; ");
+                /* whereas .equals (used by ArrayList.contains) returns true for (i, j) if and only if (i,j) was added */
+                } else if(optEdges.contains(ef.createEdge(i,j)) || optEdges.contains(ef.createEdge(j,i))) {
+                    s += (j + " = " + i + "; ");
+                }
+            }
         return s;
     }
 
