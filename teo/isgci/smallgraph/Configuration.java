@@ -35,6 +35,7 @@ import java.util.Vector;
  */
 public class Configuration extends SmallGraph{
 
+    ClassBasedEdgeFactory<Integer, DefaultEdge> ef = new ClassBasedEdgeFactory<>(DefaultEdge.class);
     private ListenableUndirectedGraph<Integer, DefaultEdge> base;
     private ArrayList<DefaultEdge> optEdges;
     private ArrayList<DefaultEdge> nonEdges;
@@ -77,7 +78,7 @@ public class Configuration extends SmallGraph{
     public Configuration(Configuration c, Set<Integer> includedNodes) {
         super();
         addNodesCount(includedNodes.size());
-        ClassBasedEdgeFactory<Integer, DefaultEdge> ef = new ClassBasedEdgeFactory<>(DefaultEdge.class);
+
 
         int k = -1;
         outer: for (int i = 0; i < c.base.vertexSet().size(); i++) {
@@ -143,8 +144,6 @@ public class Configuration extends SmallGraph{
         if (source == dest) return;
         if (source<0 || dest<0 || source>=base.vertexSet().size() || dest>=base.vertexSet().size()) return;
 
-        ClassBasedEdgeFactory<Integer, DefaultEdge> ef = new ClassBasedEdgeFactory<>(DefaultEdge.class);
-
         if (type == EDGE) {
             optEdges.remove(ef.createEdge(source, dest));
             nonEdges.remove(ef.createEdge(source, dest));
@@ -197,8 +196,21 @@ public class Configuration extends SmallGraph{
      * @param b second node of the edge
      * @return returns the edge type
      */
-    public int getEdge(int a, int b){
-        return matrix[a][b];
+    public int getEdge(int source, int dest){
+
+        if (source == dest) {
+            return NONEDGE;
+        }
+
+        if (base.containsEdge(source, dest)) {
+            return EDGE;
+        } else if (optEdges.contains(ef.createEdge(source, dest))) {
+            return OPTEDGE;
+        } else if (nonEdges.contains(ef.createEdge(source, dest))) {
+            return NONEDGE;
+        } else {
+            return UNKNOWN;
+        }
     }
 
     /**
