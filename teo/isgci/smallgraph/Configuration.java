@@ -16,10 +16,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.ListenableUndirectedGraph;
 import org.jgrapht.graph.SimpleGraph;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * A Configuration consists of a base graph and a set
@@ -270,49 +267,9 @@ public class Configuration extends SmallGraph{
      * @return degree of type <tt>type</tt> of the node at index <tt>v</tt>
      */
     public int degree(int v, int type){
-        if (v<0 || v>=base.vertexSet().size()) return -1; // illegal argument
-        
-        int n = 0;
-        if (type == EDGE) {
-            /* EDGE degree is just v's degree in base */
-            return base.degreeOf(v);
-
-        } else if (type == OPTEDGE) {
-            /* OPTEDGE degree is the amount of incident optedges */
-            for (int i = 0; i < base.vertexSet().size(); i++) {
-                if( optEdges.contains(ef.createEdge(i,v)) || optEdges.contains(ef.createEdge(v,i)) ) {
-                    n++;
-                }
-            }
-            return n;
-
-        } else if (type == NONEDGE) {
-            /* NONEDGE degree is the amount of incident nonedges */
-            for (int i = 0; i < base.vertexSet().size(); i++) {
-                if( nonEdges.contains(ef.createEdge(i, v)) || nonEdges.contains(ef.createEdge(i, v))) {
-                    n++;
-                }
-            }
-            return n;
-        } else {
-
-            /* UNKNOWN degree is the amount of nodes minus the EDGE, OPTEDGE and NONEDGE degree.
-             * This is correct, as n-1 is the maximum degree of a node in a graph containing n nodes,
-             * as we count the NONEDGE of a node to itself explicitely.
-             */
-
-            for (int i = 0; i < base.vertexSet().size(); i++) {
-                if( optEdges.contains(ef.createEdge(i,v)) || optEdges.contains(ef.createEdge(v,i)) ) {
-                    n++;
-                }
-            }
-            for (int i = 0; i < base.vertexSet().size(); i++) {
-                if( nonEdges.contains(ef.createEdge(i, v)) || nonEdges.contains(ef.createEdge(i, v))) {
-                    n++;
-                }
-            }
-            return base.vertexSet().size() - base.degreeOf(v) - n;
-        }
+        boolean[] mask = new boolean[base.vertexSet().size()];
+        Arrays.fill(mask, true);
+        return degree(v, type, mask);
     }
 
     /**
@@ -326,13 +283,43 @@ public class Configuration extends SmallGraph{
      * <tt>v</tt> in the subgraph induced by <tt>mask<tt>
      */
     public int degree(int v, int type, boolean mask[]){
-        if (v<0 || v>=cnt || !mask[v]) return -1; // illegal argument
-        int i, n=0;
-        for(i=0; i<cnt; i++){
-            if (matrix[v][i] == type && mask[i]) n++;
-            // matrix[v][v] is always a NONEDGE
+        if (v<0 || v>=base.vertexSet().size()) return -1; // illegal argument
+
+        int n = 0;
+        if (type == EDGE) {
+            /* EDGE degree is just v's degree in base */
+            for (int i = 0; i < base.vertexSet().size(); i++) {
+                if( mask[i] && (base.containsEdge(ef.createEdge(v, i)) || base.containsEdge(ef.createEdge(i,v))) ) {
+                    n++;
+                }
+            }
+            return n;
+
+        } else if (type == OPTEDGE) {
+            /* OPTEDGE degree is the amount of incident optedges */
+            for (int i = 0; i < base.vertexSet().size(); i++) {
+                if( mask[i] && (optEdges.contains(ef.createEdge(i,v)) || optEdges.contains(ef.createEdge(v,i))) ) {
+                    n++;
+                }
+            }
+            return n;
+
+        } else if (type == NONEDGE) {
+            /* NONEDGE degree is the amount of incident nonedges */
+            for (int i = 0; i < base.vertexSet().size(); i++) {
+                if( mask[i] && (nonEdges.contains(ef.createEdge(i, v)) || nonEdges.contains(ef.createEdge(i, v)))) {
+                    n++;
+                }
+            }
+            return n;
+
+        } else {
+            /* UNKNOWN degree is the amount of nodes minus the EDGE, OPTEDGE and NONEDGE degree.
+             * This is correct, as n-1 is the maximum degree of a node in a graph containing n nodes,
+             * as we count the NONEDGE of a node to itself explicitely.
+             */
+            return base.vertexSet().size() - degree(v, EDGE, mask) - degree(v, OPTEDGE, mask) - degree(v, NONEDGE, mask);
         }
-        return n;
     }
 
     /**
