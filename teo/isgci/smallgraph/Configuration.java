@@ -10,8 +10,11 @@
 
 package teo.isgci.smallgraph;
 
-import org.jgrapht.alg.VertexCovers;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.ListenableUndirectedGraph;
+import org.jgrapht.graph.SimpleGraph;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
@@ -29,13 +32,18 @@ import java.util.Vector;
  * are made.
  */
 public class Configuration extends SmallGraph{
-    private int matrix[][];
+
+    private ListenableUndirectedGraph<Integer, DefaultEdge> base;
+    private ArrayList<DefaultEdge> optEdges;
+
+
+
     private int cnt;  // number of nodes in Configuration
     
     final static int EDGE = 1;
     final static int NONEDGE = -1;
     final static int OPTEDGE = 0;
-    final static int UNKNOWN = 2;   /* XXX was soll das? */
+    final static int UNKNOWN = 2;
 
     /** Graphs contained in Configuration */
     private Vector<SmallGraph> contains;
@@ -56,6 +64,47 @@ public class Configuration extends SmallGraph{
         contains = null;
         addNodesCount(n);
     }
+
+    /**
+     * Creates a new Configuration, which is 'induced' by c.
+     * This means copying all nodes which are specified by
+     * the bitmask <tt>mask</tt> and adding all edges between those
+     * nodes which exist in <tt>c</tt>.
+     *
+     * @param c Configuration which shall induce this
+     * @param includedNodes determines which nodes should be taken over
+     */
+    public Configuration(Configuration c, Set<Integer> includedNodes) {
+        super();
+        boolean[] mask = new boolean[c.cnt];
+        for (int v : includedNodes) {
+            mask[v] = true;
+        }
+
+        initWithMaskedConfiguration(c, mask);
+    }
+
+    /**
+     * Initialize with n nodes and reset the internal state.
+     * Resets all edges to UNKNOWN.
+     *
+     * @param n number of nodes for initialization
+     */
+    public void addNodesCount(int n){
+        base = new ListenableUndirectedGraph<Integer, DefaultEdge>(
+                    new SimpleGraph<Integer, DefaultEdge>(DefaultEdge.class));
+        for (Integer i = 0; i < n; i++) {
+            base.addVertex(i);
+        }
+        contains = null;
+    }
+
+
+
+
+
+
+
 
     /**
      * TODO: comment this
@@ -85,31 +134,8 @@ public class Configuration extends SmallGraph{
         }
     }
 
-    public Configuration(Configuration c, boolean mask[]){
-        super();
-        this.initWithMaskedConfiguration(c, mask);
-    }
 
-    /**
-     * Creates a new Configuration, which is 'induced' by c.
-     * This means copying all nodes which are specified by
-     * the bitmask <tt>mask</tt> and adding all edges between those
-     * nodes which exist in <tt>c</tt>.
-     *
-     * @param c Configuration which shall induce this
-     * @param includedNodes determines which nodes should be taken over
-     */
-    public Configuration(Configuration c, Set<Integer> includedNodes) {
-        super();
 
-        boolean[] mask = new boolean[c.cnt];
-
-        for (int v : includedNodes) {
-            mask[v] = true;
-        }
-
-        initWithMaskedConfiguration(c, mask);
-    }
 
     private void initWithMaskedConfiguration(Configuration c, boolean mask[]) {
         int i;
@@ -146,20 +172,7 @@ public class Configuration extends SmallGraph{
         link = null;
     }
 
-    /**
-     * Initialize with n nodes and reset the internal state.
-     * Resets all edges to UNKNOWN.
-     *
-     * @param n number of nodes for initialization
-     */
-    public void addNodesCount(int n){
-        cnt = n;
-        matrix = new int[cnt][cnt];
-        for (int i=0; i<cnt; i++)
-            for (int j=0; j<cnt; j++)
-                matrix[i][j] = i==j ? NONEDGE : UNKNOWN;
-        contains = null;
-    }
+
 
     /**
      * @return the number of nodes in the Configuration
