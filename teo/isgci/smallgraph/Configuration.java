@@ -9,9 +9,6 @@
  */
 
 package teo.isgci.smallgraph;
-
-import org.jgrapht.EdgeFactory;
-import org.jgrapht.graph.ClassBasedEdgeFactory;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.ListenableUndirectedGraph;
 import org.jgrapht.graph.SimpleGraph;
@@ -425,12 +422,9 @@ public class Configuration extends SmallGraph{
      * @param maxGraphs amount of graphs to calculate
      * @return a Vector containing the graphs or null if
      *    if more than <tt>maxGraphs</tt> were built
-     *
-     * TODO:
-     *   - why Vector and not ArrayList ?
      */
     public Vector<Graph> getGraphs(int maxGraphs){
-        final boolean DEBUG = true; /* auf true setzen für Debug-Ausgaben */
+        final boolean DEBUG = false; /* auf true setzen für Debug-Ausgaben */
         /* because we have signed 32 bit Integers as bitmask for optional edges
          we restrict our calculations to 30 optional edges */
         final int maxOptEdges = 30;
@@ -508,12 +502,11 @@ public class Configuration extends SmallGraph{
 
                     /* Search the edge (x_b, y_b) in optEdgeList */
                     for (int k = 0; k < cntOpt; k++) {
-                        if (optEdgeList[k][0] == x_b && optEdgeList[k][1] == y_b
-                                    || optEdgeList[k][1] == x_b
-                                    && optEdgeList[k][0] == y_b) {
+                        if ((optEdgeList[k][0] == x_b && optEdgeList[k][1] == y_b)
+                                || (optEdgeList[k][1] == x_b && optEdgeList[k][0] == y_b)) {
                                 trafo[j]=k;
                                 continue loop;
-                            }
+                        }
                     }
 
                     /* If the permutation of edge j is not in optEdgeList
@@ -649,8 +642,8 @@ public class Configuration extends SmallGraph{
     }
 
     /**
-     * TODO: comment this
-     * @return
+     * Generates the automorphisms of this configuration
+     * @return Vector containing the automorphisms of this configuration
      */
     public Vector getAutomorphisms(){
         final boolean DEBUG = false;
@@ -686,6 +679,10 @@ public class Configuration extends SmallGraph{
         return ret;
     }
 
+    /**
+     * Returns the amount of automorphisms in this configuration
+     * @return the amount of automorphisms in this configuration
+     */
     public int countAutomorphisms(){
         return getAutomorphisms().size();
     }
@@ -779,10 +776,10 @@ public class Configuration extends SmallGraph{
         for (i = 0; i < base.vertexSet().size(); i++) {
             if (mask[0][i]) { /* nur wenn in diesen Durchlauf eventuell */
                     /*angefaßt */
-                boolean ziel = false;;
+                boolean ziel = false;
                 for (j = 0; j < base.vertexSet().size(); j++) {
                     if (darf[i][j])
-                        ziel = true;;
+                        ziel = true;
                 }
                 if (! ziel) 
                     return false;
@@ -813,7 +810,7 @@ public class Configuration extends SmallGraph{
      * or it cannot be checked with this simple test
      *
      * @param g Graph to be checked
-     * @return true, i
+     * @return true, if g is an induced subgraph of the configuration
      */
     public boolean isInducedSubgraph(Graph g){
         /* check if /g/ is nonempty and not the bottom-graph */
@@ -919,6 +916,7 @@ public class Configuration extends SmallGraph{
 
             if (c.isInducedSubgraph(g))
                 return true;
+
         }
 
         return false;
@@ -938,15 +936,25 @@ public class Configuration extends SmallGraph{
     private boolean check(Configuration c, int perm[]){
         // this.cnt==g.cnt is checked before
         int i, j;
-        for (i=0; i<base.vertexSet().size(); i++)
-            for (j=i+1; j<base.vertexSet().size(); j++)
-                if (    base.containsEdge(i,j) != c.base.containsEdge(perm[i], perm[j]) &&
-                        optEdges.containsEdge(i,j) != c.optEdges.containsEdge(perm[i], perm[j]) &&
-                        nonEdges.containsEdge(i,j) != c.nonEdges.containsEdge(perm[i], perm[j])
-                        //matrix[i][j] != c.matrix[perm[i]][perm[j]]
-                        ) {
+        for (i=0; i<base.vertexSet().size(); i++) {
+            for (j = i + 1; j < base.vertexSet().size(); j++) {
+
+                /* Checks if the edge type of the original and the permutated edge are unequal*/
+                if (   !(base.containsEdge(i, j) && c.base.containsEdge(perm[i], perm[j]) ||
+                        (optEdges.containsEdge(i, j) && c.optEdges.containsEdge(perm[i], perm[j])) ||
+                        (nonEdges.containsEdge(i, j) && c.nonEdges.containsEdge(perm[i], perm[j])) ||
+                        /* Now check if the edges are both UNKNOWN */
+                        !(base.containsEdge(i, j) || base.containsEdge(i, j) || optEdges.containsEdge(i, j) ||
+                        nonEdges.containsEdge(i, j) || c.base.containsEdge(perm[i], perm[j]) ||
+                        c.optEdges.containsEdge(perm[i], perm[j]) ||
+                        c.nonEdges.containsEdge(perm[i], perm[j]) ))
+
+                    //Meaning: matrix[i][j] != c.matrix[perm[i]][perm[j]]
+                    ) {
                     return false;
                 }
+            }
+        }
         return true;
     }
 }
