@@ -9,6 +9,10 @@
  */
 
 package teo.isgci.smallgraph;
+import org.jgrapht.Graphs;
+import org.jgrapht.experimental.subgraphisomorphism.DefaultComparator;
+import org.jgrapht.experimental.subgraphisomorphism.SubgraphIsomorphismRelation;
+import org.jgrapht.experimental.subgraphisomorphism.VF2IsomorphismInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.ListenableUndirectedGraph;
 import org.jgrapht.graph.SimpleGraph;
@@ -502,7 +506,7 @@ public class Configuration extends SmallGraph{
 
             // iterate over all such permutations p ...
             for (i = 0; i < automorph.size(); i++) {
-                int p[] = (int []) automorph.elementAt(i);
+                Integer p[] = (Integer []) automorph.elementAt(i);
 
                 /* trafo stores the respective permutation of the optional edges:
                  entry trafo[j] = k means, that the current automorphism p
@@ -667,38 +671,41 @@ public class Configuration extends SmallGraph{
      * Generates the automorphisms of this configuration
      * @return Vector containing the automorphisms of this configuration
      */
-    public Vector getAutomorphisms(){
+    public Vector<Integer[]> getAutomorphisms(){
         final boolean DEBUG = false;
 
-        int i, j;
-        boolean darf[][] = new boolean[base.vertexSet().size()][base.vertexSet().size()];
-        boolean mask[][] = new boolean[2][base.vertexSet().size()];
-        Vector ret = new Vector();
+        SimpleGraph<Integer, DefaultEdge> allEdgeGraph = new SimpleGraph<>(DefaultEdge.class);
+        Graphs.addGraph(allEdgeGraph, base);
+        Graphs.addGraph(allEdgeGraph, optEdges);
 
-        for (i = 0; i < base.vertexSet().size(); i++) {
-            mask[0][i] = true;
-            mask[1][i] = true;
-            for (j = 0; j < base.vertexSet().size(); j++)
-                    darf[i][j] = true;
+        VF2IsomorphismInspector<Integer, DefaultEdge> inspector = new VF2IsomorphismInspector<>(allEdgeGraph, allEdgeGraph, new DefaultComparator<>(), new Comparator<DefaultEdge>() {
+            @Override
+            public int compare(DefaultEdge o1, DefaultEdge o2) {
+                if (base.containsEdge(o1) != base.containsEdge(o2)) {
+                    /* not the same edge class */
+                    return -1;
+                }
+                else {
+                    /* same edge class */
+                    return 0;
+                }
+            }
+        });
+
+        Vector<SubgraphIsomorphismRelation<Integer, DefaultEdge>> automorphisms = new Vector();
+        while (inspector.hasNext()) {
+            automorphisms.add(inspector.next());
         }
 
-        isIsomorphicIntern(this, darf, mask); /* rückgabe egal, da immer */
-        /* zu sich selbst isomorph */
-
-        Permutation perm = new Permutation(base.vertexSet().size(),darf);
-        do {
-            int p[] = perm.get();
-            if (check(this, p))
-            ret.addElement(p);
-        } while (perm.next());
-
-        if (DEBUG) {
-            System.err.print(" getAutomorphisms(" + getName() + ")\n");
-            System.err.print("  bijektive Funktionen: " + perm.count() + "\n");
-            System.err.print("  Automorphismen: " + ret.size() + "\n");
+        Vector<Integer[]> permutations = new Vector<>();
+        for (SubgraphIsomorphismRelation<Integer, DefaultEdge> relation : automorphisms) {
+            permutations.add(new Integer[base.vertexSet().size()]);
+            for (Integer vertex : base.vertexSet()) {
+                permutations.lastElement()[vertex] = relation.getVertexCorrespondence(vertex, true);
+            }
         }
 
-        return ret;
+        return permutations;
     }
 
     /**
@@ -710,120 +717,27 @@ public class Configuration extends SmallGraph{
     }
 
     public boolean isIsomorphic(Configuration c){
-        /* check if numbers of nodex, Edges and non-Edges are equal */
-        if (base.vertexSet().size()!=c.base.vertexSet().size() || countEdges()!=c.countEdges() ||
-                          countNonedges()!=c.countNonedges())
-            return false;
+        SimpleGraph<Integer, DefaultEdge> allEdgeGraph = new SimpleGraph<>(DefaultEdge.class);
+        Graphs.addGraph(allEdgeGraph, base);
+        Graphs.addGraph(allEdgeGraph, optEdges);
 
-        int i, j;
-        boolean darf[][] = new boolean[base.vertexSet().size()][base.vertexSet().size()];
-        boolean mask[][] = new boolean[2][base.vertexSet().size()];
+        VF2IsomorphismInspector<Integer, DefaultEdge> inspector = new VF2IsomorphismInspector<>(allEdgeGraph, allEdgeGraph, new DefaultComparator<>(), new Comparator<DefaultEdge>() {
+            @Override
+            public int compare(DefaultEdge o1, DefaultEdge o2) {
+                if (base.containsEdge(o1) != base.containsEdge(o2)) {
+                    /* not the same edge class */
+                    return -1;
+                }
+                else {
+                    /* same edge class */
+                    return 0;
+                }
+            }
+        });
 
-        for (i = 0; i < base.vertexSet().size(); i++) {
-            mask[0][i] = true;
-            mask[1][i] = true;
-            for (j = 0; j < base.vertexSet().size(); j++)
-                    darf[i][j] = true;
-        }
-
-        if (!isIsomorphicIntern(c, darf, mask))
-                return false;
-
-        Permutation perm = new Permutation(base.vertexSet().size(),darf);
-        do {
-            if (check(c, perm.get())) return true;
-        } while (perm.next());
-
-        return false;
+        return inspector.isSubgraphIsomorphic();
     }
 
-    /** Hilfsfunktion zur Bestimmung von <tt>darf<tt>.
-     * In diesen Fall nicht-rekursiv, da der Aufwand dafür zu groß ist. Die
-     * Matrix <tt>darf</tt> enthält an der Stell i,j eine 1, wenn der Knoten i
-     * in <tt>this<tt> den gleichen Grad hat wie der Knoten j in <tt>g<tt>. In
-     * mask ist hierbei gespeichert welcher Teil des Graphen bearbeitet werden
-     * soll. In mask[0] beschreibt hierbei <tt>this<tt> und mask[1] <tt>g<tt>.
-     */
-    private boolean isIsomorphicIntern(
-            Configuration c,
-            boolean darf[][],
-            boolean mask[][]){
-        int i, j;
-        int Grad[][] = new int[2][base.vertexSet().size()];
-        int OptGrad[][] = new int[2][base.vertexSet().size()];
-        boolean changed = false;
-
-        /* Speichere in Grad[0][i] den Grad des Knoten i in der Configuration
-         * this Analog für die Configuration c wenn der Index 1 gewählt ist.
-         * Das ganze aber nur dann, wenn in der jeweiligen Maske das Flag für
-         * den entsprechenden Knoten gesetzt ist. Nebenbei wird ermittelt, ob
-         * die Gradzahlen in beiden Graphen übereinsstimmen.*/
-        for (i=0; i < base.vertexSet().size(); i++) {
-            int h;
-
-            if (mask[0][i]) {
-                Grad[0][i] = degree(i,mask[0]);
-                OptGrad[0][i] = optDegree(i,mask[0]);
-            }
-
-            if (mask[1][i]) {
-                Grad[1][i] = c.degree(i,mask[1]);
-                OptGrad[1][i] = c.optDegree(i,mask[1]);
-            }
-        }
-
-        /* jetzt darf[][] bearbeiten */
-        for (i=0; i < base.vertexSet().size(); i++) {
-            if (!mask[0][i])
-                continue;
-
-            for (j=0; j < base.vertexSet().size(); j++) {
-                if (!mask[1][j])
-                    continue;
-
-                if ((Grad[0][i] != Grad[1][j]
-                    || OptGrad[0][i] != OptGrad[1][j])
-                    && darf[i][j]) {
-                    changed = true;
-                    darf[i][j] = false;
-                }
-            }
-        }
-
-        if (!changed)
-            return true;       /* nix passiert */
-
-        /* untersuchen, ob es Knoten gibt, für die es keine
-         * Positionsmöglichkeiten gibt */
-        for (i = 0; i < base.vertexSet().size(); i++) {
-            if (mask[0][i]) { /* nur wenn in diesen Durchlauf eventuell */
-                    /*angefaßt */
-                boolean ziel = false;
-                for (j = 0; j < base.vertexSet().size(); j++) {
-                    if (darf[i][j])
-                        ziel = true;
-                }
-                if (! ziel) 
-                    return false;
-            }
-        }
-
-        /* untersuchen, ob es Knoten gibt, für die es keine Quelle gibt */
-        for (i = 0; i < base.vertexSet().size(); i++) {
-            if (mask[1][i]) { /* nur wenn in diesen Durchlauf eventuell */
-                    /* angefaßt */
-                boolean quelle = false;;
-                for (j = 0; j < base.vertexSet().size(); j++) {
-                    if (darf[j][i])
-                        quelle = true;;
-                }
-                if (! quelle)
-                    return false;
-            }
-        }
-
-        return true;
-    }
 
     /**
      * Checks if g is an induced subgraph of the Configuration,
@@ -944,39 +858,4 @@ public class Configuration extends SmallGraph{
         return false;
     }
 
-    /**
-     * Checks whether the matrices of <tt>this</tt> and <tt>c</tt>
-     * are equal, if the nodes of <tt>c</tt> are reordered
-     * according to the permutation given by <tt>perm</tt>.
-     *
-     * @param c the Configuration to be matched
-     * @param perm the permutation used for matching
-     * @return true, if <tt>perm</tt> reorders the nodes of c
-     *   such that the matrices of <tt>this</tt> and <tt>c</tt> are equal,
-     *   false otherwise.
-     */
-    private boolean check(Configuration c, int perm[]){
-        // this.cnt==g.cnt is checked before
-        int i, j;
-        for (i=0; i<base.vertexSet().size(); i++) {
-            for (j = i + 1; j < base.vertexSet().size(); j++) {
-
-                /* Checks if the edge type of the original and the permutated edge are unequal*/
-                if (   !(base.containsEdge(i, j) && c.base.containsEdge(perm[i], perm[j]) ||
-                        (optEdges.containsEdge(i, j) && c.optEdges.containsEdge(perm[i], perm[j])) ||
-                        (nonEdges.containsEdge(i, j) && c.nonEdges.containsEdge(perm[i], perm[j])) ||
-                        /* Now check if the edges are both UNKNOWN */
-                        !(base.containsEdge(i, j) || base.containsEdge(i, j) || optEdges.containsEdge(i, j) ||
-                        nonEdges.containsEdge(i, j) || c.base.containsEdge(perm[i], perm[j]) ||
-                        c.optEdges.containsEdge(perm[i], perm[j]) ||
-                        c.nonEdges.containsEdge(perm[i], perm[j]) ))
-
-                    //Meaning: matrix[i][j] != c.matrix[perm[i]][perm[j]]
-                    ) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 }
