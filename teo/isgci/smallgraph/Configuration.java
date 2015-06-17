@@ -598,7 +598,7 @@ public class Configuration extends SmallGraph{
          the Configuration */
         loop: for (int optionalMask=0; optionalMask < allOptionalEdges; optionalMask++) {
 
-            int permutatedBitmask;
+            int permutedBitmask;
 
             /* getSmallerNumber: look at all isomorphic representatives using the automorphisms
              on the optional edges
@@ -606,16 +606,16 @@ public class Configuration extends SmallGraph{
             for (int z = 0; z < Transformationen.size(); z++) {
                 int permutation[] = (int []) Transformationen.elementAt(z);
 
-                permutatedBitmask = 0;
+                permutedBitmask = 0;
                 for (int bitPosition = 0; bitPosition < cntOpt; bitPosition++) {
                     if ((optionalMask & (1 << bitPosition)) != 0) {
-                        permutatedBitmask |= (1 << permutation[bitPosition]);
+                        permutedBitmask |= (1 << permutation[bitPosition]);
                     }
                 }
 
                 // if permutedBitmask < optionalMask, then optionalMask is
                 // isomorphic to a representative that we have already stored
-                if (permutatedBitmask < optionalMask) {
+                if (permutedBitmask < optionalMask) {
                     continue loop;
                 }
             }
