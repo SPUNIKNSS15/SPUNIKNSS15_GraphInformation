@@ -10,9 +10,10 @@
 
 package teo.isgci.smallgraph;
 import org.jgrapht.Graphs;
-import org.jgrapht.experimental.subgraphisomorphism.DefaultComparator;
-import org.jgrapht.experimental.subgraphisomorphism.SubgraphIsomorphismRelation;
-import org.jgrapht.experimental.subgraphisomorphism.VF2IsomorphismInspector;
+import org.jgrapht.alg.isomorphism.DefaultComparator;
+import org.jgrapht.alg.isomorphism.IsomorphicGraphMapping;
+import org.jgrapht.alg.isomorphism.VF2GraphIsomorphismInspector;
+import org.jgrapht.alg.isomorphism.VF2GraphMappingIterator;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.ListenableUndirectedGraph;
 import org.jgrapht.graph.SimpleGraph;
@@ -678,7 +679,7 @@ public class Configuration extends SmallGraph{
         Graphs.addGraph(allEdgeGraph, base);
         Graphs.addGraph(allEdgeGraph, optEdges);
 
-        VF2IsomorphismInspector<Integer, DefaultEdge> inspector = new VF2IsomorphismInspector<>(allEdgeGraph, allEdgeGraph, new DefaultComparator<>(), new Comparator<DefaultEdge>() {
+        VF2GraphIsomorphismInspector<Integer, DefaultEdge> inspector = new VF2GraphIsomorphismInspector<>(allEdgeGraph, allEdgeGraph, new DefaultComparator<>(), new Comparator<DefaultEdge>() {
             @Override
             public int compare(DefaultEdge o1, DefaultEdge o2) {
                 if (base.containsEdge(o1) != base.containsEdge(o2)) {
@@ -692,16 +693,17 @@ public class Configuration extends SmallGraph{
             }
         });
 
-        Vector<SubgraphIsomorphismRelation<Integer, DefaultEdge>> automorphisms = new Vector();
-        while (inspector.hasNext()) {
-            automorphisms.add(inspector.next());
+        Vector<IsomorphicGraphMapping<Integer, DefaultEdge>> automorphisms = new Vector();
+        VF2GraphMappingIterator mappingIterator =  inspector.getMappings();
+        while (mappingIterator.hasNext()) {
+            automorphisms.add(mappingIterator.next());
         }
 
         Vector<Integer[]> permutations = new Vector<>();
-        for (SubgraphIsomorphismRelation<Integer, DefaultEdge> relation : automorphisms) {
+        for (IsomorphicGraphMapping<Integer, DefaultEdge> mapping : automorphisms) {
             permutations.add(new Integer[base.vertexSet().size()]);
             for (Integer vertex : base.vertexSet()) {
-                permutations.lastElement()[vertex] = relation.getVertexCorrespondence(vertex, true);
+                permutations.lastElement()[vertex] = mapping.getVertexCorrespondence(vertex, true);
             }
         }
 
@@ -721,7 +723,7 @@ public class Configuration extends SmallGraph{
         Graphs.addGraph(allEdgeGraph, base);
         Graphs.addGraph(allEdgeGraph, optEdges);
 
-        VF2IsomorphismInspector<Integer, DefaultEdge> inspector = new VF2IsomorphismInspector<>(allEdgeGraph, allEdgeGraph, new DefaultComparator<>(), new Comparator<DefaultEdge>() {
+        VF2GraphIsomorphismInspector<Integer, DefaultEdge> inspector = new VF2GraphIsomorphismInspector<>(allEdgeGraph, allEdgeGraph, new DefaultComparator<>(), new Comparator<DefaultEdge>() {
             @Override
             public int compare(DefaultEdge o1, DefaultEdge o2) {
                 if (base.containsEdge(o1) != base.containsEdge(o2)) {
@@ -735,7 +737,7 @@ public class Configuration extends SmallGraph{
             }
         });
 
-        return inspector.isSubgraphIsomorphic();
+        return inspector.isomorphismExists();
     }
 
 
