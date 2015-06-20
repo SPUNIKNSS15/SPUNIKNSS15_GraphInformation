@@ -699,23 +699,37 @@ public class FindISG{
 
         topological order is provided by jgrapht
          */
-        for (int i=0; i<bigSmallmemb.size(); i++) {
-            Graph bigGr = (Graph)bigSmallmemb.elementAt(i);
-            System.out.println("wire up " + bigGr.getName() + " in resultgraph");
-            resultGraph.addVertex(bigGr);
 
-            for (Graph v : topo) {
-                //getPath is a dijkstra shortest path between the nodes
-                //bigGr and v in resultGraph - if none is existing...
-                if (GAlg.getPath(resultGraph, bigGr, v) == null)
-                    //check if v (in the existing resultGraph)
-                    //is induced subgraph of the current bigGraph
-                    //=> add the edge to the resultGraph respectively
-                    if (bigGr.isSubIsomorphic(v)) {
-                        resultGraph.addEdge(bigGr, v);
-                    }
-            }
+        ArrayList<ThreadClass> threads = new ArrayList();
+
+        for (int i=0; i<bigSmallmemb.size(); i++) {
+            threads.add(new ThreadClass(topo, (Graph)bigSmallmemb.elementAt(i), resultGraph));
         }
+
+        ThreadGroup tg = new ThreadGroup("main");
+
+        int k = 0;
+        while (k<threads.size())
+        {
+            if (tg.activeCount()<Runtime.getRuntime().availableProcessors())
+            {
+                ThreadClass th = threads.get(k);
+                Graph bigGr = th.bigG;
+                resultGraph.addVertex(bigGr);
+                th.start(); k++;
+            } else
+                try {Thread.sleep(50);} catch (InterruptedException e){}
+        }
+
+        for (int j = 0; j < threads.size(); ++j) {
+            ThreadClass th = threads.get(j);
+            if (th.getResult())
+                resultGraph.addEdge(th.bigG , th.v);
+        }
+
+
+
+
 
         //Add all graphs from bigSmallmemb to graphs
         for (int i=0; i<bigSmallmemb.size(); i++) {
