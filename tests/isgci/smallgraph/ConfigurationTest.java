@@ -77,8 +77,8 @@ public class ConfigurationTest {
                     Comparator<E> c) {
             int both = 0;
             for (Iterator<E> sampleIt = sampleList.iterator(); sampleIt.hasNext();) {
+                E sampleObj = sampleIt.next();
                 for (Iterator<E> internalIt = internalList.iterator(); internalIt.hasNext();) {
-                    E sampleObj = sampleIt.next();
                     E internalObj = internalIt.next();
                     if (c.compare(sampleObj, internalObj) == 0) {
                         sampleIt.remove();
@@ -361,8 +361,8 @@ public class ConfigurationTest {
         List<String> sampleAutomorphisms = new ArrayList<>(Arrays.asList(readSample(sampleNo)[3].trim().split("\n")));
 
         List<String> calculatedAutomorphisms = new ArrayList<>();
-        for (Object pObj : conf.getAutomorphisms()) {
-            calculatedAutomorphisms.add(Arrays.toString((int[]) pObj));
+        for (Integer[] p : conf.getAutomorphisms()) {
+            calculatedAutomorphisms.add(Arrays.toString(p));
         }
 
         return new Diff<>(sampleNo, sampleAutomorphisms, calculatedAutomorphisms);
