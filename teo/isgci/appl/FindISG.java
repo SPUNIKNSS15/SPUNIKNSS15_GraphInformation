@@ -145,13 +145,13 @@ public class FindISG{
 
 
             System.out.println(conf);
-            System.out.println("contains");
+            System.out.println("-- contains:");
 
             for (Graph g : contained) {
                 System.out.println(g);
             }
 
-            System.out.println("induces");
+            System.out.println("-- induces:");
 
             for (int j = 0; j < graphs.size(); j++) {
                 Graph g = (Graph) graphs.elementAt(j);
@@ -162,7 +162,14 @@ public class FindISG{
                 }
             }
 
-            System.out.println("");
+            System.out.println("-- automorphisms:");
+            for (Object pObj : conf.getAutomorphisms()) {
+                int[] p = (int[]) pObj;
+                System.out.println(Arrays.toString(p));
+            }
+
+            System.out.println();
+
         }
 
         t2=System.currentTimeMillis();
