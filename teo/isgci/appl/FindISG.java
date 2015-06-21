@@ -715,10 +715,11 @@ public class FindISG{
             {
                 ThreadClass th = threads.get(k);
                 Graph bigGr = th.bigG;
+                System.out.println("wire up " + bigGr.getName() + " in resultgraph");
                 resultGraph.addVertex(bigGr);
                 th.start(); k++;
             } else
-                try {Thread.sleep(50);} catch (InterruptedException e){}
+                try {Thread.sleep(100);} catch (InterruptedException e){}
         }
 
         for (int j = 0; j < threads.size(); ++j) {
