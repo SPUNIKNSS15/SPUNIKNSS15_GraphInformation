@@ -711,7 +711,8 @@ public class FindISG{
         int k = 0;
         while (k<threads.size())
         {
-            if (tg.activeCount()<Runtime.getRuntime().availableProcessors())
+            int p = Runtime.getRuntime().availableProcessors();
+            if (tg.activeCount()<p)
             {
                 ThreadClass th = threads.get(k);
                 Graph bigGr = th.bigG;
@@ -724,8 +725,12 @@ public class FindISG{
 
         for (int j = 0; j < threads.size(); ++j) {
             ThreadClass th = threads.get(j);
-            if (th.getResult())
-                resultGraph.addEdge(th.bigG , th.v);
+            while (!th.isFinished()) {
+                try {Thread.sleep(100);} catch (InterruptedException e){}
+            }
+            ArrayList<Graph> res = th.getResult();
+            for (int i = 0; i < res.size(); i++)
+                resultGraph.addEdge(th.bigG , res.get(i));
         }
 
 

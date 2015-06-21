@@ -11,11 +11,11 @@ import java.util.ArrayList;
  * Created by dennis on 21.06.15.
  */
 public class ThreadClass extends Thread {
-    protected boolean returnvalue = false;
     protected ArrayList<Graph> topo;
     protected Graph bigG;
-    protected Graph v;
+    protected ArrayList<Graph> vs = new ArrayList<>();
     protected SimpleDirectedGraph<Graph,DefaultEdge> resultGraph;
+    protected boolean finished = false;
 
         public ThreadClass(ArrayList<Graph> topo, Graph bigG, SimpleDirectedGraph<Graph,DefaultEdge> resultGraph) {
             this.topo = topo;
@@ -29,17 +29,20 @@ public class ThreadClass extends Thread {
             for (Graph v : topo) {
                 if (GAlg.getPath(resultGraph, bigG, v) == null)
                     if (bigG.isSubIsomorphic(v)) {
-                        returnvalue = true;
-                        this.v = v;
+                        vs.add(v);
                     }
             }
+            finished = true;
 
         }
 
-    public boolean getResult() {
-        return returnvalue;
+    public ArrayList<Graph> getResult() {
+        return vs;
     }
 
+    public boolean isFinished() {
+        return finished;
+    }
 
 
 }
