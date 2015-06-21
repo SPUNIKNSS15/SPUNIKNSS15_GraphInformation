@@ -143,6 +143,11 @@ public class Graph extends SmallGraph {
         }
 
 
+        /* check if number of nodes and edges are equal */
+        if( graph.vertexSet().size() != g.graph.vertexSet().size() || graph.edgeSet().size() != g.graph.edgeSet().size() ) {
+            return false;
+        }
+
         /* after checked for equal edge count, sub-isomorphism is the same as isomorphism */
         return new VF2GraphIsomorphismInspector<>(graph, g.graph).isomorphismExists();
     }
