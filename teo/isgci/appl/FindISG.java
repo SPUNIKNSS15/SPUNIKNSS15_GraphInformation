@@ -372,14 +372,16 @@ public class FindISG{
          * since isomorphy is transitive.
          * TODO: really? then we should do this. Otherwise delete comment (tassilo)?
          */
-        for (i=0; i<graphs.size(); i++)
-            for (j=i+1; j<graphs.size(); j++)
-                if (((Graph)graphs.elementAt(i)).
-                        isIsomorphic((Graph)graphs.elementAt(j)))
-                    System.out.println("Mistake!!! "+
-                        ((Graph)graphs.elementAt(i)).getName()+
-                        " isomorphic to "+
-                        ((Graph)graphs.elementAt(j)).getName());
+        for (i=0; i<graphs.size(); i++) {
+            for (j = i + 1; j < graphs.size(); j++) {
+                if (((Graph) graphs.elementAt(i)).
+                        isIsomorphic((Graph) graphs.elementAt(j)))
+                    System.out.println("Mistake!!! " +
+                            ((Graph) graphs.elementAt(i)).getName() +
+                            " isomorphic to " +
+                            ((Graph) graphs.elementAt(j)).getName());
+            }
+        }
 
         System.out.println("checked Graphs");
 
@@ -438,22 +440,20 @@ public class FindISG{
         Check configurations for isomorphism against each other,
         as with graphs before
          */
-        for (i=0; i<configurations.size(); i++)
-            for (j=i+1; j<configurations.size(); j++)
-                if (((Configuration)configurations.elementAt(i)).
-                        isIsomorphic((Configuration)configurations.
-                        elementAt(j)))
-                    System.out.println("Mistake!!! "+
-                        ((Configuration)configurations.elementAt(i)).getName()+
-                        " isomorphic to "+
-                        ((Configuration)configurations.elementAt(j)).getName());
+        for (i=0; i<configurations.size(); i++) {
+            for (j = i + 1; j < configurations.size(); j++) {
+                if (((Configuration) configurations.elementAt(i)).
+                        isIsomorphic((Configuration) configurations.elementAt(j)))
+                    System.out.println("Mistake!!! " +
+                            ((Configuration) configurations.elementAt(i)).getName() +
+                            " isomorphic to " +
+                            ((Configuration) configurations.elementAt(j)).getName());
+            }
+        }
 
-        System.out.println("checked Configurations");
+		System.out.println("checked Configurations");
 
-        /*
-        Determine maximum and minimum amount of nodes in the graphs
-         */
-        int curCnt;
+        int curCnt = 0;
         for (i=0; i<graphs.size(); i++){
             curCnt = ((Graph)graphs.elementAt(i)).countNodes();
             if (curCnt>maxCnt)
