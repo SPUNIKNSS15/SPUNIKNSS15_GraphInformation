@@ -10,6 +10,8 @@
 
 package teo.isgci.smallgraph;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 
 public class HMTGrammar{
@@ -90,9 +92,84 @@ public class HMTGrammar{
      * @param attm attachment
      */
     public void setMid(Graph mid, int[] extm, int[] attm){
-        if (extm.length != type  ||  attm.length != type)
+        if (extm.length != type  ||  attm.length != type) {
             throw new IllegalArgumentException("Type of mid wrong");
-        this.mid = new HMTGraph(mid, extm, attm);
+        }
+
+        HMTGraph midHMT = new HMTGraph(mid, extm, attm);
+
+        if (!isNormalized(midHMT)) {
+            throw new IllegalArgumentException("Mid graph not normalised");
+        }
+
+        this.mid = midHMT;
+    }
+
+
+    private boolean isNormalized(HMTGraph mid) {
+
+        /*
+         * For a HMT grammar G=(H,M,T), define Q(M) := ext(M) \cap att(M)
+         * A transitive cycle of M is a minimal set of vertices C \subseteq Q(M) such that
+         * ext_M(C) = att_M(C). The transitive set of M is the maximal set of vertices
+         * M_tr \subseteq Q(M) such that ext(M_tr) = att(M_tr), therefore M_tr is the
+         * union of all transitive cycles.
+         *
+         * Normalised MTR Grammars  must fulfill
+         *  1. Q(M) = M_tr
+         *  2. \forall v \in M_tr: ext(v) = att(v)
+         *  3. M_tr is edgeless.
+         */
+
+
+        /* Check if Q(M) = M_{tr} */
+
+        Set<Integer> qM = new HashSet<>();
+
+        /* Search for att[] \cap ext[] */
+        buildQM: for (int i = 0; i < mid.att.length; i++) {
+            for (int j = 0; j < mid.ext.length; j++ ) {
+                if (mid.att[i] == mid.ext[j]) {
+                    qM.add(mid.att[i]);
+                    continue buildQM;
+                }
+            }
+        }
+
+        Set<Integer> mTr = new HashSet<>();
+
+        /* Check if all vertices of qM are in mTr */
+        for (Integer v : qM) {
+            if (mTr.contains(v)) {
+                continue;
+            }
+
+            Integer currentV = v;
+            do {
+                mTr.add(currentV);
+                /* 'cycle' leaves qM */
+                if (!qM.contains(mid.att[currentV])) {
+                    return false;
+                }
+                currentV = mid.att[currentV];
+            } while (!currentV.equals(v));
+        }
+
+        /* check if forall v \in M_{tr}: ext(v) == att(v) */
+        for (Integer i : mTr) {
+            if (mid.att[i] != mid.ext[i]) {
+                return false;
+            }
+        }
+
+        /* Check if M[M_{tr}] is edgeless */
+        for (Integer i : mTr) {
+            if( mid.getGraph().edgesOf(i).size() > 0) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -236,16 +313,39 @@ public class HMTGrammar{
          */
         public HMTGraph(Graph graph, int[] ext, int[] att){
             super(graph);
+
             if (att != null  &&  att.length != type  ||
-                ext != null  &&  ext.length != type)
+                    ext != null  &&  ext.length != type) {
                 throw new IllegalArgumentException("Type of graph wrong");
+            }
             this.att = null;
             this.ext = null;
+
+            boolean[] isAttachment = new boolean[graph.countNodes()];
+            boolean[] isExtension  = new boolean[graph.countNodes()];
+
             if (att != null) {
+                for (int i = 0; i < att.length; i++) {
+                    if (isAttachment[att[i]] || att[i] < 0 || att[i] >= graph.countNodes()) {
+                        throw new IllegalArgumentException("Non-bijective att mapping");
+                    } else {
+                        isAttachment[att[i]] = true;
+                    }
+                }
+
                 this.att = new int[att.length];
                 System.arraycopy(att, 0, this.att, 0, type);
             }
+
             if (ext != null) {
+                for (int i = 0; i < ext.length; i++) {
+                    if(isExtension[ext[i]] || ext[i] < 0 || ext[i] >= graph.countNodes()) {
+                        throw new IllegalArgumentException("Non-bijective ext mapping");
+                    } else {
+                        isExtension[ext[i]] = true;
+                    }
+                }
+
                 this.ext = new int[ext.length];
                 System.arraycopy(ext, 0, this.ext, 0, type);
             }
