@@ -586,15 +586,6 @@ public class FindISG{
                 resultGraph.addEdge(v, vSub);
         }
 
-        GAlg.transitiveClosure(resultGraph);
-
-        // Removing Nodes of graphs with "USG" in the name
-        ArrayList<Graph> remove = new ArrayList<Graph>();
-        for (Graph v : resultGraph.vertexSet()) {
-            if (v.getName().startsWith(USG))
-                remove.add(v);
-        }
-        resultGraph.removeAllVertices(remove);
 
         GAlg.transitiveReduction(resultGraph);
     }
