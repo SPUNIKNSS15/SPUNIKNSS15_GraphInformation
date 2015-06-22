@@ -738,7 +738,17 @@ public class FindISG{
 
 
 
-
+        for (int j = 0; j < threads.size(); ++j) {
+            ThreadClass th = threads.get(j);
+            while (!th.isFinished()) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {}
+            }
+            ArrayList<Graph> res = th.getResult();
+            for (int i = 0; i < res.size(); i++)
+                resultGraph.addEdge(th.bigG, res.get(i));
+        }
 
         //Add all graphs from bigSmallmemb to graphs
         for (int i=0; i<bigSmallmemb.size(); i++) {
