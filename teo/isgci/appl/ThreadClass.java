@@ -26,10 +26,12 @@ public class ThreadClass extends Thread {
 
         public void run()
         {
+            resultGraph.addVertex(bigG);
             for (Graph v : topo) {
                 if (GAlg.getPath(resultGraph, bigG, v) == null)
                     if (bigG.isSubIsomorphic(v)) {
                         vs.add(v);
+                        resultGraph.addEdge(bigG, v);
                     }
             }
             finished = true;

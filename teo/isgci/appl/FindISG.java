@@ -709,29 +709,32 @@ public class FindISG{
         ThreadGroup tg = new ThreadGroup("main");
 
         int k = 0;
-        while (k<threads.size())
-        {
-            int p = Runtime.getRuntime().availableProcessors();
-            if (tg.activeCount()<p)
-            {
-                ThreadClass th = threads.get(k);
-                Graph bigGr = th.bigG;
-                System.out.println("wire up " + bigGr.getName() + " in resultgraph");
-                resultGraph.addVertex(bigGr);
-                th.start(); k++;
-            } else
-                try {Thread.sleep(100);} catch (InterruptedException e){}
+        int pCount = Runtime.getRuntime().availableProcessors();
+        int[] active = new int[pCount];
+        for (int l = 0; l < pCount; l++) {
+            active[l] = -1;
         }
-
-        for (int j = 0; j < threads.size(); ++j) {
-            ThreadClass th = threads.get(j);
-            while (!th.isFinished()) {
-                try {Thread.sleep(100);} catch (InterruptedException e){}
-            }
-            ArrayList<Graph> res = th.getResult();
-            for (int i = 0; i < res.size(); i++)
-                resultGraph.addEdge(th.bigG , res.get(i));
-        }
+        while (k<threads.size()) {
+            for (int l = 0; l < pCount; l++) {
+                if (active[l] >= 0) {
+                    if (threads.get(active[l]).isFinished()) {
+                        ThreadClass th = threads.get(k);
+                        Graph bigGr = th.bigG; System.out.println("wire up " + bigGr.getName() + " in resultgraph");
+                        resultGraph.addVertex(bigGr);
+                        th.start();
+                        active[l] = k;
+                        k++;
+                    }
+                } else {
+                    ThreadClass th = threads.get(k);
+                    Graph bigGr = th.bigG;
+                    System.out.println("wire up " + bigGr.getName() + " in resultgraph");
+                    resultGraph.addVertex(bigGr);
+                    th.start();
+                    active[l] = k;
+                    k++;
+                }
+            } try {Thread.sleep(500);} catch (InterruptedException e){} }
 
 
 
