@@ -347,35 +347,16 @@ public class FindISG{
             else
                 System.err.println("Don't know how to handle "+ g.getName());
         }
-
-
-        /*
-         * Check all graphs against each other for isomorphisms -
-         * if 2 isomorphic graphs are found, print an error message
-         *
-         * XXX This is in O(graphs.size()^2),
-         * This can be optimized for inputs with many isomorphic graphs
-         * since isomorphy is transitive.
-         * TODO: really? then we should do this. Otherwise delete comment (tassilo)?
-         */
-        for (i=0; i<graphs.size(); i++) {
-            for (j = i + 1; j < graphs.size(); j++) {
-                if (((Graph) graphs.elementAt(i)).
-                        isIsomorphic((Graph) graphs.elementAt(j)))
-                    System.out.println("Mistake!!! " +
-                            ((Graph) graphs.elementAt(i)).getName() +
-                            " isomorphic to " +
-                            ((Graph) graphs.elementAt(j)).getName());
-            }
-        }
-
-        System.out.println("checked Graphs");
-
-        /*
-         * Iterates over the configurations vector and checks whether
-         * the configuration generates too many representatives, what means
-         * more than 100 in this case. (see getGraphs())
-         */
+        
+        for (i=0; i<graphs.size(); i++)
+            for (j=i+1; j<graphs.size(); j++)
+                if (((Graph)graphs.elementAt(i)).
+                        isIsomorphic((Graph)graphs.elementAt(j)))
+                    System.err.println("Mistake!!! "+
+                        ((Graph)graphs.elementAt(i)).getName()+
+                        " isomorphic to "+
+                        ((Graph)graphs.elementAt(j)).getName());
+        
         for (ci = 0; ci < configurations.size(); ci++) {
             Configuration c = (Configuration) configurations.elementAt(ci);
 
@@ -400,22 +381,16 @@ contConf:   for (i=0; i<contained.size(); i++) {
             }
 //            configurations.addElement(c);
         }
-
-
-        /*
-        Check configurations for isomorphism against each other,
-        as with graphs before
-         */
-        for (i=0; i<configurations.size(); i++) {
-            for (j = i + 1; j < configurations.size(); j++) {
-                if (((Configuration) configurations.elementAt(i)).
-                        isIsomorphic((Configuration) configurations.elementAt(j)))
-                    System.out.println("Mistake!!! " +
-                            ((Configuration) configurations.elementAt(i)).getName() +
-                            " isomorphic to " +
-                            ((Configuration) configurations.elementAt(j)).getName());
-            }
-        }
+        
+        for (i=0; i<configurations.size(); i++)
+            for (j=i+1; j<configurations.size(); j++)
+                if (((Configuration)configurations.elementAt(i)).
+                        isIsomorphic((Configuration)configurations.
+                        elementAt(j)))
+                    System.err.println("Mistake!!! "+
+                        ((Configuration)configurations.elementAt(i)).getName()+
+                        " isomorphic to "+
+                        ((Configuration)configurations.elementAt(j)).getName());
 
         int curCnt = 0;
         for (i=0; i<graphs.size(); i++){
