@@ -723,10 +723,17 @@ public class Configuration extends SmallGraph{
         Graphs.addGraph(allEdgeGraph, base);
         Graphs.addGraph(allEdgeGraph, optEdges);
 
-        VF2GraphIsomorphismInspector<Integer, DefaultEdge> inspector = new VF2GraphIsomorphismInspector<>(allEdgeGraph, allEdgeGraph, new DefaultComparator<>(), new Comparator<DefaultEdge>() {
+        SimpleGraph<Integer, DefaultEdge> allEdgeGraphOther = new SimpleGraph<>(DefaultEdge.class);
+        Graphs.addGraph(allEdgeGraphOther, c.base);
+        Graphs.addGraph(allEdgeGraphOther, c.optEdges);
+
+        VF2GraphIsomorphismInspector<Integer, DefaultEdge> inspector = new VF2GraphIsomorphismInspector<>(
+                allEdgeGraph, allEdgeGraphOther, new DefaultComparator<>(),
+                new Comparator<DefaultEdge>() {
             @Override
             public int compare(DefaultEdge o1, DefaultEdge o2) {
-                if (base.containsEdge(o1) != base.containsEdge(o2)) {
+                if (base.containsEdge(base.getEdgeSource(o1), base.getEdgeTarget(o1))
+                        != base.containsEdge(base.getEdgeSource(o2), base.getEdgeTarget(o2)) ) {
                     /* not the same edge class */
                     return -1;
                 }
