@@ -10,45 +10,65 @@
 
 package teo.isgci.smallgraph;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Vector;
 
 public class HMTGrammar{
-    /** The constituent graphs and their attachment/extension */
+    /**
+     * @head constituent graph and his attachment/extension
+     * @mid constituent graph and his attachment/extension
+     * @tail constituent graph and his attachment/extension
+     * @type type of the grammar
+     * @name name of the grammar
+     */
     HMTGraph head, mid, tail;
-    /** Type of the grammar */
     int type;
-    /** Name of the grammar */
     String name;
 
     /**
-     * Create a new HMT grammar of the given type without a name.
+     * creates a new HMT grammar of the given type without a name
+     *
+     * @param type type of the new HMT grammar
      */
     public HMTGrammar(int type){
         head = mid = tail = null;
         this.type = type;
         name = null;
     }
-    
+
     /**
      * Create a new HMT grammar of the given type with a given name.
+     *
+     * @param type type of the new HMT grammar
+     * @param name name of the HMT grammar
      */
     public HMTGrammar(int type, String name){
         this(type);
         this.name = name;
     }
-    
-    /** Returns type of this grammar. */
+
+    /**
+     *
+     * @return type of this grammar
+     */
     public int getType(){
         return type;
     }
 
-    /** Returns name of this grammar if this grammar exists outside family. */
+    /**
+     *
+     * @return name of this grammar if this grammar exists outside family.
+     */
     public String getName(){
         return name;
     }
 
     /**
      * Set head (with attachment).
+     *
+     * @param head
+     * @param atth attachment
      */
     public void setHead(Graph head, int[] atth){
         if (atth.length != type)
@@ -57,30 +77,124 @@ public class HMTGrammar{
     }
 
     /**
-     * Get head (with attachment).
+     *
+     * @return head (with attachment)
      */
     public HMTGraph getHead(){
         return head;
     }
 
     /**
-     * Set mid (with attachment/extension).
+     * Set mid (with attachment/extension)
+     *
+     * @param mid
+     * @param extm extension
+     * @param attm attachment
      */
     public void setMid(Graph mid, int[] extm, int[] attm){
-        if (extm.length != type  ||  attm.length != type)
+        if (extm.length != type  ||  attm.length != type) {
             throw new IllegalArgumentException("Type of mid wrong");
-        this.mid = new HMTGraph(mid, extm, attm);
+        }
+
+        HMTGraph midHMT = new HMTGraph(mid, extm, attm);
+
+        if (!isNormalized(midHMT)) {
+            throw new IllegalArgumentException("Mid graph not normalised");
+        }
+
+        this.mid = midHMT;
+    }
+
+
+    private boolean isNormalized(HMTGraph mid) {
+
+        /*
+         * For a HMT grammar G=(H,M,T), define Q(M) := ext(M) \cap att(M)
+         * A transitive cycle of M is a minimal set of vertices C \subseteq Q(M) such that
+         * ext_M(C) = att_M(C). The transitive set of M is the maximal set of vertices
+         * M_tr \subseteq Q(M) such that ext(M_tr) = att(M_tr), therefore M_tr is the
+         * union of all transitive cycles.
+         *
+         * Normalised MTR Grammars  must fulfill
+         *  1. Q(M) = M_tr
+         *  2. \forall v \in M_tr: ext(v) = att(v)
+         *  3. M_tr is edgeless.
+         */
+
+
+        /* Check if Q(M) = M_{tr} */
+
+        Set<Integer> qM = new HashSet<>();
+
+        /* Search for att[] \cap ext[] */
+        buildQM: for (int i = 0; i < mid.att.length; i++) {
+            for (int j = 0; j < mid.ext.length; j++ ) {
+                if (mid.att[i] == mid.ext[j]) {
+                    qM.add(mid.att[i]);
+                    continue buildQM;
+                }
+            }
+        }
+
+        Set<Integer> mTr = new HashSet<>();
+
+        /* Check if all vertices of qM are in mTr */
+        System.out.println(this.name);
+        System.out.println(mid.getGraph().vertexSet().toString());
+        System.out.println("qM: " + qM.toString());
+
+        loop: for (Integer v : qM) {
+            if (mTr.contains(v)) {
+                continue loop;
+            }
+
+            Integer currentV = v;
+
+            do {
+                /* 'cycle' leaves qM */
+                if (!qM.contains(mid.att[currentV])) {
+                    System.out.println("Error in " + this.name + "qM != M_tr");
+                    return false;
+                }
+                mTr.add(currentV);
+                currentV = mid.ext[currentV];
+            } while (!currentV.equals(v));
+        }
+
+        /* check if forall v \in M_{tr}: ext(v) == att(v) */
+        for (Integer i : mTr) {
+            if (mid.att[i] != mid.ext[i]) {
+                System.out.println("Error in " + this.name + " +\\Exists v \\in M_tr: ext(v) != att(v)");
+                return false;
+            }
+        }
+
+        /* Check if M[M_{tr}] is edgeless */
+        for (Integer i : mTr) {
+            for (Integer j : mTr) {
+                if (i != j && mid.getGraph().containsEdge(i, j)) {
+                    System.out.println("Error in " + this.name + "M_tr contains edges!");
+                    return false;
+                }
+
+            }
+        }
+
+        return true;
     }
 
     /**
-     * Get mid (with attachment/extension).
+     *
+     * @return mid (with attachment/extension)
      */
     public HMTGraph getMid(){
         return mid;
     }
 
     /**
-     * Set tail (with extension).
+     * set tail(with extension)
+     * @param tail
+     * @param extt extension
      */
     public void setTail(Graph tail, int[] extt){
         if (extt.length != type)
@@ -89,14 +203,17 @@ public class HMTGrammar{
     }
 
     /**
-     * Get tail (with extension).
+     *
+     * @return tail (with extension)
      */
     public HMTGraph getTail(){
         return tail;
     }
 
     /**
-     * Return the graph Head Mid^n Tail.
+     *
+     * @param n
+     * @return the graph Head Mid^n Tail
      */
     public Graph getElement(int n){
         HMTGraph left = head;
@@ -105,9 +222,10 @@ public class HMTGrammar{
         return new Graph(compose(left, tail));
     }
 
-
     /**
-     * Return the graphs Head Mid^i Tail, for 0 <= i <= n.
+     *
+     * @param n
+     * @return the graphs Head Mid^i Tail, for 0 <= i <= n
      */
     public Vector getSmallElements(int n){
         Vector res = new Vector();
@@ -121,7 +239,10 @@ public class HMTGrammar{
     }
 
     /**
-     * Returns the composition xy.
+     *
+     * @param x graph to compose with y
+     * @param y graph to compose with x
+     * @return the composition xy
      */
     private HMTGraph compose(HMTGraph x, HMTGraph y){
         if (x.att.length != y.ext.length)
@@ -160,9 +281,11 @@ public class HMTGrammar{
         return new HMTGraph(z, x.ext, attz);
     }
 
-
     /**
-     * Returns the index of x in a, or -1 if not found.
+     *
+     * @param a array
+     * @param x index
+     * @return the index of x in a, or -1 if not found
      */
     private int index(int[] a, int x){
         for (int i = 0; i < a.length; i++)
@@ -194,32 +317,71 @@ public class HMTGrammar{
          * order. That is, if att(0) = 0, att(5) = 1, att(2) = 2, then
          * att=[0,5,2].
          * If the graph has no att (ext), use null.
+         *
+         * @param graph graph which should be extended
+         * @param ext nodes with which the Graph should be extended
+         * @param att nodes to be attached
          */
         public HMTGraph(Graph graph, int[] ext, int[] att){
             super(graph);
+
             if (att != null  &&  att.length != type  ||
-                ext != null  &&  ext.length != type)
+                    ext != null  &&  ext.length != type) {
                 throw new IllegalArgumentException("Type of graph wrong");
+            }
             this.att = null;
             this.ext = null;
+
+            boolean[] isAttachment = new boolean[graph.countNodes()];
+            boolean[] isExtension  = new boolean[graph.countNodes()];
+
             if (att != null) {
+                for (int i = 0; i < att.length; i++) {
+                    if (isAttachment[att[i]] || att[i] < 0 || att[i] >= graph.countNodes()) {
+                        throw new IllegalArgumentException("Non-bijective att mapping");
+                    } else {
+                        isAttachment[att[i]] = true;
+                    }
+                }
+
                 this.att = new int[att.length];
                 System.arraycopy(att, 0, this.att, 0, type);
             }
+
             if (ext != null) {
+                for (int i = 0; i < ext.length; i++) {
+                    if(isExtension[ext[i]] || ext[i] < 0 || ext[i] >= graph.countNodes()) {
+                        throw new IllegalArgumentException("Non-bijective ext mapping");
+                    } else {
+                        isExtension[ext[i]] = true;
+                    }
+                }
+
                 this.ext = new int[ext.length];
                 System.arraycopy(ext, 0, this.ext, 0, type);
             }
         }
-        
+
+        /**
+         *
+         * @return attachment array
+         */
         public int[] getAtt(){
             return att;
         }
-        
+
+        /**
+         *
+         * @return extension array
+         */
         public int[] getExt(){
             return ext;
         }
-        
+
+        /**
+         *
+         * @return string with the given attachment and extension
+         */
         public String toString(){
             String s = super.toString()+"\n";
             if (ext != null)

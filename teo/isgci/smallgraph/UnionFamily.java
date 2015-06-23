@@ -13,17 +13,23 @@ package teo.isgci.smallgraph;
 import java.util.Vector;
 
 public class UnionFamily extends Family{
-    
-    /** Subfamilies of UnionFamily */
+
+    /**
+     * @subfamilies Subfamilies of UnionFamily
+     */
     Vector<SmallGraph> subfamilies;
-    
-    /** Creates a new UnionFamily without Graphs */
+
+    /**
+     * Creates a new UnionFamily without Graphs
+     */
     public UnionFamily(){
         super();
         subfamilies = null;
     }
-    
 
+    /**
+     * todo: comment this
+     */
     public void copyFromComplement(){
         super.copyFromComplement();
         UnionFamily f = (UnionFamily) complement;
@@ -35,19 +41,29 @@ public class UnionFamily extends Family{
         }
     }
 
-    /** Adds subfamily <tt>subf</tt> to UnionFamily */
+    /**
+     * Adds subfamily <tt>subf</tt> to UnionFamily
+     *
+     * @param subf subfamily which should be added to UnionFamily
+     */
     public void addSubfamily(SmallGraph subf){
         if (subfamilies == null)
             subfamilies = new Vector<SmallGraph>(2,2);
         subfamilies.addElement(subf);
     }
-    
-    /** Returns Vector subfamilies */
+
+    /**
+     *
+     * @return Vector subfamilies
+     */
     public Vector<SmallGraph> getSubfamilies(){
         return subfamilies;
     }
-    
-    
+
+    /**
+     *
+     * @return 
+     */
     public String toString(){
         int i;
         String s = "Name: "+getName()+"\nSubfamilies: ";

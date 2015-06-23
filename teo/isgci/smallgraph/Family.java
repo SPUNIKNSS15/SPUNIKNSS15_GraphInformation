@@ -10,11 +10,11 @@
 
 package teo.isgci.smallgraph;
 
-import java.util.Vector;
-
 public class Family extends SmallGraph{
-    
-    /** Creates a new Family without Graphs */
+
+    /**
+     * Creates a new Family without Graphs
+     */
     public Family(){
         super();
     }
