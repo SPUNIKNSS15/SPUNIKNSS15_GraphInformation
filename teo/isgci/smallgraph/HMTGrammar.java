@@ -139,33 +139,43 @@ public class HMTGrammar{
         Set<Integer> mTr = new HashSet<>();
 
         /* Check if all vertices of qM are in mTr */
-        for (Integer v : qM) {
+        System.out.println(this.name);
+        System.out.println(mid.getGraph().vertexSet().toString());
+        System.out.println("qM: " + qM.toString());
+
+        loop: for (Integer v : qM) {
             if (mTr.contains(v)) {
-                continue;
+                continue loop;
             }
 
             Integer currentV = v;
+
             do {
-                mTr.add(currentV);
                 /* 'cycle' leaves qM */
                 if (!qM.contains(mid.att[currentV])) {
+                    System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
                     return false;
                 }
-                currentV = mid.att[currentV];
+                mTr.add(currentV);
+                currentV = mid.ext[currentV];
             } while (!currentV.equals(v));
         }
 
         /* check if forall v \in M_{tr}: ext(v) == att(v) */
         for (Integer i : mTr) {
             if (mid.att[i] != mid.ext[i]) {
+                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
                 return false;
             }
         }
 
         /* Check if M[M_{tr}] is edgeless */
         for (Integer i : mTr) {
-            if( mid.getGraph().edgesOf(i).size() > 0) {
-                return false;
+            for (Integer j : mTr) {
+                if (i != j && mid.getGraph().containsEdge(i, j)) {
+                    return false;
+                }
+
             }
         }
 
