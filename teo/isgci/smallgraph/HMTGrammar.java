@@ -153,7 +153,7 @@ public class HMTGrammar{
             do {
                 /* 'cycle' leaves qM */
                 if (!qM.contains(mid.att[currentV])) {
-                    System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+                    System.out.println("Error in " + this.name + "qM != M_tr");
                     return false;
                 }
                 mTr.add(currentV);
@@ -164,7 +164,7 @@ public class HMTGrammar{
         /* check if forall v \in M_{tr}: ext(v) == att(v) */
         for (Integer i : mTr) {
             if (mid.att[i] != mid.ext[i]) {
-                System.out.println("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
+                System.out.println("Error in " + this.name + " +\\Exists v \\in M_tr: ext(v) != att(v)");
                 return false;
             }
         }
@@ -173,6 +173,7 @@ public class HMTGrammar{
         for (Integer i : mTr) {
             for (Integer j : mTr) {
                 if (i != j && mid.getGraph().containsEdge(i, j)) {
+                    System.out.println("Error in " + this.name + "M_tr contains edges!");
                     return false;
                 }
 
