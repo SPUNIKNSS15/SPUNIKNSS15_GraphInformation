@@ -679,7 +679,7 @@ public class Configuration extends SmallGraph{
         Graphs.addGraph(allEdgeGraph, base);
         Graphs.addGraph(allEdgeGraph, optEdges);
 
-        VF2GraphIsomorphismInspector<Integer, DefaultEdge> inspector = new VF2GraphIsomorphismInspector<>(allEdgeGraph, allEdgeGraph, new DefaultComparator<>(), configurationEdgeComperator());
+        VF2GraphIsomorphismInspector<Integer, DefaultEdge> inspector = new VF2GraphIsomorphismInspector<>(allEdgeGraph, allEdgeGraph, new DefaultComparator<>(), configurationEdgeComperator(this));
 
         Vector<IsomorphicGraphMapping<Integer, DefaultEdge>> automorphisms = new Vector();
         VF2GraphMappingIterator mappingIterator =  inspector.getMappings();
@@ -698,12 +698,12 @@ public class Configuration extends SmallGraph{
         return permutations;
     }
 
-    private Comparator<DefaultEdge> configurationEdgeComperator() {
+    private Comparator<DefaultEdge> configurationEdgeComperator(Configuration other) {
         return new Comparator<DefaultEdge>() {
             @Override
             public int compare(DefaultEdge o1, DefaultEdge o2) {
                 if (base.containsEdge(base.getEdgeSource(o1), base.getEdgeTarget(o1))
-                        != base.containsEdge(base.getEdgeSource(o2), base.getEdgeTarget(o2)) ) {
+                        != other.base.containsEdge(other.base.getEdgeSource(o2), other.base.getEdgeTarget(o2)) ) {
                     /* not the same edge class */
                     return -1;
                 }
@@ -725,7 +725,7 @@ public class Configuration extends SmallGraph{
         Graphs.addGraph(allEdgeGraphOther, c.optEdges);
 
         VF2GraphIsomorphismInspector<Integer, DefaultEdge> inspector = new VF2GraphIsomorphismInspector<>(
-                allEdgeGraph, allEdgeGraphOther, new DefaultComparator<>(), configurationEdgeComperator());
+                allEdgeGraph, allEdgeGraphOther, new DefaultComparator<>(), configurationEdgeComperator(c));
 
         return inspector.isomorphismExists();
     }
