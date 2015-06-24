@@ -279,18 +279,27 @@ public class FindISG{
     public static void getSubs(Graph graph)
     {
         /* /null/ ist kein Graph und Bottom-Graph auch ignorieren */
-        if (graph == null || graph.getBottom())
+        if (graph == null || graph.getBottom()) {
             return;
+        }
+        /* we only search with the smaller one - the graph or its complement */
+        if (((Graph)graph.getComplement()).getGraph().edgeSet().size()
+                < graph.getGraph().edgeSet().size()) {
+            return;
+        }
 
         Vector<Graph> result = new Vector();
+        Vector<Graph> resultComplement = new Vector();
 
         for (Graph g : (Vector<Graph>) graphs) {
             if (g != graph && graph.isSubIsomorphic(g)) {
                 result.add(g);
+                resultComplement.add((Graph)g.getComplement());
             }
         }
 
         results.put(graph,result);
+        results.put(graph.getComplement(), resultComplement);
     }
 
 
