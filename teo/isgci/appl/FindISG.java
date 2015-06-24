@@ -606,7 +606,7 @@ public class FindISG{
             IOException, InterruptedException {
 
         /* Contains graphs of size larger than maxCnt*/
-        Vector bigSmallmemb = new Vector();
+        Vector<Graph> bigSmallmemb = new Vector();
 
         /* iterate over all families in this.families */
         for (int i=0; i<families.size(); i++) {
@@ -670,7 +670,7 @@ public class FindISG{
 
 
 
-        ArrayList<Graph> topo = new ArrayList<Graph>();
+        ArrayList<Graph> topo = new ArrayList<>();
 
         /*
         Add the present resultgraphs members to topo according
@@ -691,15 +691,30 @@ public class FindISG{
 
         topological order is provided by jgrapht
          */
-
-        ArrayList<FindSubsTask> threads = new ArrayList();
         ExecutorService poolExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        Vector<Graph> bigSmallmembCopy = new Vector<>(bigSmallmemb);
 
-        for (int i=0; i<bigSmallmemb.size(); i++) {
-            poolExecutor.execute(new FindSubsTask(topo, (Graph)bigSmallmemb.elementAt(i), resultGraph));
+        Semaphore semaphore = new Semaphore(1);
+
+        for (int i=0; i<bigSmallmembCopy.size(); i++) {
+            Graph g = bigSmallmembCopy.elementAt(i);
+            Graph c = (Graph)g.getComplement();
+            Graph smaller, bigger;
+            if(g.getGraph().edgeSet().size() > c.getGraph().edgeSet().size()) {
+                smaller = c;
+                bigger = g;
+            }
+            else {
+                smaller = g;
+                bigger = c;
+            }
+            bigSmallmembCopy.remove(c);
+            poolExecutor.execute(new AddBigSmallmembTask(topo, smaller, bigger, resultGraph, semaphore));
         }
         poolExecutor.shutdown();
         poolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+
+        GAlg.transitiveReduction(resultGraph);
 
         //Add all graphs from bigSmallmemb to graphs
         for (int i=0; i<bigSmallmemb.size(); i++) {
