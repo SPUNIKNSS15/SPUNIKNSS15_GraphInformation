@@ -13,6 +13,7 @@ package teo.isgci.appl;
 import java.util.*;
 import java.net.URL;
 import java.io.*;
+import java.util.concurrent.*;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -47,7 +48,7 @@ public class FindISG{
             InterruptedException {
         boolean transitivelyClosed = false;
 
-        long t1,t2,ts=0;
+        long t1,t2,totalStart,totalEnd;
         int c;
 
         graphs = new Vector();
@@ -58,6 +59,8 @@ public class FindISG{
         resultGraph = new SimpleDirectedGraph<Graph,DefaultEdge>(
                 DefaultEdge.class);
         usg=0;
+
+        totalStart = System.currentTimeMillis();
 
         Getopt opts = new Getopt("FindISG", args, "ctv");
         while ((c = opts.getopt()) != -1) {
@@ -112,7 +115,6 @@ public class FindISG{
 
         if (verbose != 0) {
             long zeit = t2 - t1;
-            ts += zeit;
             System.out.print(". (" + time2String(zeit) + ")\n");
 
             System.out.print("Graphen         : " + graphs.size() + "\n");
@@ -140,7 +142,6 @@ public class FindISG{
         if (verbose != 0) {
             long zeit = t2 - t1;
 
-            ts += zeit;
             System.out.print(". ("+ time2String(zeit) + ")\n");
 
             System.out.print("Graphen         : " + graphs.size() + "\n");
@@ -174,7 +175,6 @@ public class FindISG{
         if (verbose != 0) {
             long zeit = t2 - t1;
 
-            ts += zeit;
             System.out.print(". ("+ time2String(zeit) + ")\n");
 
             System.out.print("Graphen         : " + graphs.size() + "\n");
@@ -193,7 +193,6 @@ public class FindISG{
         if (verbose != 0) {
             long zeit = t2 - t1;
 
-            ts += zeit;
             System.out.print(". (" + time2String(zeit) + ")\n");
             System.out.println("Schreibe " + outxml);
         }
@@ -225,12 +224,14 @@ public class FindISG{
         }
         t2=System.currentTimeMillis();
 
-        if (verbose != 0) {
-            long zeit = t2 - t1;
+        totalEnd = System.currentTimeMillis();
 
-            ts += zeit;
+        if (verbose != 0) {
+            long zeit = t2-t1;
+            long totalTime = totalEnd - totalStart;
+
             System.out.print(". (" + time2String(zeit) + ")\n");
-            System.out.print("Total time: " + time2String(ts)+ "\n");
+            System.out.print("Total time: " + time2String(totalTime)+ "\n");
         }
     }
 
@@ -691,55 +692,14 @@ public class FindISG{
         topological order is provided by jgrapht
          */
 
-        ArrayList<ThreadClass> threads = new ArrayList();
+        ArrayList<FindSubsTask> threads = new ArrayList();
+        ExecutorService poolExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
         for (int i=0; i<bigSmallmemb.size(); i++) {
-            threads.add(new ThreadClass(topo, (Graph)bigSmallmemb.elementAt(i), resultGraph));
+            poolExecutor.execute(new FindSubsTask(topo, (Graph)bigSmallmemb.elementAt(i), resultGraph));
         }
-
-        ThreadGroup tg = new ThreadGroup("main");
-
-        int k = 0;
-        int pCount = Runtime.getRuntime().availableProcessors();
-        int[] active = new int[pCount];
-        for (int l = 0; l < pCount; l++) {
-            active[l] = -1;
-        }
-        while (k<threads.size()) {
-            for (int l = 0; l < pCount; l++) {
-                if (active[l] >= 0) {
-                    if (threads.get(active[l]).isFinished()) {
-                        ThreadClass th = threads.get(k);
-                        Graph bigGr = th.bigG; System.out.println("wire up " + bigGr.getName() + " in resultgraph");
-                        resultGraph.addVertex(bigGr);
-                        th.start();
-                        active[l] = k;
-                        k++;
-                    }
-                } else {
-                    ThreadClass th = threads.get(k);
-                    Graph bigGr = th.bigG;
-                    System.out.println("wire up " + bigGr.getName() + " in resultgraph");
-                    resultGraph.addVertex(bigGr);
-                    th.start();
-                    active[l] = k;
-                    k++;
-                }
-            } try {Thread.sleep(500);} catch (InterruptedException e){} }
-
-
-
-        for (int j = 0; j < threads.size(); ++j) {
-            ThreadClass th = threads.get(j);
-            while (!th.isFinished()) {
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {}
-            }
-            ArrayList<Graph> res = th.getResult();
-            for (int i = 0; i < res.size(); i++)
-                resultGraph.addEdge(th.bigG, res.get(i));
-        }
+        poolExecutor.shutdown();
+        poolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 
         //Add all graphs from bigSmallmemb to graphs
         for (int i=0; i<bigSmallmemb.size(); i++) {
