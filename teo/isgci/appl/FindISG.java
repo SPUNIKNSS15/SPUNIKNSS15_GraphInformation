@@ -690,22 +690,55 @@ public class FindISG{
 
         topological order is provided by jgrapht
          */
-        for (int i=0; i<bigSmallmemb.size(); i++) {
-            Graph bigGr = (Graph)bigSmallmemb.elementAt(i);
-            System.out.println("wire up " + bigGr.getName() + " in resultgraph");
-            resultGraph.addVertex(bigGr);
 
-            for (Graph v : topo) {
-                //getPath is a dijkstra shortest path between the nodes
-                //bigGr and v in resultGraph - if none is existing...
-                if (GAlg.getPath(resultGraph, bigGr, v) == null)
-                    //check if v (in the existing resultGraph)
-                    //is induced subgraph of the current bigGraph
-                    //=> add the edge to the resultGraph respectively
-                    if (bigGr.isSubIsomorphic(v)) {
-                        resultGraph.addEdge(bigGr, v);
+        ArrayList<ThreadClass> threads = new ArrayList();
+
+        for (int i=0; i<bigSmallmemb.size(); i++) {
+            threads.add(new ThreadClass(topo, (Graph)bigSmallmemb.elementAt(i), resultGraph));
+        }
+
+        ThreadGroup tg = new ThreadGroup("main");
+
+        int k = 0;
+        int pCount = Runtime.getRuntime().availableProcessors();
+        int[] active = new int[pCount];
+        for (int l = 0; l < pCount; l++) {
+            active[l] = -1;
+        }
+        while (k<threads.size()) {
+            for (int l = 0; l < pCount; l++) {
+                if (active[l] >= 0) {
+                    if (threads.get(active[l]).isFinished()) {
+                        ThreadClass th = threads.get(k);
+                        Graph bigGr = th.bigG; System.out.println("wire up " + bigGr.getName() + " in resultgraph");
+                        resultGraph.addVertex(bigGr);
+                        th.start();
+                        active[l] = k;
+                        k++;
                     }
+                } else {
+                    ThreadClass th = threads.get(k);
+                    Graph bigGr = th.bigG;
+                    System.out.println("wire up " + bigGr.getName() + " in resultgraph");
+                    resultGraph.addVertex(bigGr);
+                    th.start();
+                    active[l] = k;
+                    k++;
+                }
+            } try {Thread.sleep(500);} catch (InterruptedException e){} }
+
+
+
+        for (int j = 0; j < threads.size(); ++j) {
+            ThreadClass th = threads.get(j);
+            while (!th.isFinished()) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {}
             }
+            ArrayList<Graph> res = th.getResult();
+            for (int i = 0; i < res.size(); i++)
+                resultGraph.addEdge(th.bigG, res.get(i));
         }
 
         //Add all graphs from bigSmallmemb to graphs
