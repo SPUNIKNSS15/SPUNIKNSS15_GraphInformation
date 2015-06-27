@@ -152,17 +152,28 @@ public class FindISG{
         add every KNOWN graph that is induced subgraph of EVERY of the
         configurations graphs to the induced subgraph list of C
          */
-        for (int i = 0; i < configurations.size(); i++)
-            for (int j = 0; j < graphs.size(); j++) {
-                Configuration C = (Configuration) configurations.elementAt(i);
+        for (int i = 0; i < configurations.size(); i++) {
+            graphs: for (int j = 0; j < graphs.size(); j++) {
+                Configuration conf = (Configuration) configurations.elementAt(i);
                 Graph g = (Graph) graphs.elementAt(j);
 
-                if (!g.getName().startsWith(USG) && C.isInducedSubgraph(g)) {
-                    System.out.print("  Graph " + g.getName() + " ist in allen Repräsentanten von "
-                            + C.getName() + " enthalten \n");
-                    C.addInduced(g);
+                /* Information about subisomorphic graphs is already there in inducedTable
+                 * this jields more complete results than old method, which could miss on
+                 * some induced graphs */
+                for (SmallGraph representative : conf.getContains()) {
+                    Graph rep = (Graph)representative;
+                    /* continue if not induced by all representatives */
+                    if (g != rep && !inducedTable.get(rep).contains(g)) {
+                        continue graphs;
+                    }
                 }
+
+                /* at this point, we know that g is induced by all representatives of conf */
+                System.out.print("  Graph " + g.getName() + " ist in allen Repräsentanten von "
+                        + conf.getName() + " enthalten \n");
+                conf.addInduced(g);
             }
+        }
 
         t2=System.currentTimeMillis();
 
