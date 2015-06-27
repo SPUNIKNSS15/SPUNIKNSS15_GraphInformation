@@ -26,7 +26,7 @@ import teo.isgci.smallgraph.*;
 public class FindISG{
 
     private static Vector graphs, families, configurations, grammars;
-    private static Hashtable<Graph, Vector<Graph>> results;
+    private static Hashtable<Graph, Vector<Graph>> inducedTable;
     private static SimpleDirectedGraph<Graph,DefaultEdge> resultGraph;
 
     private static int usg; // Running number for unknown subgraphs
@@ -55,7 +55,7 @@ public class FindISG{
         families = new Vector();
         configurations = new Vector();
         grammars = new Vector();
-        results = new Hashtable();
+        inducedTable = new Hashtable();
         resultGraph = new SimpleDirectedGraph<Graph,DefaultEdge>(
                 DefaultEdge.class);
         usg=0;
@@ -298,8 +298,8 @@ public class FindISG{
             }
         }
 
-        results.put(graph,result);
-        results.put((Graph)graph.getComplement(), resultComplement);
+        inducedTable.put(graph, result);
+        inducedTable.put((Graph) graph.getComplement(), resultComplement);
     }
 
 
@@ -589,7 +589,7 @@ public class FindISG{
 
         // Creating Edges from graphs to their induced subgraphs
         for (Graph v : resultGraph.vertexSet()) {
-            Vector<Graph>subs = (Vector<Graph>) results.get(v);
+            Vector<Graph>subs = (Vector<Graph>) inducedTable.get(v);
             if (subs == null)
                 continue;
             for (Graph vSub: subs)
@@ -623,7 +623,7 @@ public class FindISG{
                 if (((HMTFamily) families.elementAt(i)).getGrammar() != null) {
                     HMTFamily fhmt = (HMTFamily) families.elementAt(i);
                     HMTFamily fcomp = (HMTFamily) fhmt.getComplement();
-                    Vector smMem = fhmt.getSmallmembers();
+                    Vector<SmallGraph> smMem = fhmt.getSmallmembers();
                     Vector compSmMem = new Vector();
 
                     //iterate over all of the families small members...
@@ -634,24 +634,15 @@ public class FindISG{
 
                             for (int k = 0; k < bigSmallmemb.size(); k++) {
                                 /* If one of the already found big smallmembers
-                                (stored in bigSmallmemb) has the same amount
-                                of nodes as the currently examined graph of the
-                                current family AND is isomorphic according to the
-                                external VF2 isomorphism algorithm...
-                                */
-                                if (((Graph) smMem.elementAt(j)).countNodes() ==
-                                        ((Graph) bigSmallmemb.elementAt(k)).
-                                                countNodes() &&
-                                        ((Graph) smMem.elementAt(j)).isSubIsomorphic(
-                                                (Graph) bigSmallmemb.elementAt(k))) {
-                                    //...set the graph and its complement within
-                                    //the family accordingly, copying all known
-                                    //information about that graph
-                                    smMem.setElementAt((Graph) bigSmallmemb.
-                                            elementAt(k), j);
-                                    compSmMem.addElement((Graph)
-                                            ((Graph) bigSmallmemb.elementAt(k)).
-                                                    getComplement());
+                                 * (stored in bigSmallmemb) is isomorphic...
+                                 */
+                                if (((Graph) smMem.elementAt(j)).isIsomorphic(bigSmallmemb.elementAt(k))) {
+                                    /* ...set the graph and its complement within
+                                     * the family accordingly, copying all known
+                                     * information about that graph
+                                     */
+                                    smMem.setElementAt(bigSmallmemb.elementAt(k), j);
+                                    compSmMem.addElement((bigSmallmemb.elementAt(k)).getComplement());
                                     continue contBig;
                                 }
                             }
@@ -660,19 +651,18 @@ public class FindISG{
                             //add it as an USG to bigSmallmemb
                             ((Graph) smMem.elementAt(j)).addLink(fhmt.getLink());
                             addUSG((Graph) smMem.elementAt(j), bigSmallmemb, ISG);
-                            compSmMem.addElement((Graph) ((Graph) smMem.
-                                    elementAt(j)).getComplement());
+                            compSmMem.addElement(smMem.
+                                    elementAt(j).getComplement());
                             /* System.out.println(fhmt.getName()+".smMem["+j+"]="+
                                     ((Graph)smMem.elementAt(j)).getName());
                             System.out.println(fcomp.getName()+".smMem["+j+"]="+
                                    ((Graph)compSmMem.elementAt(j)).getName());*/
                         } else if (fcomp.getSmallmembers() != null) {
-                            compSmMem.addElement((Graph)
-                                    fcomp.getSmallmembers().elementAt(j));
+                            compSmMem.addElement(fcomp.getSmallmembers().elementAt(j));
                         }
                     }
 
-                    ((HMTFamily) fcomp).setSmallmembers(compSmMem);
+                    fcomp.setSmallmembers(compSmMem);
                 }
             }
         }
@@ -703,7 +693,8 @@ public class FindISG{
         ExecutorService poolExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         Vector<Graph> bigSmallmembCopy = new Vector<>(bigSmallmemb);
 
-        Semaphore semaphore = new Semaphore(1);
+        Semaphore resultGraphSem = new Semaphore(1);
+        Semaphore inducedTableSem = new Semaphore(1);
 
         /* start search for each thinner graph or complement */
         for (int i=0; i<bigSmallmembCopy.size(); i++) {
@@ -719,7 +710,8 @@ public class FindISG{
                 bigger = c;
             }
             bigSmallmembCopy.remove(c);
-            poolExecutor.execute(new AddBigSmallmembTask(topo, smaller, bigger, resultGraph, results, semaphore));
+            poolExecutor.execute(new AddBigSmallmembTask(topo, smaller, bigger, resultGraph, inducedTable,
+                    resultGraphSem, inducedTableSem));
         }
         poolExecutor.shutdown();
         poolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);

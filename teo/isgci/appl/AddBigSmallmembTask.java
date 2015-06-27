@@ -14,66 +14,86 @@ import java.util.concurrent.Semaphore;
  * Created by dennis on 21.06.15.
  */
 public class AddBigSmallmembTask implements Runnable {
-    protected ArrayList<Graph> topo;
-    protected Graph bigG;
-    protected Graph bigGComplement;
+    protected ArrayList<Graph> knownGraphs;
+    protected Graph graph;
+    protected Graph graphComplement;
     protected HashSet<Graph> transitiveInduced;
+    protected HashSet<Graph> transitiveInducedComplement;
     protected Hashtable<Graph, Vector<Graph>> inducedTable;
     protected SimpleDirectedGraph<Graph,DefaultEdge> resultGraph;
-    protected Semaphore sem;
+    protected Semaphore resultGraphSem;
+    protected Semaphore inducedTableSem;
 
-    public AddBigSmallmembTask(ArrayList<Graph> topo, Graph bigG,
-                               Graph bigGComplement,
+    public AddBigSmallmembTask(ArrayList<Graph> knownGraphs, Graph graph,
+                               Graph graphComplement,
                                SimpleDirectedGraph<Graph, DefaultEdge> resultGraph,
                                Hashtable<Graph, Vector<Graph>> inducedTable,
-                               Semaphore sem) {
-        this.topo = topo;
-        this.bigG = bigG;
-        this.bigGComplement = bigGComplement;
+                               Semaphore resultGraphSem,
+                               Semaphore inducedTableSem) {
+        this.knownGraphs = knownGraphs;
+        this.graph = graph;
+        this.graphComplement = graphComplement;
         this.resultGraph = resultGraph;
         this.inducedTable = inducedTable;
-        this.sem = sem;
+        this.resultGraphSem = resultGraphSem;
+        this.inducedTableSem = inducedTableSem;
 
         this.transitiveInduced = new HashSet<>();
+        this.transitiveInducedComplement = new HashSet<>();
     }
 
-    public void run()
-    {
+    public void run() {
         try {
-            sem.acquire();
-            System.out.println("wire up " + bigG.getName() + " and its complement in resultgraph");
-            resultGraph.addVertex(bigG);
-            resultGraph.addVertex(bigGComplement);
-        }
-        catch (InterruptedException e) {
+            resultGraphSem.acquire();
+            System.out.println("wire up " + graph.getName() + " and its complement in resultgraph");
+            resultGraph.addVertex(graph);
+            resultGraph.addVertex(graphComplement);
+        } catch (InterruptedException e) {
             return;
-        }
-        finally {
-            sem.release();
+        } finally {
+            resultGraphSem.release();
         }
 
-        for (Graph v : topo) {
+        for (Graph v : knownGraphs) {
+
             /* don´t need to build transitive hull, information is already there */
-            if (transitiveInduced.contains(v)) {
-                continue;
+            try {
+                inducedTableSem.acquire();
+                if (transitiveInduced.contains(v)) {
+                    continue;
+                }
+            } catch (InterruptedException e) {
+            } finally {
+                inducedTableSem.release();
             }
 
-            if (bigG.isSubIsomorphic(v)) {
+            if (graph.isSubIsomorphic(v)) {
+                /* collect transitive hull */
                 transitiveInduced.add(v);
                 transitiveInduced.addAll(inducedTable.get(v));
+                transitiveInducedComplement.add((Graph) v.getComplement());
+                transitiveInducedComplement.addAll(inducedTable.get(v.getComplement()));
                 try {
-                    sem.acquire();
-                    resultGraph.addEdge(bigG, v);
-                    resultGraph.addEdge(bigGComplement, (Graph) v.getComplement());
-                }
-                catch (InterruptedException e) {
+                    resultGraphSem.acquire();
+                    resultGraph.addEdge(graph, v);
+                    resultGraph.addEdge(graphComplement, (Graph) v.getComplement());
+                } catch (InterruptedException e) {
                     return;
-                }
-                finally {
-                    sem.release();
+                } finally {
+                    resultGraphSem.release();
                 }
             }
         }
-    }
 
+        try {
+            inducedTableSem.acquire();
+            /* build induced table */
+            inducedTable.put(graph, new Vector<>(transitiveInduced));
+            inducedTable.put(graphComplement, new Vector<>(transitiveInducedComplement));
+        } catch (InterruptedException e) {
+            return;
+        } finally {
+            inducedTableSem.release();
+        }
+    }
 }
