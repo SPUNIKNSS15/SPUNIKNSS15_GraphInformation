@@ -56,7 +56,7 @@ public class FindISG{
         configurations = new Vector();
         grammars = new Vector();
         inducedTable = new Hashtable();
-        resultGraph = new SimpleDirectedGraph<Graph,DefaultEdge>(
+        resultGraph = new SimpleDirectedGraph<>(
                 DefaultEdge.class);
         usg=0;
 
@@ -121,7 +121,7 @@ public class FindISG{
             System.out.print("Familien        : " + families.size() + "\n");
             System.out.print("Konfigurationen : " + configurations.size() + "\n");
 
-            System.out.print("Bestimme Teilgraphen");
+            System.out.print("Bestimme Teilgraphen\n");
         }
 
         t1=System.currentTimeMillis();
@@ -132,10 +132,12 @@ public class FindISG{
         create subgraphs for each graph in graphs, check for isomorphism to
         already known graphs and link respectively or add the graph as an USG
          */
-        for (int i=0; i<graphs.size(); i++) {
+        /*for (int i=0; i<graphs.size(); i++) {
             System.out.println("Determine subgraphs of " + ((Graph)graphs.elementAt(i)).getName());
             getSubs((Graph) graphs.elementAt(i));
-        }
+        }*/
+        createSubgraphRelations();
+        GAlg.transitiveReduction(resultGraph);
 
         t2=System.currentTimeMillis();
 
@@ -202,7 +204,7 @@ public class FindISG{
         between known graphs - USGS are bridged using the transitive closure,
         but not listed in the final digraph.
          */
-        makeDigraph();
+        //makeDigraph();
         System.out.println("Digraph is made. Starting to add big smallmembers");
         addBigSmallmembers();
 
@@ -302,6 +304,43 @@ public class FindISG{
         inducedTable.put((Graph) graph.getComplement(), resultComplement);
     }
 
+    public static void createSubgraphRelations() {
+        /* add node to resultGraph for each graph in graphs */
+        for (int i=0; i<graphs.size(); i++) {
+            resultGraph.addVertex((Graph) graphs.elementAt(i));
+        }
+
+        ExecutorService poolExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        Vector<Graph> graphsCopy = new Vector<>(graphs);
+
+        Semaphore resultGraphSem = new Semaphore(1);
+        Semaphore inducedTableSem = new Semaphore(1);
+
+        /* start search for each thinner graph or complement */
+        for (int i=0; i<graphsCopy.size(); i++) {
+            Graph g = graphsCopy.elementAt(i);
+            Graph c = (Graph)g.getComplement();
+            Graph smaller, bigger;
+            if(g.getGraph().edgeSet().size() > c.getGraph().edgeSet().size()) {
+                smaller = c;
+                bigger = g;
+            }
+            else {
+                smaller = g;
+                bigger = c;
+            }
+            graphsCopy.remove(c);
+            poolExecutor.execute(new AddBigSmallmembTask(new ArrayList<>(graphs), smaller, bigger,
+                    resultGraph, inducedTable,
+                    resultGraphSem, inducedTableSem));
+        }
+
+        poolExecutor.shutdown();
+        try {
+            poolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+        }
+    }
 
     /**
      * Reads the graphs from XML format (their names, nodes, edges and aliases
@@ -582,7 +621,7 @@ public class FindISG{
     applied. Therefore, relationships between graphs via USGs are kept without
     explicitely listing the USGs.
      */
-    public static void makeDigraph() {
+    /*public static void makeDigraph() {
         // Creating a Node for every graph
         for (int i=0; i<graphs.size(); i++)
             resultGraph.addVertex((Graph) graphs.elementAt(i));
@@ -599,7 +638,7 @@ public class FindISG{
 
         GAlg.transitiveReduction(resultGraph);
     }
-
+    */
 
     /*
     addBigSmallmembers operates on the families smallmembers which

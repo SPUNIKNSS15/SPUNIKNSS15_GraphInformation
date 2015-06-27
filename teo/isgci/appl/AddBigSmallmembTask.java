@@ -58,12 +58,26 @@ public class AddBigSmallmembTask implements Runnable {
                 inducedTableSem.release();
             }
 
-            if (graph.isSubIsomorphic(v)) {
-                /* collect transitive hull */
+            if (graph != v && graph.isSubIsomorphic(v)) {
+                /* collect all subgraphs for subgraph table */
                 transitiveInduced.add(v);
-                transitiveInduced.addAll(inducedTable.get(v));
                 transitiveInducedComplement.add((Graph) v.getComplement());
-                transitiveInducedComplement.addAll(inducedTable.get(v.getComplement()));
+                Vector<Graph> allSubs = null;
+                Vector<Graph> allSubsComplement = null;
+                try {
+                    inducedTableSem.acquire();
+                    allSubs = inducedTable.get(v);
+                    allSubsComplement = inducedTable.get(v.getComplement());
+                } catch (InterruptedException e) {
+                } finally {
+                    inducedTableSem.release();
+                }
+                if (allSubs != null) {
+                    transitiveInduced.addAll(inducedTable.get(v));
+                }
+                if (allSubsComplement != null) {
+                    transitiveInducedComplement.addAll(inducedTable.get(v.getComplement()));
+                }
                 try {
                     resultGraphSem.acquire();
                     resultGraph.addEdge(graph, v);
