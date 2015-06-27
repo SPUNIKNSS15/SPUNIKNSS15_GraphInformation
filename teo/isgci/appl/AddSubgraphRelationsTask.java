@@ -13,8 +13,9 @@ import java.util.concurrent.Semaphore;
 /**
  * Created by dennis on 21.06.15.
  */
-public class AddBigSmallmembTask implements Runnable {
-    protected ArrayList<Graph> knownGraphs;
+public class AddSubgraphRelationsTask implements Runnable {
+    private final boolean useInducedInfo;
+    protected Vector<Graph> knownGraphs;
     protected Graph graph;
     protected Graph graphComplement;
     protected HashSet<Graph> transitiveInduced;
@@ -24,12 +25,13 @@ public class AddBigSmallmembTask implements Runnable {
     protected Semaphore resultGraphSem;
     protected Semaphore inducedTableSem;
 
-    public AddBigSmallmembTask(ArrayList<Graph> knownGraphs, Graph graph,
-                               Graph graphComplement,
-                               SimpleDirectedGraph<Graph, DefaultEdge> resultGraph,
-                               Hashtable<Graph, Vector<Graph>> inducedTable,
-                               Semaphore resultGraphSem,
-                               Semaphore inducedTableSem) {
+    public AddSubgraphRelationsTask(Vector<Graph> knownGraphs, Graph graph,
+                                    Graph graphComplement,
+                                    SimpleDirectedGraph<Graph, DefaultEdge> resultGraph,
+                                    Hashtable<Graph, Vector<Graph>> inducedTable,
+                                    Semaphore resultGraphSem,
+                                    Semaphore inducedTableSem,
+                                    boolean useInducedInfo) {
         this.knownGraphs = knownGraphs;
         this.graph = graph;
         this.graphComplement = graphComplement;
@@ -37,6 +39,7 @@ public class AddBigSmallmembTask implements Runnable {
         this.inducedTable = inducedTable;
         this.resultGraphSem = resultGraphSem;
         this.inducedTableSem = inducedTableSem;
+        this.useInducedInfo = useInducedInfo;
 
         this.transitiveInduced = new HashSet<>();
         this.transitiveInducedComplement = new HashSet<>();
@@ -47,37 +50,37 @@ public class AddBigSmallmembTask implements Runnable {
 
         for (Graph v : knownGraphs) {
 
-            /* don´t need to build transitive hull, information is already there */
-            try {
-                inducedTableSem.acquire();
-                if (transitiveInduced.contains(v)) {
-                    continue;
-                }
-            } catch (InterruptedException e) {
-            } finally {
-                inducedTableSem.release();
+            /* don´t need to build transitive hull in resultGraph, information is already there */
+            if (useInducedInfo && transitiveInduced.contains(v)) {
+                continue;
             }
 
             if (graph != v && graph.isSubIsomorphic(v)) {
-                /* collect all subgraphs for subgraph table */
                 transitiveInduced.add(v);
                 transitiveInducedComplement.add((Graph) v.getComplement());
-                Vector<Graph> allSubs = null;
-                Vector<Graph> allSubsComplement = null;
-                try {
-                    inducedTableSem.acquire();
-                    allSubs = inducedTable.get(v);
-                    allSubsComplement = inducedTable.get(v.getComplement());
-                } catch (InterruptedException e) {
-                } finally {
-                    inducedTableSem.release();
+
+                if (useInducedInfo) {
+                    /* collect all transitive subgraphs for subgraph table
+                     * and to avoid additional VF2 Calls */
+                    Vector<Graph> allSubs = null;
+                    Vector<Graph> allSubsComplement = null;
+                    try {
+                        inducedTableSem.acquire();
+                        allSubs = inducedTable.get(v);
+                        allSubsComplement = inducedTable.get(v.getComplement());
+                    } catch (InterruptedException e) {
+                    } finally {
+                        inducedTableSem.release();
+                    }
+                    if (allSubs != null) {
+                        transitiveInduced.addAll(allSubs);
+                    }
+                    if (allSubsComplement != null) {
+                        transitiveInducedComplement.addAll(allSubsComplement);
+                    }
                 }
-                if (allSubs != null) {
-                    transitiveInduced.addAll(inducedTable.get(v));
-                }
-                if (allSubsComplement != null) {
-                    transitiveInducedComplement.addAll(inducedTable.get(v.getComplement()));
-                }
+
+                /* add relation edge to resultgraph */
                 try {
                     resultGraphSem.acquire();
                     resultGraph.addEdge(graph, v);
@@ -90,9 +93,9 @@ public class AddBigSmallmembTask implements Runnable {
             }
         }
 
+        /* add to subgraphs table */
         try {
             inducedTableSem.acquire();
-            /* build induced table */
             inducedTable.put(graph, new Vector<>(transitiveInduced));
             inducedTable.put(graphComplement, new Vector<>(transitiveInducedComplement));
         } catch (InterruptedException e) {

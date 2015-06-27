@@ -25,7 +25,8 @@ import teo.isgci.smallgraph.*;
 
 public class FindISG{
 
-    private static Vector graphs, families, configurations, grammars;
+    private static Vector<Graph> graphs;
+    private static Vector families, configurations, grammars;
     private static Hashtable<Graph, Vector<Graph>> inducedTable;
     private static SimpleDirectedGraph<Graph,DefaultEdge> resultGraph;
 
@@ -126,16 +127,7 @@ public class FindISG{
 
         t1=System.currentTimeMillis();
 
-
-
-        /*
-        create subgraphs for each graph in graphs, check for isomorphism to
-        already known graphs and link respectively or add the graph as an USG
-         */
-        /*for (int i=0; i<graphs.size(); i++) {
-            System.out.println("Determine subgraphs of " + ((Graph)graphs.elementAt(i)).getName());
-            getSubs((Graph) graphs.elementAt(i));
-        }*/
+        /* find subgraph relations among known graphs */
         createSubgraphRelations();
         GAlg.transitiveReduction(resultGraph);
 
@@ -145,11 +137,11 @@ public class FindISG{
             long zeit = t2 - t1;
 
             System.out.print(". ("+ time2String(zeit) + ")\n");
-
             System.out.print("Graphen         : " + graphs.size() + "\n");
             System.out.print("Familien        : " + families.size() + "\n");
             System.out.print("Konfigurationen : " + configurations.size()
                             + "\n");
+            System.out.print("Relationen      : " + resultGraph.edgeSet().size() + "\n");
 
             System.out.print("Bestimme Teilgraphen der Konfigurationen");
         }
@@ -188,6 +180,7 @@ public class FindISG{
         }
 
         t1=System.currentTimeMillis();
+
         /*Sort graphs by their number of nodes*/
         sortNum(graphs,0,graphs.size()-1);
         t2=System.currentTimeMillis();
@@ -199,18 +192,10 @@ public class FindISG{
             System.out.println("Schreibe " + outxml);
         }
 
-        /*
-        Create the digraph containing all the induced subgraph relationships
-        between known graphs - USGS are bridged using the transitive closure,
-        but not listed in the final digraph.
-         */
-        //makeDigraph();
         System.out.println("Digraph is made. Starting to add big smallmembers");
         addBigSmallmembers();
 
-        /*if -t option is set -
-        * FIXME: can be optimized by simply not calling transitive reduction in makeDigraph()
-        */
+        /* if -t option is set */
         if (transitivelyClosed) {
             GAlg.transitiveClosure(resultGraph);
         }
@@ -229,6 +214,9 @@ public class FindISG{
         totalEnd = System.currentTimeMillis();
 
         if (verbose != 0) {
+
+            System.out.print("Relationen gesamt: " + resultGraph.edgeSet().size() + "\n");
+
             long zeit = t2-t1;
             long totalTime = totalEnd - totalStart;
 
@@ -271,68 +259,36 @@ public class FindISG{
                 configurations, resultGraph);
     }
 
-
-    /**
-     * Create a list of direct subgraphs for each graph and check
-     * to which graph these subgraphs are isomorph.
-     * If no isomorph graphs are found, add the subgraph to the list
-     * of graphs.
-     */
-    public static void getSubs(Graph graph)
-    {
-        /* /null/ ist kein Graph und Bottom-Graph auch ignorieren */
-        if (graph == null || graph.getBottom()) {
-            return;
-        }
-        /* we only search with the smaller one - the graph or its complement */
-        if (((Graph)graph.getComplement()).getGraph().edgeSet().size()
-                < graph.getGraph().edgeSet().size()) {
-            return;
-        }
-
-        Vector<Graph> result = new Vector();
-        Vector<Graph> resultComplement = new Vector();
-
-        for (Graph g : (Vector<Graph>) graphs) {
-            if (g != graph && graph.isSubIsomorphic(g)) {
-                result.add(g);
-                resultComplement.add((Graph)g.getComplement());
-            }
-        }
-
-        inducedTable.put(graph, result);
-        inducedTable.put((Graph) graph.getComplement(), resultComplement);
-    }
-
     public static void createSubgraphRelations() {
         /* add node to resultGraph for each graph in graphs */
         for (int i=0; i<graphs.size(); i++) {
             resultGraph.addVertex((Graph) graphs.elementAt(i));
         }
 
+        /* exclude bigger complements */
+        HashSet<Graph> thinComplements = new HashSet<>(graphs);
+        for (Graph g : graphs) {
+            Graph c = (Graph)g.getComplement();
+            if (g == c || !(thinComplements.contains(g) && thinComplements.contains(c))) {
+                continue;
+            }
+            if(g.getGraph().edgeSet().size() > c.getGraph().edgeSet().size()) {
+                thinComplements.remove(g);
+            } else {
+                thinComplements.remove(c);
+            }
+        }
+
         ExecutorService poolExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        Vector<Graph> graphsCopy = new Vector<>(graphs);
 
         Semaphore resultGraphSem = new Semaphore(1);
         Semaphore inducedTableSem = new Semaphore(1);
 
         /* start search for each thinner graph or complement */
-        for (int i=0; i<graphsCopy.size(); i++) {
-            Graph g = graphsCopy.elementAt(i);
-            Graph c = (Graph)g.getComplement();
-            Graph smaller, bigger;
-            if(g.getGraph().edgeSet().size() > c.getGraph().edgeSet().size()) {
-                smaller = c;
-                bigger = g;
-            }
-            else {
-                smaller = g;
-                bigger = c;
-            }
-            graphsCopy.remove(c);
-            poolExecutor.execute(new AddBigSmallmembTask(new ArrayList<>(graphs), smaller, bigger,
+        for (Graph g : thinComplements) {
+            poolExecutor.execute(new AddSubgraphRelationsTask(graphs, g, (Graph)g.getComplement(),
                     resultGraph, inducedTable,
-                    resultGraphSem, inducedTableSem));
+                    resultGraphSem, inducedTableSem, false));
         }
 
         poolExecutor.shutdown();
@@ -395,7 +351,7 @@ public class FindISG{
             }
 
             if (g instanceof Graph) {
-                graphs.addElement(g);
+                graphs.addElement((Graph)g);
                 System.out.println("added Graph");
             }
             else if (g instanceof Family) {
@@ -419,7 +375,6 @@ public class FindISG{
          * XXX This is in O(graphs.size()^2),
          * This can be optimized for inputs with many isomorphic graphs
          * since isomorphy is transitive.
-         * TODO: really? then we should do this. Otherwise delete comment (tassilo)?
          */
         for (i=0; i<graphs.size(); i++) {
             for (j = i + 1; j < graphs.size(); j++) {
@@ -533,13 +488,13 @@ public class FindISG{
                         if (((Graph) smMem.elementAt(j)).countNodes() <= maxCnt) {
                             for (int k = 0; k < graphs.size(); k++)
                                 if (((Graph) smMem.elementAt(j)).isIsomorphic(
-                                        (Graph) graphs.elementAt(k))) {
+                                        graphs.elementAt(k))) {
 
                                     //Found an isomorphic graph, set it to the
                                     //element from graphs, so additional info
                                     //like names, links etc. are available
                                     smMem.setElementAt(
-                                            (Graph)graphs.elementAt(k), j);
+                                            graphs.elementAt(k), j);
                                     continue contFHMT;
                                 }
                             ((Graph) smMem.elementAt(j)).addLink(fhmt.getLink());
@@ -611,35 +566,6 @@ public class FindISG{
         if(i < right) sortNum(vec, i, right);
     }
 
-
-    /*
-    The digraph contains a node for every graph in graphs and an edge for every
-    induced subgraph relationship between graphs.
-
-    The transitive closure is calculated on this relation, then,
-    unknown graphs are removed, and finally the transitive reduction is
-    applied. Therefore, relationships between graphs via USGs are kept without
-    explicitely listing the USGs.
-     */
-    /*public static void makeDigraph() {
-        // Creating a Node for every graph
-        for (int i=0; i<graphs.size(); i++)
-            resultGraph.addVertex((Graph) graphs.elementAt(i));
-
-        // Creating Edges from graphs to their induced subgraphs
-        for (Graph v : resultGraph.vertexSet()) {
-            Vector<Graph>subs = (Vector<Graph>) inducedTable.get(v);
-            if (subs == null)
-                continue;
-            for (Graph vSub: subs)
-                resultGraph.addEdge(v, vSub);
-        }
-
-
-        GAlg.transitiveReduction(resultGraph);
-    }
-    */
-
     /*
     addBigSmallmembers operates on the families smallmembers which
     had more than maxCnt nodes and were therefore not processed yet
@@ -703,7 +629,7 @@ public class FindISG{
             }
         }
 
-        ArrayList<Graph> topo = new ArrayList<>();
+        Vector<Graph> topo = new Vector<>();
 
         /*
         Add the present resultgraphs members to topo according
@@ -722,6 +648,19 @@ public class FindISG{
 
         System.out.println("All big smallmembers are added.");
 
+        /* exclude bigger complements */
+        HashSet<Graph> thinComplements = new HashSet<>(bigSmallmemb);
+        for (Graph g : bigSmallmemb) {
+            Graph c = (Graph)g.getComplement();
+            if (g == c || !(thinComplements.contains(g) && thinComplements.contains(c))) {
+                continue;
+            }
+            if(g.getGraph().edgeSet().size() > c.getGraph().edgeSet().size()) {
+                thinComplements.remove(g);
+            } else {
+                thinComplements.remove(c);
+            }
+        }
 
         /*
          * check for every of the bigSmallgraphs whether it induces any one of
@@ -729,27 +668,15 @@ public class FindISG{
          * (topological order is provided by jgrapht)
          */
         ExecutorService poolExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        Vector<Graph> bigSmallmembCopy = new Vector<>(bigSmallmemb);
 
         Semaphore resultGraphSem = new Semaphore(1);
         Semaphore inducedTableSem = new Semaphore(1);
 
         /* start search for each thinner graph or complement */
-        for (int i=0; i<bigSmallmembCopy.size(); i++) {
-            Graph g = bigSmallmembCopy.elementAt(i);
-            Graph c = (Graph)g.getComplement();
-            Graph smaller, bigger;
-            if(g.getGraph().edgeSet().size() > c.getGraph().edgeSet().size()) {
-                smaller = c;
-                bigger = g;
-            }
-            else {
-                smaller = g;
-                bigger = c;
-            }
-            bigSmallmembCopy.remove(c);
-            poolExecutor.execute(new AddBigSmallmembTask(topo, smaller, bigger, resultGraph, inducedTable,
-                    resultGraphSem, inducedTableSem));
+        for (Graph g : thinComplements) {
+            poolExecutor.execute(new AddSubgraphRelationsTask(topo, g, (Graph)g.getComplement(),
+                    resultGraph, inducedTable,
+                    resultGraphSem, inducedTableSem, true));
         }
         poolExecutor.shutdown();
         poolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
