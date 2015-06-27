@@ -200,7 +200,7 @@ public class FindISG{
         /*
         Create the digraph containing all the induced subgraph relationships
         between known graphs - USGS are bridged using the transitive closure,
-        but not listet in the final digraph.
+        but not listed in the final digraph.
          */
         makeDigraph();
         System.out.println("Digraph is made. Starting to add big smallmembers");
@@ -607,9 +607,6 @@ public class FindISG{
 
     Every bigSmallgraph is either unknown (and then added to bigSmallmemb)
     or induces an already known bigSmallgraph according to VF2
-
-
-
      */
     public static void addBigSmallmembers() throws
             IOException, InterruptedException {
@@ -667,8 +664,6 @@ public class FindISG{
             }
         }
 
-
-
         ArrayList<Graph> topo = new ArrayList<>();
 
         /*
@@ -679,16 +674,20 @@ public class FindISG{
             topo.add(v);
         }
 
+        /* prepare new result graph nodes:
+        *  add a vertex to resultGraph for every element of bigSmallmemb
+        */
+        for (Graph g : bigSmallmemb) {
+            resultGraph.addVertex(g);
+        }
+
         System.out.println("All big smallmembers are added.");
 
 
         /*
-        add a vertex to resultGraph for every element of bigSmallmemb
-
-        check for every of the bigSmallgraphs whether it induces any one of
-        the already known graphs in resultGraph
-
-        topological order is provided by jgrapht
+         * check for every of the bigSmallgraphs whether it induces any one of
+         * the already known graphs in resultGraph
+         * (topological order is provided by jgrapht)
          */
         ExecutorService poolExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         Vector<Graph> bigSmallmembCopy = new Vector<>(bigSmallmemb);

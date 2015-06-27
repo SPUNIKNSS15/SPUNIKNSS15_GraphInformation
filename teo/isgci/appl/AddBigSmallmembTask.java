@@ -43,16 +43,7 @@ public class AddBigSmallmembTask implements Runnable {
     }
 
     public void run() {
-        try {
-            resultGraphSem.acquire();
-            System.out.println("wire up " + graph.getName() + " and its complement in resultgraph");
-            resultGraph.addVertex(graph);
-            resultGraph.addVertex(graphComplement);
-        } catch (InterruptedException e) {
-            return;
-        } finally {
-            resultGraphSem.release();
-        }
+        System.out.println("wire up " + graph.getName() + " and its complement in resultgraph");
 
         for (Graph v : knownGraphs) {
 
