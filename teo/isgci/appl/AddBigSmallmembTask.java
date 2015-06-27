@@ -2,10 +2,12 @@ package teo.isgci.appl;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleDirectedGraph;
-import teo.isgci.grapht.GAlg;
 import teo.isgci.smallgraph.Graph;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Vector;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -15,18 +17,24 @@ public class AddBigSmallmembTask implements Runnable {
     protected ArrayList<Graph> topo;
     protected Graph bigG;
     protected Graph bigGComplement;
-    protected ArrayList<Graph> vs = new ArrayList<>();
-    protected ArrayList<Graph> vsComplement = new ArrayList<>();
+    protected HashSet<Graph> transitiveInduced;
+    protected Hashtable<Graph, Vector<Graph>> inducedTable;
     protected SimpleDirectedGraph<Graph,DefaultEdge> resultGraph;
-    protected boolean finished = false;
     protected Semaphore sem;
 
-    public AddBigSmallmembTask(ArrayList<Graph> topo, Graph bigG, Graph bigGComplement, SimpleDirectedGraph<Graph, DefaultEdge> resultGraph, Semaphore sem) {
+    public AddBigSmallmembTask(ArrayList<Graph> topo, Graph bigG,
+                               Graph bigGComplement,
+                               SimpleDirectedGraph<Graph, DefaultEdge> resultGraph,
+                               Hashtable<Graph, Vector<Graph>> inducedTable,
+                               Semaphore sem) {
         this.topo = topo;
         this.bigG = bigG;
         this.bigGComplement = bigGComplement;
         this.resultGraph = resultGraph;
+        this.inducedTable = inducedTable;
         this.sem = sem;
+
+        this.transitiveInduced = new HashSet<>();
     }
 
     public void run()
@@ -45,9 +53,14 @@ public class AddBigSmallmembTask implements Runnable {
         }
 
         for (Graph v : topo) {
+            /* don´t need to build transitive hull, information is already there */
+            if (transitiveInduced.contains(v)) {
+                continue;
+            }
+
             if (bigG.isSubIsomorphic(v)) {
-                vs.add(v);
-                vsComplement.add((Graph) v.getComplement());
+                transitiveInduced.add(v);
+                transitiveInduced.addAll(inducedTable.get(v));
                 try {
                     sem.acquire();
                     resultGraph.addEdge(bigG, v);
@@ -61,16 +74,6 @@ public class AddBigSmallmembTask implements Runnable {
                 }
             }
         }
-        finished = true;
     }
-
-    public ArrayList<Graph> getResult() {
-        return vs;
-    }
-
-    public boolean isFinished() {
-        return finished;
-    }
-
 
 }

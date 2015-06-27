@@ -26,7 +26,7 @@ import teo.isgci.smallgraph.*;
 public class FindISG{
 
     private static Vector graphs, families, configurations, grammars;
-    private static Hashtable results;
+    private static Hashtable<Graph, Vector<Graph>> results;
     private static SimpleDirectedGraph<Graph,DefaultEdge> resultGraph;
 
     private static int usg; // Running number for unknown subgraphs
@@ -299,7 +299,7 @@ public class FindISG{
         }
 
         results.put(graph,result);
-        results.put(graph.getComplement(), resultComplement);
+        results.put((Graph)graph.getComplement(), resultComplement);
     }
 
 
@@ -705,6 +705,7 @@ public class FindISG{
 
         Semaphore semaphore = new Semaphore(1);
 
+        /* start search for each thinner graph or complement */
         for (int i=0; i<bigSmallmembCopy.size(); i++) {
             Graph g = bigSmallmembCopy.elementAt(i);
             Graph c = (Graph)g.getComplement();
@@ -718,12 +719,10 @@ public class FindISG{
                 bigger = c;
             }
             bigSmallmembCopy.remove(c);
-            poolExecutor.execute(new AddBigSmallmembTask(topo, smaller, bigger, resultGraph, semaphore));
+            poolExecutor.execute(new AddBigSmallmembTask(topo, smaller, bigger, resultGraph, results, semaphore));
         }
         poolExecutor.shutdown();
         poolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-
-        GAlg.transitiveReduction(resultGraph);
 
         //Add all graphs from bigSmallmemb to graphs
         for (int i=0; i<bigSmallmemb.size(); i++) {

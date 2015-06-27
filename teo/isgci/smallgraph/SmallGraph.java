@@ -107,8 +107,9 @@ public abstract class SmallGraph {
 
     /** Adds induced <tt>parsedInduced</tt> to induced */
     public void addInduced(Vector<SmallGraph> parsedInduced){
-        if (induced == null)
-            induced = new Vector<Vector<SmallGraph> >();
+        if (induced == null) {
+            induced = new Vector<>();
+        }
         induced.add(parsedInduced);
     }
     
