@@ -94,6 +94,7 @@ public class Graph extends SmallGraph {
 
     /**
      * rebuilds the Graph from complement
+     * @deprecated
      */
     public void copyFromComplement() {
 
@@ -114,6 +115,26 @@ public class Graph extends SmallGraph {
             }
         }
     }
+
+    /**
+     *  Builds a new Graph containing the complement
+     */
+    public Graph buildComplement() {
+        Graph c = (Graph) super.buildComplement();
+
+        Graphs.addAllVertices(c.graph, this.graph.vertexSet());
+        for(int from : this.graph.vertexSet()) {
+            for(int to : this.graph.vertexSet()) {
+                if ( from != to && this.graph.getEdge(from, to) == null) {
+                    c.addEdge(from, to);
+                }
+            }
+        }
+
+        return c;
+    }
+
+
 
     /**
      *
