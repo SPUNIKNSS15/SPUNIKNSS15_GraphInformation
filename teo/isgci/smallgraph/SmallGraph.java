@@ -182,6 +182,31 @@ public abstract class SmallGraph {
         
         return c;
     }
+
+    /**
+     * Builds a new SmallGraph instance which represents the complement of this.
+     * Class specific actions have to be implemented in the respective subclass.
+     *
+     * @return new SmallGraph instance which represents the complementary data common to all subclasses.
+     */
+    public SmallGraph buildComplement() {
+
+        SmallGraph c = null;
+        try {
+            c = (SmallGraph) getClass().newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        c.setPrimary(false);
+        c.setComplement(this);
+        setComplement(c);
+
+        return c;
+    }
+
+
+
 }
     
 /* EOF */
