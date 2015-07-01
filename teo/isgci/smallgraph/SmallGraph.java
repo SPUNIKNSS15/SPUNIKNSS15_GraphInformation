@@ -119,28 +119,6 @@ public abstract class SmallGraph {
     }
 
     
-    /**
-     * Return an incomplete complement of this.
-     * this and the returned graph are marked as each others complement,
-     * otherwise the new graph has no contents yet. It can be completed by
-     * calling copyFromComplement.
-     */
-    public SmallGraph halfComplement() {
-        SmallGraph c = null;
-        try {
-            c = (SmallGraph) getClass().newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-        c.setPrimary(false);
-        c.setComplement(this);
-        setComplement(c);
-        
-        return c;
-    }
-
-
     @Override
     public int hashCode() {
         return this.getName().hashCode() + this.complement.getName().hashCode()*2;
@@ -168,9 +146,7 @@ public abstract class SmallGraph {
 
         return c;
     }
-
-
-
+    
 }
     
 /* EOF */
