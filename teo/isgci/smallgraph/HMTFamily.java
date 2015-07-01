@@ -57,6 +57,26 @@ public class HMTFamily extends Family{
     }
 
     /**
+     * Builds a new HMTFamily containing the complement
+     */
+
+    public HMTFamily buildComplement() {
+        HMTFamily c = (HMTFamily) super.buildComplement();
+
+        if (smallmembers != null) {
+            //---- First copy the complement
+            c.smallmembers = (Vector) smallmembers.clone();
+
+            //--- Then complement it
+            for (int i = 0; i < c.smallmembers.size(); i++) {
+                c.smallmembers.setElementAt(c.smallmembers.elementAt(i).getComplement(), i);
+            }
+        }
+        
+        return c;
+    }
+
+    /**
      *
      * @return Head-Mid-Tail grammar defining Family
      */
