@@ -10,12 +10,15 @@
 
 package teo.isgci.smallgraph;
 
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.ListenableUndirectedGraph;
+
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public abstract class SmallGraph{
+public abstract class SmallGraph {
     
     /** List of names, the first is the prime, the others are aliases */
     protected List<String> names;
@@ -31,7 +34,7 @@ public abstract class SmallGraph{
     protected Vector< Vector<SmallGraph> > induced;
     
     /** Creates a new empty SmallGraph */
-    public SmallGraph(){
+    public SmallGraph() {
         names = null;
         link = null;
         complement = null;
@@ -104,8 +107,9 @@ public abstract class SmallGraph{
 
     /** Adds induced <tt>parsedInduced</tt> to induced */
     public void addInduced(Vector<SmallGraph> parsedInduced){
-        if (induced == null)
-            induced = new Vector<Vector<SmallGraph> >();
+        if (induced == null) {
+            induced = new Vector<>();
+        }
         induced.add(parsedInduced);
     }
     
@@ -165,8 +169,12 @@ public abstract class SmallGraph{
             }
         }
     }
-    
-    
+
+    @Override
+    public int hashCode() {
+        return this.getName().hashCode() + this.complement.getName().hashCode()*2;
+    }
+
     /** Create and return the complement of this SmallGraph */
     public SmallGraph makeComplement() {
         SmallGraph c = halfComplement();
@@ -174,9 +182,6 @@ public abstract class SmallGraph{
         
         return c;
     }
-    
-    /* Ugly hack */
-    public void addEdge(int a, int b){}
 }
     
 /* EOF */

@@ -14,24 +14,26 @@ import java.util.Vector;
 
 public class SimpleFamily extends Family{
     
-    /** Smallgraphs contained in Family */
-    private Vector<SmallGraph> contains;
-    
     /**
-     * Induced subgraphs common for all members of Family except for those in
-     * contains
+     * @contains Smallgraphs contained in Family
+     * @inducedRest Induced subgraphs common for all members of Family except for those in contains
      */
+    private Vector<SmallGraph> contains;
     private Vector<Vector<SmallGraph> > inducedRest;
-    
-    /** Creates a new SimpleFamily without Graphs */
+
+    /**
+     * Creates a new SimpleFamily without Graphs
+     */
     public SimpleFamily(){
         super();
         contains = null;
         induced = null;
         inducedRest = null;
     }
-    
 
+    /**
+     * todo: comment this
+     */
     public void copyFromComplement() {
         super.copyFromComplement();
 
@@ -64,33 +66,49 @@ public class SimpleFamily extends Family{
                         v.setElementAt(v.elementAt(j).getComplement(), j);
             }
     }
-    
-    /** Adds contains <tt>parsedContains</tt> to SimpleFamily */
+
+    /**
+     * Adds contains <tt>parsedContains</tt> to SimpleFamily
+     *
+     * @param parsedContains  smallgraph which content should be added to simpleFamily
+     */
     public void addContains(SmallGraph parsedContains){
         if (contains == null)
             contains = new Vector<SmallGraph>(2,2);
         contains.addElement(parsedContains);
     }
-    
-    /** Returns Vector contains */
+
+    /**
+     *
+     * @return Vector contains
+     */
     public Vector<SmallGraph> getContains(){
         return contains;
     }
-    
-    
-    /** Adds inducedRest <tt>parsedInducedRest</tt> to SimpleFamily */
+
+    /**
+     * Adds inducedRest <tt>parsedInducedRest</tt> to SimpleFamily
+     *
+     * @param parsedInducedRest inducedRest which should be added to SimpleFamily
+     */
     public void addInducedRest(Vector<SmallGraph> parsedInducedRest){
         if (inducedRest == null)
             inducedRest = new Vector<Vector<SmallGraph> >(2,2);
         inducedRest.addElement(parsedInducedRest);
     }
-    
-    /** Returns Vector inducedRest */
+
+    /**
+     *
+     * @return Vector inducedRest
+     */
     public Vector<Vector<SmallGraph> > getInducedRest(){
         return inducedRest;
     }
-    
-    
+
+    /**
+     *
+     * @return
+     */
     public String toString(){
         int i, j;
         Vector v = null;

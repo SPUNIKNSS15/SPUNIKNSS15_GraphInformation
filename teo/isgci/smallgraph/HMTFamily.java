@@ -13,15 +13,21 @@ package teo.isgci.smallgraph;
 import java.util.Vector;
 
 public class HMTFamily extends Family{
-    
-    /** Head-Mid-Tail grammar defining Family */
+
+
+    /**
+     *
+     * @hmtg Head-Mid-Tail grammar defining Family
+     * @index Index of the Head-Mid-Tail grammar defining Family
+     * @smallmembers Smallmembers of this Family
+     */
     private HMTGrammar hmtg;
-    /** Index of the Head-Mid-Tail grammar defining Family */
     private String index;
-    /** Smallmembers of this Family */
     private Vector<SmallGraph> smallmembers;
-    
-    /** Creates a new HMTFamily without Graphs */
+
+    /**
+     * Creates a new HMTFamily without Graphs
+     */
     public HMTFamily(){
         super();
         hmtg = null;
@@ -29,7 +35,6 @@ public class HMTFamily extends Family{
         induced = null;
         smallmembers = null;
     }
-    
     
     /**
      * Copies the smallmembers from the complement. Grammar and index is not
@@ -51,18 +56,28 @@ public class HMTFamily extends Family{
         }
     }
 
-
-    /** Returns Head-Mid-Tail grammar defining Family. */
+    /**
+     *
+     * @return Head-Mid-Tail grammar defining Family
+     */
     public HMTGrammar getGrammar(){
         return hmtg;
     }
-    
-    /** Sets Head-Mid-Tail grammar defining Family. */
+
+    /**
+     * Sets Head-Mid-Tail grammar defining Family
+     *
+     * @param hmtg Head-Mid-Tail grammar to be set
+     */
     public void setGrammar(HMTGrammar hmtg){
         this.hmtg = hmtg;
     }
-    
-    /** Initializes array smallmembers of size <tt>smSize</tt> */
+
+    /**
+     * Initializes array smallmembers of size <tt>smSize</tt>
+     *
+     * @param smSize size of the initialized array
+     */
     public void initFromGrammar(int smSize){
         if (index == null)
             smallmembers = hmtg.getSmallElements(smSize);
@@ -73,35 +88,56 @@ public class HMTFamily extends Family{
                 smallmembers.addElement(hmtg.getElement(ie.eval(i)));
         }
     }
-    
-    /** Returns index of the Head-Mid-Tail grammar defining Family. */
+
+    /**
+     *
+     * @return index of the Head-Mid-Tail grammar defining Family
+     */
     public String getIndex(){
         return index;
     }
-    
-    /** Sets index of the Head-Mid-Tail grammar defining Family. */
+
+    /**
+     * Sets index of the Head-Mid-Tail grammar defining Family
+     *
+     * @param index
+     */
     public void setIndex(String index){
         this.index = index;
     }
-    
-    /** Return array smallmembers */    
+
+    /**
+     *
+     * @return array smallmembers
+     */
     public Vector<SmallGraph> getSmallmembers(){
         return smallmembers;
     }
-    
-    /** Set array <tt>smMem</tt> as smallmembers in this HMTFamily */
+
+    /**
+     * Set array <tt>smMem</tt> as smallmembers in this HMTFamily
+     *
+     * @param smMem array which should be set as smallmembers
+     */
     public void setSmallmembers(Vector<SmallGraph> smMem){
         smallmembers = (Vector) smMem.clone();
     }
 
-    /** Add a smallmember */
+    /**
+     * Add a smallmember
+     *
+     * @param sm smallmember which should be added
+     */
     public void addSmallmember(SmallGraph sm) {
         if (smallmembers == null)
             smallmembers = new Vector<SmallGraph>();
         smallmembers.addElement(sm);
     }
 
-    
+    /**
+     *
+     * @return
+     */
     public String toString(){
         int i, j;
         Vector v = null;

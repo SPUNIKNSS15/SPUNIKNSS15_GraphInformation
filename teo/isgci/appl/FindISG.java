@@ -13,37 +13,34 @@ package teo.isgci.appl;
 import java.util.*;
 import java.net.URL;
 import java.io.*;
+import java.util.concurrent.*;
 
-import org.jgrapht.experimental.subgraphisomorphism.VF2SubgraphIsomorphismInspector;
-import org.xml.sax.XMLReader;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.*;
 import gnu.getopt.Getopt;
 import teo.isgci.grapht.GAlg;
-import teo.isgci.smallgraphstransition.SimpleISGCIGraph;
 import teo.isgci.xml.*;
 import teo.isgci.smallgraph.*;
-import teo.isgci.util.Itera;
 
 public class FindISG{
-    
-    private static Vector graphs, families, configurations, grammars;
-    private static Hashtable results;
+
+    private static Vector<Graph> graphs;
+    private static Vector families, configurations, grammars;
+    private static Hashtable<Graph, Vector<Graph>> inducedTable;
     private static SimpleDirectedGraph<Graph,DefaultEdge> resultGraph;
-    
+
     private static int usg; // Running number for unknown subgraphs
     //private static Annotation<Graph> graphAnn; // Graph in resultGraph
     private static int minCnt=4; // Minimum number of nodes in small graphs
     private static int maxCnt=0; // The largest size of graphs given in the
                                  // beginning
     private static final String USG="USG", ISG="ISG";
-    
+
     static final String XMLDECL =
         "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n" +
         "<!DOCTYPE SMALLGRAPHS SYSTEM \"smallgraphs.dtd\">\n";
-    
+
     private static boolean noComplements = false;  // Don't handle complements
 
     private static int verbose = 0;
@@ -52,17 +49,19 @@ public class FindISG{
             InterruptedException {
         boolean transitivelyClosed = false;
 
-        long t1,t2,ts=0;
+        long t1,t2,totalStart,totalEnd;
         int c;
-        
+
         graphs = new Vector();
         families = new Vector();
         configurations = new Vector();
         grammars = new Vector();
-        results = new Hashtable();
-        resultGraph = new SimpleDirectedGraph<Graph,DefaultEdge>(
+        inducedTable = new Hashtable();
+        resultGraph = new SimpleDirectedGraph<>(
                 DefaultEdge.class);
         usg=0;
+
+        totalStart = System.currentTimeMillis();
 
         Getopt opts = new Getopt("FindISG", args, "ctv");
         while ((c = opts.getopt()) != -1) {
@@ -93,7 +92,7 @@ public class FindISG{
         String outxml = args[opts.getOptind()+1];
 
         if (verbose != 0)
-            System.err.print("Lese " + inxml + " ein");
+            System.out.println("Lese " + inxml + " ein");
 
         t1=System.currentTimeMillis();
         try{
@@ -110,49 +109,41 @@ public class FindISG{
              */
 
         }catch(Exception ex){
-            ex.printStackTrace();//System.err.println(ex);
+            ex.printStackTrace();//System.out.println(ex);
             System.exit(1);
         }
         t2=System.currentTimeMillis();
 
         if (verbose != 0) {
             long zeit = t2 - t1;
-            ts += zeit;
-            System.err.print(". (" + time2String(zeit) + ")\n");
+            System.out.print(". (" + time2String(zeit) + ")\n");
 
-            System.err.print("Graphen         : " + graphs.size() + "\n");
-            System.err.print("Familien        : " + families.size() + "\n");
-            System.err.print("Konfigurationen : " + configurations.size()
-                            + "\n");
+            System.out.print("Graphen         : " + graphs.size() + "\n");
+            System.out.print("Familien        : " + families.size() + "\n");
+            System.out.print("Konfigurationen : " + configurations.size() + "\n");
 
-            System.err.print("Bestimme Teilgraphen");
+            System.out.print("Bestimme Teilgraphen\n");
         }
 
         t1=System.currentTimeMillis();
 
+        /* find subgraph relations among known graphs */
+        createSubgraphRelations();
+        GAlg.transitiveReduction(resultGraph);
 
-
-        /*
-        create subgraphs for each graph in graphs, check isomorphy to
-        already known graphs and link respectively or add the graph as an USG
-         */
-        for (int i=0; i<graphs.size(); i++)
-            getSubs((Graph)graphs.elementAt(i));
-        
         t2=System.currentTimeMillis();
 
         if (verbose != 0) {
             long zeit = t2 - t1;
 
-            ts += zeit;
-            System.err.print(". ("+ time2String(zeit) + ")\n");
-
-            System.err.print("Graphen         : " + graphs.size() + "\n");
-            System.err.print("Familien        : " + families.size() + "\n");
-            System.err.print("Konfigurationen : " + configurations.size()
+            System.out.print(". ("+ time2String(zeit) + ")\n");
+            System.out.print("Graphen         : " + graphs.size() + "\n");
+            System.out.print("Familien        : " + families.size() + "\n");
+            System.out.print("Konfigurationen : " + configurations.size()
                             + "\n");
+            System.out.print("Relationen      : " + resultGraph.edgeSet().size() + "\n");
 
-            System.err.print("Bestimme Teilgraphen der Konfigurationen");
+            System.out.print("Bestimme Teilgraphen der Konfigurationen");
         }
 
         t1=System.currentTimeMillis();
@@ -161,36 +152,46 @@ public class FindISG{
         add every KNOWN graph that is induced subgraph of EVERY of the
         configurations graphs to the induced subgraph list of C
          */
-        for (int i = 0; i < configurations.size(); i++)
-            for (int j = 0; j < graphs.size(); j++) {
-                Configuration C = (Configuration) configurations.elementAt(i);
+        for (int i = 0; i < configurations.size(); i++) {
+            graphs: for (int j = 0; j < graphs.size(); j++) {
+                Configuration conf = (Configuration) configurations.elementAt(i);
                 Graph g = (Graph) graphs.elementAt(j);
 
-                if (!g.getName().startsWith("USG") && C.isInducedSubgraph(g)) {
-/*                    System.err.print("  XXXX " + g.getName()
-                                    + " ist in allen Repräsentanten von "
-                                    + C.getName() + " enthalten \n");*/
-                    C.addInduced(g);
+                /* Information about subisomorphic graphs is already there in inducedTable
+                 * this jields more complete results than old method, which could miss on
+                 * some induced graphs */
+                for (SmallGraph representative : conf.getContains()) {
+                    Graph rep = (Graph)representative;
+                    /* continue if not induced by all representatives */
+                    if (g != rep && !inducedTable.get(rep).contains(g)) {
+                        continue graphs;
+                    }
                 }
+
+                /* at this point, we know that g is induced by all representatives of conf */
+                System.out.print("  Graph " + g.getName() + " ist in allen Repräsentanten von "
+                        + conf.getName() + " enthalten \n");
+                conf.addInduced(g);
             }
+        }
 
         t2=System.currentTimeMillis();
 
         if (verbose != 0) {
             long zeit = t2 - t1;
 
-            ts += zeit;
-            System.err.print(". ("+ time2String(zeit) + ")\n");
+            System.out.print(". ("+ time2String(zeit) + ")\n");
 
-            System.err.print("Graphen         : " + graphs.size() + "\n");
-            System.err.print("Familien        : " + families.size() + "\n");
-            System.err.print("Konfigurationen : " + configurations.size()
+            System.out.print("Graphen         : " + graphs.size() + "\n");
+            System.out.print("Familien        : " + families.size() + "\n");
+            System.out.print("Konfigurationen : " + configurations.size()
                             + "\n");
 
-            System.err.print("Sortiere Graphen");
+            System.out.print("Sortiere Graphen");
         }
 
         t1=System.currentTimeMillis();
+
         /*Sort graphs by their number of nodes*/
         sortNum(graphs,0,graphs.size()-1);
         t2=System.currentTimeMillis();
@@ -198,25 +199,17 @@ public class FindISG{
         if (verbose != 0) {
             long zeit = t2 - t1;
 
-            ts += zeit;
-            System.err.print(". (" + time2String(zeit) + ")\n");
-            System.err.print("Schreibe " + outxml);
+            System.out.print(". (" + time2String(zeit) + ")\n");
+            System.out.println("Schreibe " + outxml);
         }
 
-        /*
-        Create the digraph containing all the induced subgraph relationships
-        between known graphs - USGS are bridged using the transitive closure,
-        but not listet in the final digraph.
-         */
-        makeDigraph();
         System.out.println("Digraph is made. Starting to add big smallmembers");
         addBigSmallmembers();
 
-        /*if -t option is set -
-        * FIXME: can be optimized by simply not calling transitive reduction in makeDigraph()
-        */
-        if (transitivelyClosed)
+        /* if -t option is set */
+        if (transitivelyClosed) {
             GAlg.transitiveClosure(resultGraph);
+        }
 
         t1=System.currentTimeMillis();
         try{
@@ -229,17 +222,22 @@ public class FindISG{
         }
         t2=System.currentTimeMillis();
 
-        if (verbose != 0) {
-            long zeit = t2 - t1;
+        totalEnd = System.currentTimeMillis();
 
-            ts += zeit;
-            System.err.print(". (" + time2String(zeit) + ")\n");
-            System.err.print("Total time: " + time2String(ts)+ "\n");
+        if (verbose != 0) {
+
+            System.out.print("Relationen gesamt: " + resultGraph.edgeSet().size() + "\n");
+
+            long zeit = t2-t1;
+            long totalTime = totalEnd - totalStart;
+
+            System.out.print(". (" + time2String(zeit) + ")\n");
+            System.out.print("Total time: " + time2String(totalTime)+ "\n");
         }
     }
 
     private static void usage(){
-        System.err.println(
+        System.out.println(
             "Usage: FindISG [opts] input.xml out.xml\n"+
             "   -c: don't handle complements\n"+
             "   -t: create transitively closed out.dig\n"+
@@ -263,7 +261,7 @@ public class FindISG{
         }
     }
 
-    
+
     /** Creates a new XML file */
     public static void makeNewXMLFile(String outFile)
                 throws IOException, SAXException{
@@ -271,65 +269,46 @@ public class FindISG{
         sgw.writeSmallGraphs(XMLDECL, graphs, grammars, families,
                 configurations, resultGraph);
     }
-   
 
-    /**
-     * Create a list of direct subgraphs for each graph and check
-     * to which graph these subgraphs are isomorph.
-     * If no isomorph graphs are found, add the subgraph to the list
-     * of graphs.
-     */
-    public static void getSubs(Graph graph)
-    {
-        /* /null/ ist kein Graph und Bottom-Graph auch ignorieren */
-        if (graph == null || graph.getBottom())
-            return;
-
-/*        System.out.println("bestimme Teilgraphen von " + graph.getName()
-                + " (" + graph.countNodes() + " Knoten)"); */
-        
-        int i,j,cnt=graph.countNodes();
-        // dont check graphs with 3 or less nodes
-        if(cnt<minCnt) return;
-        
-        Graph g1,g2;
-        Vector candidate=new Vector(),result=new Vector();
-        boolean found;
-        
-        // since vector names is sorted by number of nodes ...
-        /* XXX was bitteschön ist sortiert????? */
-        for(i=graphs.size()-1;i>=0;i--){
-            g1=(Graph)graphs.elementAt(i);
-            if (!g1.getBottom() && g1.countNodes() == cnt - 1
-                    && g1.countEdges() <= graph.countEdges())
-                candidate.addElement(g1);
-        }
-        
-        g2=null; // must be initialized due to javac
-        for(i=0;i<cnt;i++){
-            g1=new Graph(graph);
-            g1.delNode(i);
-            found=false;
-            for(j=candidate.size()-1;j>=0;j--){
-                g2=(Graph)candidate.elementAt(j);
-                if(g1.isIsomorphic(g2)){
-                    found=true;
-                    break;
-                }
-            }
-            if(!found){
-                addUSG(g1, graphs, USG);
-                candidate.addElement(g1);
-                g2=g1; // pretend g2 was found in previous loop
-            }
-            if(result.indexOf(g2)<0)
-                result.addElement(g2);
+    public static void createSubgraphRelations() {
+        /* add node to resultGraph for each graph in graphs */
+        for (int i=0; i<graphs.size(); i++) {
+            resultGraph.addVertex((Graph) graphs.elementAt(i));
         }
 
-        results.put(graph,result);
+        /* exclude bigger complements */
+        HashSet<Graph> thinComplements = new HashSet<>(graphs);
+        for (Graph g : graphs) {
+            Graph c = (Graph)g.getComplement();
+            if (g == c || !(thinComplements.contains(g) && thinComplements.contains(c))) {
+                continue;
+            }
+            if(g.getGraph().edgeSet().size() > c.getGraph().edgeSet().size()) {
+                thinComplements.remove(g);
+            } else {
+                thinComplements.remove(c);
+            }
+        }
+
+        ExecutorService poolExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+        Semaphore resultGraphSem = new Semaphore(1);
+        Semaphore inducedTableSem = new Semaphore(1);
+
+        /* start search for each thinner graph or complement */
+        for (Graph g : thinComplements) {
+            poolExecutor.execute(new AddSubgraphRelationsTask(graphs, g, (Graph)g.getComplement(),
+                    resultGraph, inducedTable,
+                    resultGraphSem, inducedTableSem, false));
+        }
+
+        poolExecutor.shutdown();
+        try {
+            poolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+        }
     }
 
-    
     /**
      * Reads the graphs from XML format (their names, nodes, edges and aliases
      * and links, if there are any).
@@ -361,51 +340,65 @@ public class FindISG{
                 new NoteFilter(SmallGraphTags.EXPL));
         xr.parse();
 
-
+        System.out.println("parsed graphs");
 
 
         /*
          * Store all read graphs, which by now are in the handler,
          * in the respective local member vectors
          *
-         * (this also applies for configs/familys/grammars respectively)
+         * (this also applies for configs/families/grammars respectively)
          */
 
         for (HMTGrammar gram : handler.getGrammars())
             grammars.addElement(gram);
 
-        for (SmallGraph g : handler.getGraphs()) {
-            if (noComplements  &&  !g.isPrimary())
+        Collection<SmallGraph> smallGraphs = handler.getGraphs();
+
+        for (SmallGraph g : smallGraphs) {
+            System.out.println(g.getClass());
+            if (noComplements  &&  !g.isPrimary()) {
                 continue;
-            if (g instanceof Graph)
-                graphs.addElement(g);
-            else if (g instanceof Family)
+            }
+
+            if (g instanceof Graph) {
+                graphs.addElement((Graph)g);
+                System.out.println("added Graph");
+            }
+            else if (g instanceof Family) {
                 families.addElement(g);
-            else if (g instanceof Configuration)
+                System.out.println("added Family");
+            }
+            else if (g instanceof Configuration) {
                 configurations.addElement(g);
-            else
-                System.err.println("Don't know how to handle "+ g.getName());
+                System.out.println("added Configuration");
+            }
+            else {
+                System.out.println("Don't know how to handle " + g.getName());
+            }
         }
 
 
         /*
-         * Check all graphs against each other for isomorphy -
+         * Check all graphs against each other for isomorphisms -
          * if 2 isomorphic graphs are found, print an error message
          *
          * XXX This is in O(graphs.size()^2),
          * This can be optimized for inputs with many isomorphic graphs
          * since isomorphy is transitive.
          */
-        for (i=0; i<graphs.size(); i++)
-            for (j=i+1; j<graphs.size(); j++)
-                if (((Graph)graphs.elementAt(i)).
-                        isIsomorphic((Graph)graphs.elementAt(j)))
-                    System.err.println("Mistake!!! "+
-                        ((Graph)graphs.elementAt(i)).getName()+
-                        " isomorphic to "+
-                        ((Graph)graphs.elementAt(j)).getName());
+        for (i=0; i<graphs.size(); i++) {
+            for (j = i + 1; j < graphs.size(); j++) {
+                if (((Graph) graphs.elementAt(i)).
+                        isIsomorphic((Graph) graphs.elementAt(j)))
+                    System.out.println("Mistake!!! " +
+                            ((Graph) graphs.elementAt(i)).getName() +
+                            " isomorphic to " +
+                            ((Graph) graphs.elementAt(j)).getName());
+            }
+        }
 
-
+        System.out.println("checked Graphs");
 
         /*
          * Iterates over the configurations vector and checks whether
@@ -415,21 +408,20 @@ public class FindISG{
         for (ci = 0; ci < configurations.size(); ci++) {
             Configuration c = (Configuration) configurations.elementAt(ci);
 
-            Vector contained = c.getGraphs();
+            /* returns null when there are >100 representatives */
+            Vector contained = c.getGraphs(100);
 
-        /* das ist genau dann der Fall, wenn es zuviele Repräsentanten gibt */
             if (contained == null) {
-               System.err.print("Warning: " + c.getName()
-                               + " hat zuviele Repraesentanten!!\n");
+               System.out.print("Warning: " + c.getName()
+                               + " has too many representatives\n");
                 continue;
             }
 
             /* Iterates over all graphs generated by the current configuration
              * (not more than 100) and checks them against the FindISG.graphs
-             * member vector for isomorphy.
+             * member vector for isomorphisms.
              */
-
-contConf:   for (i=0; i<contained.size(); i++) {
+            contConf:   for (i=0; i<contained.size(); i++) {
                 for (j=0; j<graphs.size(); j++)
                     if (((Graph)contained.elementAt(i)).
                             isIsomorphic((Graph)graphs.elementAt(j))) {
@@ -450,33 +442,32 @@ contConf:   for (i=0; i<contained.size(); i++) {
                  */
                 ((Graph)contained.elementAt(i)).addLink(c.getLink());
                 /*
-                 * add the link to the found isomorphic grap from graphs
+                 * add the link to the found isomorphic graph from graphs
                  * to the configurations link list and vice versa
                  */
                 addUSG((Graph)contained.elementAt(i), graphs, ISG);
                 c.addContains((Graph)contained.elementAt(i));
             }
-//            configurations.addElement(c);
         }
 
 
         /*
-        Check configurations for isomorphy against each other,
+        Check configurations for isomorphism against each other,
         as with graphs before
          */
-        for (i=0; i<configurations.size(); i++)
-            for (j=i+1; j<configurations.size(); j++)
-                if (((Configuration)configurations.elementAt(i)).
-                        isIsomorphic((Configuration)configurations.
-                        elementAt(j)))
-                    System.err.println("Mistake!!! "+
-                        ((Configuration)configurations.elementAt(i)).getName()+
-                        " isomorphic to "+
-                        ((Configuration)configurations.elementAt(j)).getName());
+        for (i=0; i<configurations.size(); i++) {
+            for (j = i + 1; j < configurations.size(); j++) {
+                if (((Configuration) configurations.elementAt(i)).
+                        isIsomorphic((Configuration) configurations.elementAt(j)))
+                    System.out.println("Mistake!!! " +
+                            ((Configuration) configurations.elementAt(i)).getName() +
+                            " isomorphic to " +
+                            ((Configuration) configurations.elementAt(j)).getName());
+            }
+        }
 
-        /*
-        Determine maximum and minimum amount of nodes in the graphs
-         */
+		System.out.println("checked Configurations");
+
         int curCnt = 0;
         for (i=0; i<graphs.size(); i++){
             curCnt = ((Graph)graphs.elementAt(i)).countNodes();
@@ -485,17 +476,17 @@ contConf:   for (i=0; i<contained.size(); i++) {
             if (curCnt < minCnt)
                 minCnt = curCnt;
         }
-        
-        for (i=0; i<families.size(); i++)
-            if ((Family)families.elementAt(i) instanceof HMTFamily)
-                if (((HMTFamily)families.elementAt(i)).getGrammar() != null) {
-                    HMTFamily fhmt = (HMTFamily)families.elementAt(i);
+
+        for (i=0; i<families.size(); i++) {
+            if (families.elementAt(i) instanceof HMTFamily) {
+                if (((HMTFamily) families.elementAt(i)).getGrammar() != null) {
+                    HMTFamily fhmt = (HMTFamily) families.elementAt(i);
+
                     /*
                     Initialize the fmht.smallmembers Vector with smallgraphs
                     conforming to FHMTGrammar with a maximum of maxCnt nodes
                      */
                     fhmt.initFromGrammar(maxCnt);
-
 
                     /*
                     Iterate over all of fhmt.smallmembers graphs which were
@@ -504,32 +495,35 @@ contConf:   for (i=0; i<contained.size(); i++) {
                     in FindISG.graphs.
                      */
                     Vector smMem = fhmt.getSmallmembers();
-contFHMT:           for (j=0; j<smMem.size(); j++)
-                        if (((Graph)smMem.elementAt(j)).countNodes()<=maxCnt) {
-                            for (int k=0; k<graphs.size(); k++)
-                                if (((Graph)smMem.elementAt(j)).isIsomorphic(
-                                        (Graph)graphs.elementAt(k))) {
+                    contFHMT: for (j = 0; j < smMem.size(); j++) {
+                        if (((Graph) smMem.elementAt(j)).countNodes() <= maxCnt) {
+                            for (int k = 0; k < graphs.size(); k++)
+                                if (((Graph) smMem.elementAt(j)).isIsomorphic(
+                                        graphs.elementAt(k))) {
 
                                     //Found an isomorphic graph, set it to the
                                     //element from graphs, so additional info
                                     //like names, links etc. are available
                                     smMem.setElementAt(
-                                            (Graph)graphs.elementAt(k), j);
+                                            graphs.elementAt(k), j);
                                     continue contFHMT;
                                 }
-                            ((Graph)smMem.elementAt(j)).addLink(fhmt.getLink());
-                            addUSG((Graph)smMem.elementAt(j), graphs, ISG);
+                            ((Graph) smMem.elementAt(j)).addLink(fhmt.getLink());
+                            addUSG((Graph) smMem.elementAt(j), graphs, ISG);
                         }
+                    }
                 }
-        
+            }
+        }
+
         // Completing information about ComplementFamilies which are complement
         // to HMTFamilies with HMT-grammars
-        for (i=0; i<families.size(); i++)
+        for (i=0; i<families.size(); i++) {
             if ((families.elementAt(i) instanceof HMTFamily) &&
                     !((Family)families.elementAt(i)).isPrimary()) {
                 HMTFamily fcomp = (HMTFamily)families.elementAt(i);
                 HMTFamily fhmt = (HMTFamily)fcomp.getComplement();
-                
+
                 //fcomp.smallmembers = new Graph[fhmt.smallmembers.length];
                 Vector smMem = fhmt.getSmallmembers();
                 Vector compSmMem = new Vector();
@@ -538,14 +532,12 @@ contFHMT:           for (j=0; j<smMem.size(); j++)
                         compSmMem.addElement(((Graph)smMem.elementAt(j)).
                                 getComplement());
                 fcomp.setSmallmembers(compSmMem);
-/*                Graph[] compSmMem = new Graph[smMem.size()];
-                for (j=0; j<smMem.length; j++)
-                    if (smMem[j].countNodes()<=maxCnt)
-                        compSmMem[j] = (Graph)smMem[j].getComplement();
-                fcomp.setSmallmembers(compSmMem);*/
             }
+        }
+
+        System.out.println("checked Families");
     }
-    
+
     private static void addUSG(Graph g, Vector graphs, String type){
         usg++;
         g.addName(type+usg);
@@ -560,7 +552,7 @@ contFHMT:           for (j=0; j<smMem.size(); j++)
     private static int n2n(Object graph){
         return graph==null ? -1 : ((Graph)graph).countNodes();
     }
-    
+
     /** Sorts graphs by their number of nodes */
     private static void sortNum(Vector vec, int left, int right) {
         Object y;
@@ -585,215 +577,125 @@ contFHMT:           for (j=0; j<smMem.size(); j++)
         if(i < right) sortNum(vec, i, right);
     }
 
-
-    /*
-    The digraph contains a node for every graph in graphs and an edge for every
-    induced subgraph relationship between graphs.
-
-    The transitive closure is calculated on this relation, then,
-    unknown graphs are removed, and finally the transitive reduction is
-    applied. Therefore, relationships between graphs via USGs are kept without
-    explicitely listing the USGs.
-     */
-    public static void makeDigraph() {
-        // Creating a Node for every graph
-        for (int i=0; i<graphs.size(); i++)
-            resultGraph.addVertex((Graph) graphs.elementAt(i));
-        
-        // Creating Edges from graphs to their induced subgraphs
-        for (Graph v : resultGraph.vertexSet()) {
-            Vector<Graph>subs = (Vector<Graph>) results.get(v);
-            if (subs == null)
-                continue;
-            for (Graph vSub: subs)
-                resultGraph.addEdge(v, vSub);
-        }
-        
-        GAlg.transitiveClosure(resultGraph);
-        
-        // Removing Nodes of graphs with "USG" in the name
-        ArrayList<Graph> remove = new ArrayList<Graph>();
-        for (Graph v : resultGraph.vertexSet()) {
-            if (v.getName().startsWith(USG))
-                remove.add(v);
-        }
-        resultGraph.removeAllVertices(remove);
-        
-        GAlg.transitiveReduction(resultGraph);
-    }
-
-
     /*
     addBigSmallmembers operates on the families smallmembers which
     had more than maxCnt nodes and were therefore not processed yet
 
     Every bigSmallgraph is either unknown (and then added to bigSmallmemb)
     or induces an already known bigSmallgraph according to VF2
-
-
-
      */
     public static void addBigSmallmembers() throws
             IOException, InterruptedException {
 
         /* Contains graphs of size larger than maxCnt*/
-        Vector bigSmallmemb = new Vector();
+        Vector<Graph> bigSmallmemb = new Vector();
 
         /* iterate over all families in this.families */
-        for (int i=0; i<families.size(); i++)
-            if (families.elementAt(i) instanceof HMTFamily)
-                if (((HMTFamily)families.elementAt(i)).getGrammar() != null) {
-                    HMTFamily fhmt = (HMTFamily)families.elementAt(i);
-                    HMTFamily fcomp = (HMTFamily)fhmt.getComplement();
-                    Vector smMem = fhmt.getSmallmembers();
+        for (int i=0; i<families.size(); i++) {
+            if (families.elementAt(i) instanceof HMTFamily) {
+                if (((HMTFamily) families.elementAt(i)).getGrammar() != null) {
+                    HMTFamily fhmt = (HMTFamily) families.elementAt(i);
+                    HMTFamily fcomp = (HMTFamily) fhmt.getComplement();
+                    Vector<SmallGraph> smMem = fhmt.getSmallmembers();
                     Vector compSmMem = new Vector();
 
                     //iterate over all of the families small members...
-contBig:            for (int j=0; j<smMem.size(); j++)
-                        if (((Graph)smMem.elementAt(j)).countNodes() > maxCnt) {
+                    contBig:
+                    for (int j = 0; j < smMem.size(); j++) {
 
+                        if (((Graph) smMem.elementAt(j)).countNodes() > maxCnt) {
 
-                            for (int k=0; k< bigSmallmemb.size(); k++)
-                                                           /*
-                            If one of the already found big smallmembers
-                            (stored in bigSmallmemb) has the same amount
-                            of nodes as the currently examined graph of the
-                            current family AND is isomorphic according to the
-                            external VF2 isomorphism algorithm...
-                            */
-                                if (((Graph)smMem.elementAt(j)).countNodes() ==
-                                        ((Graph)bigSmallmemb.elementAt(k)).
-                                        countNodes() &&
-                                        isSubgraphVF((Graph)smMem.elementAt(j),
-                                        (Graph)bigSmallmemb.elementAt(k))) {
-                                    //...set the graph and its complement within
-                                    //the family accordingly, copying all known
-                                    //information about that graph
-                                    smMem.setElementAt((Graph)bigSmallmemb.
-                                            elementAt(k), j);
-                                    compSmMem.addElement((Graph)
-                                            ((Graph)bigSmallmemb.elementAt(k)).
-                                            getComplement());
+                            for (int k = 0; k < bigSmallmemb.size(); k++) {
+                                /* If one of the already found big smallmembers
+                                 * (stored in bigSmallmemb) is isomorphic...
+                                 */
+                                if (((Graph) smMem.elementAt(j)).isIsomorphic(bigSmallmemb.elementAt(k))) {
+                                    /* ...set the graph and its complement within
+                                     * the family accordingly, copying all known
+                                     * information about that graph
+                                     */
+                                    smMem.setElementAt(bigSmallmemb.elementAt(k), j);
+                                    compSmMem.addElement((bigSmallmemb.elementAt(k)).getComplement());
                                     continue contBig;
                                 }
+                            }
+
                             //If no isomorphic big smallgraph is found,
                             //add it as an USG to bigSmallmemb
-                            ((Graph)smMem.elementAt(j)).addLink(fhmt.getLink());
-                            addUSG((Graph)smMem.elementAt(j), bigSmallmemb,ISG);
-                            compSmMem.addElement((Graph)((Graph)smMem.
-                                    elementAt(j)).getComplement());
-/*                            System.out.println(fhmt.getName()+".smMem["+j+"]="+
+                            ((Graph) smMem.elementAt(j)).addLink(fhmt.getLink());
+                            addUSG((Graph) smMem.elementAt(j), bigSmallmemb, ISG);
+                            compSmMem.addElement(smMem.
+                                    elementAt(j).getComplement());
+                            /* System.out.println(fhmt.getName()+".smMem["+j+"]="+
                                     ((Graph)smMem.elementAt(j)).getName());
                             System.out.println(fcomp.getName()+".smMem["+j+"]="+
                                    ((Graph)compSmMem.elementAt(j)).getName());*/
+                        } else if (fcomp.getSmallmembers() != null) {
+                            compSmMem.addElement(fcomp.getSmallmembers().elementAt(j));
                         }
-                        else
-                            compSmMem.addElement((Graph)
-                                    fcomp.getSmallmembers().elementAt(j));
-                    ((HMTFamily)fcomp).setSmallmembers(compSmMem);
+                    }
+
+                    fcomp.setSmallmembers(compSmMem);
                 }
+            }
+        }
 
-
-        ArrayList<Graph> topo = new ArrayList<Graph>();
+        Vector<Graph> topo = new Vector<>();
 
         /*
         Add the present resultgraphs members to topo according
         to their topological order, which is provided by jgrapht
          */
-        for (Graph v : GAlg.topologicalOrder(resultGraph))
+        for (Graph v : GAlg.topologicalOrder(resultGraph)) {
             topo.add(v);
+        }
 
-        // For testing
-        // Not converted to jgrapht!
-/*        for (int j=0; j<topo.size(); j++)
-            for (int k=0; k<topo.size(); k++) {
-                if (j == k)
-                    continue;
-                if (resultGraph.getPath((Node)topo.elementAt(j),
-                        (Node)topo.elementAt(k)).size() == 0) {
-                    if (isSubgraphVF(
-                            (Graph) ((Node)topo.elementAt(j)).getData(grIndex),
-                            (Graph) ((Node)topo.elementAt(k)).getData(grIndex)))
-                    {    
-                        System.out.println("VF found: "+
-                                ((Graph)((Node)topo.elementAt(k)).
-                                getData(grIndex)).getName()+" ind.s.g. of "+
-                                ((Graph)((Node)topo.elementAt(j)).
-                                getData(grIndex)).getName());
-                        if (((Graph)((Node)topo.elementAt(k)).
-                                getData(grIndex)).getName().startsWith(ISG))
-                            System.out.println(((Graph)((Node)topo.elementAt(k)).
-                                getData(grIndex)).toString());
-                        if (((Graph)((Node)topo.elementAt(j)).
-                                getData(grIndex)).getName().startsWith(ISG))
-                            System.out.println(((Graph)((Node)topo.elementAt(j)).
-                                getData(grIndex)).toString());
-                    }
-                } else if (!isSubgraphVF(
-                        (Graph) ((Node)topo.elementAt(j)).getData(grIndex),
-                        (Graph) ((Node)topo.elementAt(k)).getData(grIndex)))
-                {
-                    System.out.println("getPath found: "+
-                            ((Graph)((Node)topo.elementAt(k)).
-                            getData(grIndex)).getName()+" ind.s.g. of "+
-                            ((Graph)((Node)topo.elementAt(j)).
-                            getData(grIndex)).getName());
-                    if (((Graph)((Node)topo.elementAt(k)).
-                            getData(grIndex)).getName().startsWith(ISG))
-                        System.out.println(((Graph)((Node)topo.elementAt(k)).
-                            getData(grIndex)).toString());
-                    if (((Graph)((Node)topo.elementAt(j)).
-                            getData(grIndex)).getName().startsWith(ISG))
-                        System.out.println(((Graph)((Node)topo.elementAt(j)).
-                            getData(grIndex)).toString());
-                }
-            }*/
+        /* prepare new result graph nodes:
+        *  add a vertex to resultGraph for every element of bigSmallmemb
+        */
+        for (Graph g : bigSmallmemb) {
+            resultGraph.addVertex(g);
+        }
 
         System.out.println("All big smallmembers are added.");
 
-
-        /*
-        add a vertex to resultGraph for every element of bigSmallmemb
-
-        check for every of the bigSmallgraphs whether it induces any one of
-        the already known graphs in resultGraph
-
-        topological order is provided by jgrapht
-         */
-        for (int i=0; i<bigSmallmemb.size(); i++) {
-            Graph bigGr = (Graph)bigSmallmemb.elementAt(i);
-            resultGraph.addVertex(bigGr);
-
-            for (Graph v : topo) {
-                //getPath is a dijkstra shortest path between the nodes
-                //bigGr and v in resultGraph - if none is existing...
-                if (GAlg.getPath(resultGraph, bigGr, v) == null)
-                    //check if v (in the existing resultGraph)
-                    //is induced subgraph of the current bigGraph
-                    //=> add the edge to the resultGraph respectively
-                    if (isSubgraphVF(bigGr, v))
-                        resultGraph.addEdge(bigGr, v);
+        /* exclude bigger complements */
+        HashSet<Graph> thinComplements = new HashSet<>(bigSmallmemb);
+        for (Graph g : bigSmallmemb) {
+            Graph c = (Graph)g.getComplement();
+            if (g == c || !(thinComplements.contains(g) && thinComplements.contains(c))) {
+                continue;
+            }
+            if(g.getGraph().edgeSet().size() > c.getGraph().edgeSet().size()) {
+                thinComplements.remove(g);
+            } else {
+                thinComplements.remove(c);
             }
         }
 
+        /*
+         * check for every of the bigSmallgraphs whether it induces any one of
+         * the already known graphs in resultGraph
+         * (topological order is provided by jgrapht)
+         */
+        ExecutorService poolExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+        Semaphore resultGraphSem = new Semaphore(1);
+        Semaphore inducedTableSem = new Semaphore(1);
+
+        /* start search for each thinner graph or complement */
+        for (Graph g : thinComplements) {
+            poolExecutor.execute(new AddSubgraphRelationsTask(topo, g, (Graph)g.getComplement(),
+                    resultGraph, inducedTable,
+                    resultGraphSem, inducedTableSem, true));
+        }
+        poolExecutor.shutdown();
+        poolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+
         //Add all graphs from bigSmallmemb to graphs
-        for (int i=0; i<bigSmallmemb.size(); i++)
-            graphs.addElement((Graph)bigSmallmemb.elementAt(i));
-    }
-    
-    /**
-     * Use VFLib2 to decide whether small is an induced subgraph of large.
-     */
-    public static boolean isSubgraphVF(Graph large, Graph small) throws
-            IOException, InterruptedException {
-        int i, j, n;
-
-        SimpleISGCIGraph gl = new SimpleISGCIGraph(large);
-        SimpleISGCIGraph gs = new SimpleISGCIGraph(small);
-
-        VF2SubgraphIsomorphismInspector<Integer, DefaultEdge> inspector = new VF2SubgraphIsomorphismInspector<Integer, DefaultEdge>(gl, gs);
-
-        return inspector.isSubgraphIsomorphic();
+        for (int i=0; i<bigSmallmemb.size(); i++) {
+            graphs.addElement(bigSmallmemb.elementAt(i));
+        }
     }
 }
 

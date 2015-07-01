@@ -74,8 +74,8 @@ public class SmallGraphReader extends DefaultHandler {
 
     /** Return the parsed graphsets */
     public Collection<SmallGraph> getGraphs() {
-        return Collections.unmodifiableSet(
-                new HashSet<SmallGraph>(graphs.values()));
+        HashSet<SmallGraph> gs = new HashSet<SmallGraph>(graphs.values());
+        return Collections.unmodifiableSet(gs);
     }
 
     
@@ -113,6 +113,7 @@ public class SmallGraphReader extends DefaultHandler {
         try {
         
         if (qName.equals(SmallGraphTags.SIMPLE)) {
+            System.out.println("Found simple");
             SmallGraph g = new Graph();
             if (!addName(g, atts.getValue(SmallGraphTags.NAME)))
                 throw new SAXException("Bad name");
@@ -120,13 +121,15 @@ public class SmallGraphReader extends DefaultHandler {
         }
             
         else if (qName.equals(SmallGraphTags.CONFIGURATION)) {
+            System.out.println("Found configuration");
             SmallGraph g = new Configuration();
-            if (!addName(g, atts.getValue(SmallGraphTags.NAME)))
+            if (!addName(g, atts.getValue(SmallGraphTags.NAME))) //TODO: have a look here why are the configs not added
                 throw new SAXException("Bad name");
             current.addFirst(new Wrapper(g));
         }
 
         else if (qName.equals(SmallGraphTags.FAMILY)) {
+            System.out.println("Found family");
             SmallGraph g;
             String ftype = atts.getValue(SmallGraphTags.TYPE);
             if (ftype.equals("simple"))
@@ -200,6 +203,7 @@ public class SmallGraphReader extends DefaultHandler {
         }
         
         else if (qName.equals(SmallGraphTags.HMTGRAMMAR)) {
+            System.out.println("Found HMTGrammar");
             if (current.isEmpty()) {
                 String name = atts.getValue(SmallGraphTags.NAME);
                 if (name == null  ||  "".equals(name))
@@ -270,8 +274,9 @@ public class SmallGraphReader extends DefaultHandler {
             throws SAXException {
         try {
         if (qName.equals(SmallGraphTags.ROOT_SMALLGRAPHS)) {
-            for (Wrapper w : todo)
+            for (Wrapper w : todo) {
                 w.complete();
+            }
             fixComplements();
         }
         
@@ -324,8 +329,9 @@ public class SmallGraphReader extends DefaultHandler {
                 qName.equals(SmallGraphTags.CONFIGURATION)  ||
                 qName.equals(SmallGraphTags.FAMILY)  ||
                 qName.equals(SmallGraphTags.COMPLEMENT)) {
-            if (!current.peekFirst().done())
+            if (!current.peekFirst().done()) {
                 todo.add(current.peekFirst());
+            }
             current.removeFirst();
         }
 
@@ -445,7 +451,7 @@ public class SmallGraphReader extends DefaultHandler {
             System.err.println("Name "+ name +" already exists. Ignored");
             return false;
         }
-
+        System.out.println("added " + name + " of class " + g.getClass());
         g.addName(name);
         graphs.put(name, g);
         return true;
@@ -457,8 +463,10 @@ public class SmallGraphReader extends DefaultHandler {
      */
     private void fixComplements() {
         for (SmallGraph g : graphs.values()) {
-            if (!g.isPrimary())
+            if (!g.isPrimary()) {
                 g.copyFromComplement();
+            }
+            System.out.println("fixed complement on " + g.getName() + " " + g.getClass());
         }
     }
 
@@ -472,7 +480,6 @@ public class SmallGraphReader extends DefaultHandler {
 
         for (int i = 0; i < num.length; i++) {
             num[i] = Integer.parseInt(snum[i].trim());
-
         }
 
         return num;
