@@ -31,44 +31,10 @@ public class SimpleFamily extends Family{
         inducedRest = null;
     }
 
-    /**
-     * todo: comment this
-     */
-    public void copyFromComplement() {
-        super.copyFromComplement();
-
-        //---- First copy the complement
-        SimpleFamily f = (SimpleFamily) complement;
-        if (f.getContains() != null)
-            contains = (Vector)f.getContains().clone();
-        else
-            contains = null;
-        if (f.getInducedRest() != null) {
-            inducedRest = new Vector<Vector<SmallGraph> >();
-            for (Vector v : f.getInducedRest())
-                inducedRest.addElement((Vector) v.clone());
-        }
-        else
-            inducedRest = null;
-        
-        //---- Then complement
-        int i, j;
-        
-        if (contains != null)
-            for (i=0; i<contains.size(); i++)
-                contains.setElementAt(contains.elementAt(i).getComplement(),i);
-        
-        if (inducedRest != null)
-            for (i=0; i<inducedRest.size(); i++) {
-                Vector<SmallGraph> v = inducedRest.elementAt(i);
-                if (v != null)
-                    for (j=0; j<v.size(); j++)
-                        v.setElementAt(v.elementAt(j).getComplement(), j);
-            }
-    }
 
     /**
      * Builds a new SimpleFamily containing the complement
+     * @return a new instance of SimpleFamily, containing the complement of this.
      */
 
     public SimpleFamily buildComplement() {
