@@ -93,31 +93,8 @@ public class Graph extends SmallGraph {
     }
 
     /**
-     * rebuilds the Graph from complement
-     * @deprecated
-     */
-    public void copyFromComplement() {
-
-        super.copyFromComplement();
-
-        /* clear this */
-        clear();
-
-        /* Then rebuild from complement. */
-
-        Graphs.addAllVertices(graph, ((Graph) complement).graph.vertexSet());
-
-        for(int from : ((Graph)complement).graph.vertexSet()) {
-            for (int to : ((Graph)complement).graph.vertexSet()) {
-                if ( from != to && ((Graph)complement).graph.getEdge(from, to) == null ) {
-                    graph.addEdge(from, to);
-                }
-            }
-        }
-    }
-
-    /**
      *  Builds a new Graph containing the complement
+     *  @return a new instance of Graph, containing the complement of this.
      */
     public Graph buildComplement() {
         Graph c = (Graph) super.buildComplement();
