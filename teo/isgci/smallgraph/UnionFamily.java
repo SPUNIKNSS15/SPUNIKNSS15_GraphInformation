@@ -28,21 +28,8 @@ public class UnionFamily extends Family{
     }
 
     /**
-     * todo: comment this
-     */
-    public void copyFromComplement(){
-        super.copyFromComplement();
-        UnionFamily f = (UnionFamily) complement;
-        if (f.getSubfamilies() != null) {
-            subfamilies = (Vector<SmallGraph>) f.getSubfamilies().clone();
-            for (int i=0; i<subfamilies.size(); i++)
-                subfamilies.setElementAt(
-                        subfamilies.elementAt(i).getComplement(), i);
-        }
-    }
-
-    /**
      * Builds a new UnionFamily containing the complement
+     * @return a new instance of UnionFamily containing the complement of this.
      */
     public UnionFamily buildComplement() {
         UnionFamily c = (UnionFamily) super.buildComplement();
