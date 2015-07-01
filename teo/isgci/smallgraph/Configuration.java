@@ -148,6 +148,30 @@ public class Configuration extends SmallGraph{
     }
 
     /**
+     * Builds a new Configuration containing the complement of this.
+     */
+    public Configuration buildComplement() {
+        Configuration c = (Configuration) super.buildComplement();
+
+        c.base = (ListenableUndirectedGraph<Integer, DefaultEdge>) this.nonEdges.clone();
+        c.nonEdges = (ListenableUndirectedGraph<Integer, DefaultEdge>) this.base.clone();
+        c.optEdges = (ListenableUndirectedGraph<Integer, DefaultEdge>) this.optEdges.clone();
+
+        if (this.contains != null) {
+            c.contains = new Vector<>();
+            for (SmallGraph g : this.contains) {
+                c.contains.add(g.getComplement());
+            }
+        }
+
+        return c;
+    }
+
+
+
+
+
+    /**
      * @return the number of nodes in the Configuration
      */
     public int countNodes(){
