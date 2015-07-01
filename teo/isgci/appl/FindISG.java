@@ -541,7 +541,7 @@ public class FindISG{
     private static void addUSG(Graph g, Vector graphs, String type){
         usg++;
         g.addName(type+usg);
-        Graph co = (Graph)g.makeComplement();
+        Graph co = g.buildComplement();
         usg++;
         co.addName(type+usg);
         graphs.addElement(g);
