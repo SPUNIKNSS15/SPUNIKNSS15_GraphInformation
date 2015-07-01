@@ -42,6 +42,23 @@ public class UnionFamily extends Family{
     }
 
     /**
+     * Builds a new UnionFamily containing the complement
+     */
+    public UnionFamily buildComplement() {
+        UnionFamily c = (UnionFamily) super.buildComplement();
+
+        if (getSubfamilies() != null) {
+            c.subfamilies = (Vector<SmallGraph>) getSubfamilies().clone();
+            for (int i = 0; i < c.subfamilies.size(); i++) {
+                c.subfamilies.setElementAt(c.subfamilies.elementAt(i).getComplement(), i);
+            }
+        }
+
+        return c;
+    }
+
+
+    /**
      * Adds subfamily <tt>subf</tt> to UnionFamily
      *
      * @param subf subfamily which should be added to UnionFamily
