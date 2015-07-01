@@ -68,6 +68,43 @@ public class SimpleFamily extends Family{
     }
 
     /**
+     * Builds a new SimpleFamily containing the complement
+     */
+
+    public SimpleFamily buildComplement() {
+        SimpleFamily c = (SimpleFamily) super.buildComplement();
+
+        //---- First copy the complement
+        if (getContains() != null)
+            c.contains = (Vector) getContains().clone();
+        else
+            contains = null;
+        if (getInducedRest() != null) {
+            c.inducedRest = new Vector<Vector<SmallGraph> >();
+            for (Vector v : getInducedRest())
+                c.inducedRest.addElement((Vector) v.clone());
+        }
+        else
+            inducedRest = null;
+
+        //---- Then complement
+        int i, j;
+
+        if (c.contains != null)
+            for (i=0; i<c.contains.size(); i++)
+                c.contains.setElementAt(c.contains.elementAt(i).getComplement(),i);
+
+        if (c.inducedRest != null)
+            for (i=0; i<c.inducedRest.size(); i++) {
+                Vector<SmallGraph> v = c.inducedRest.elementAt(i);
+                if (v != null)
+                    for (j=0; j<v.size(); j++)
+                        v.setElementAt(v.elementAt(j).getComplement(), j);
+            }
+        return c;
+    }
+
+    /**
      * Adds contains <tt>parsedContains</tt> to SimpleFamily
      *
      * @param parsedContains  smallgraph which content should be added to simpleFamily
