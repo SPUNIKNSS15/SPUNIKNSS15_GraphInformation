@@ -125,30 +125,8 @@ public class Configuration extends SmallGraph{
     }
 
     /**
-     * Builds this from the previously set complement
-     * by changing nonedges to edges and vice versa.
-     * Thereby, optedges stay optedges.
-     * Also, the contains vector gets complemented and set if existing
-     */
-    @Override
-    public void copyFromComplement() {
-        super.copyFromComplement();
-
-        Configuration c = (Configuration)complement;
-        base = (ListenableUndirectedGraph<Integer, DefaultEdge>) c.nonEdges.clone();
-        nonEdges = (ListenableUndirectedGraph<Integer, DefaultEdge>) c.base.clone();
-        optEdges = (ListenableUndirectedGraph<Integer, DefaultEdge>) c.optEdges.clone();
-
-        if (c.contains != null) {
-            contains = new Vector<>();
-            for (SmallGraph g : c.contains) {
-                contains.add(g.getComplement());
-            }
-        }
-    }
-
-    /**
      * Builds a new Configuration containing the complement of this.
+     * @return a new instance of configuration, containing the complement of this.
      */
     public Configuration buildComplement() {
         Configuration c = (Configuration) super.buildComplement();
@@ -166,9 +144,6 @@ public class Configuration extends SmallGraph{
 
         return c;
     }
-
-
-
 
 
     /**
