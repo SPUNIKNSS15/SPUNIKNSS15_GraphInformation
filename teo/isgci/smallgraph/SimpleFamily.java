@@ -31,40 +31,43 @@ public class SimpleFamily extends Family{
         inducedRest = null;
     }
 
+
     /**
-     * todo: comment this
+     * Builds a new SimpleFamily containing the complement
+     * @return a new instance of SimpleFamily, containing the complement of this.
      */
-    public void copyFromComplement() {
-        super.copyFromComplement();
+
+    public SimpleFamily buildComplement() {
+        SimpleFamily c = (SimpleFamily) super.buildComplement();
 
         //---- First copy the complement
-        SimpleFamily f = (SimpleFamily) complement;
-        if (f.getContains() != null)
-            contains = (Vector)f.getContains().clone();
+        if (getContains() != null)
+            c.contains = (Vector) getContains().clone();
         else
             contains = null;
-        if (f.getInducedRest() != null) {
-            inducedRest = new Vector<Vector<SmallGraph> >();
-            for (Vector v : f.getInducedRest())
-                inducedRest.addElement((Vector) v.clone());
+        if (getInducedRest() != null) {
+            c.inducedRest = new Vector<Vector<SmallGraph> >();
+            for (Vector v : getInducedRest())
+                c.inducedRest.addElement((Vector) v.clone());
         }
         else
             inducedRest = null;
-        
+
         //---- Then complement
         int i, j;
-        
-        if (contains != null)
-            for (i=0; i<contains.size(); i++)
-                contains.setElementAt(contains.elementAt(i).getComplement(),i);
-        
-        if (inducedRest != null)
-            for (i=0; i<inducedRest.size(); i++) {
-                Vector<SmallGraph> v = inducedRest.elementAt(i);
+
+        if (c.contains != null)
+            for (i=0; i<c.contains.size(); i++)
+                c.contains.setElementAt(c.contains.elementAt(i).getComplement(),i);
+
+        if (c.inducedRest != null)
+            for (i=0; i<c.inducedRest.size(); i++) {
+                Vector<SmallGraph> v = c.inducedRest.elementAt(i);
                 if (v != null)
                     for (j=0; j<v.size(); j++)
                         v.setElementAt(v.elementAt(j).getComplement(), j);
             }
+        return c;
     }
 
     /**

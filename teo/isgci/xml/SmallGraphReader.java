@@ -195,7 +195,7 @@ public class SmallGraphReader extends DefaultHandler {
                 g.setComplement(g);
                 current.addFirst(current.peekFirst()); // for easy stacking
             } else {
-                g = g.halfComplement();
+                g = g.buildComplement();
                 if (!addName(g, name))
                     throw new SAXException("Bad name "+ name);
                 current.addFirst(new Wrapper(g));
@@ -277,7 +277,6 @@ public class SmallGraphReader extends DefaultHandler {
             for (Wrapper w : todo) {
                 w.complete();
             }
-            fixComplements();
         }
         
         else if (qName.equals(SmallGraphTags.EDGES)) {
@@ -455,19 +454,6 @@ public class SmallGraphReader extends DefaultHandler {
         g.addName(name);
         graphs.put(name, g);
         return true;
-    }
-
-
-    /**
-     * Complete the half complements.
-     */
-    private void fixComplements() {
-        for (SmallGraph g : graphs.values()) {
-            if (!g.isPrimary()) {
-                g.copyFromComplement();
-            }
-            System.out.println("fixed complement on " + g.getName() + " " + g.getClass());
-        }
     }
 
 

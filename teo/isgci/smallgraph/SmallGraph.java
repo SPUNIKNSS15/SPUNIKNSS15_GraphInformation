@@ -119,13 +119,20 @@ public abstract class SmallGraph {
     }
 
     
+    @Override
+    public int hashCode() {
+        return this.getName().hashCode() + this.complement.getName().hashCode()*2;
+    }
+
+
     /**
-     * Return an incomplete complement of this.
-     * this and the returned graph are marked as each others complement,
-     * otherwise the new graph has no contents yet. It can be completed by
-     * calling copyFromComplement.
+     * Builds a new SmallGraph instance which represents the complement of this.
+     * Class specific actions have to be implemented in the respective subclass.
+     *
+     * @return new SmallGraph instance which represents the complementary data common to all subclasses.
      */
-    public SmallGraph halfComplement() {
+    public SmallGraph buildComplement() {
+
         SmallGraph c = null;
         try {
             c = (SmallGraph) getClass().newInstance();
@@ -136,52 +143,10 @@ public abstract class SmallGraph {
         c.setPrimary(false);
         c.setComplement(this);
         setComplement(c);
-        
+
         return c;
     }
-
-
-    /**
-     * Copy data from the complement to this. Ignores names and links.
-     */
-    public void copyFromComplement() {
-        Vector<SmallGraph> v;
-        int i, j;
-
-        if (complement.getInduced() != null) {
-            //---- First copy induced from complement
-            induced = new Vector<Vector<SmallGraph> >();
-            for (Vector<SmallGraph> is : complement.getInduced())
-                induced.add(new Vector<SmallGraph>(is));
-
-            //---- Then complement it.
-            for (i = 0; i < induced.size(); i++) {
-                v = induced.elementAt(i);
-                if (v != null)
-                    for (j=0; j < v.size(); j++) {
-                        /*if (!(v.elementAt(j) instanceof SmallGraph)) {
-                            System.err.println("Induced "+
-                                v.elementAt(j) +" of "+ getName() +
-                                " not a SmallGraph");
-                        }*/
-                        v.setElementAt(v.elementAt(j).getComplement(), j);
-                    }
-            }
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return this.getName().hashCode() + this.complement.getName().hashCode()*2;
-    }
-
-    /** Create and return the complement of this SmallGraph */
-    public SmallGraph makeComplement() {
-        SmallGraph c = halfComplement();
-        c.copyFromComplement();
-        
-        return c;
-    }
+    
 }
     
 /* EOF */

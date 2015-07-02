@@ -35,25 +35,26 @@ public class HMTFamily extends Family{
         induced = null;
         smallmembers = null;
     }
-    
+
+
     /**
-     * Copies the smallmembers from the complement. Grammar and index is not
-     * updated (i.e. usually remains null).
+     * Builds a new HMTFamily containing the complement
+     * @return a new instance of HTMFamily, containing the complemen of this.
      */
-    public void copyFromComplement() {
-        super.copyFromComplement();
+    public HMTFamily buildComplement() {
+        HMTFamily c = (HMTFamily) super.buildComplement();
 
-        HMTFamily f = (HMTFamily) complement;
-        if (f.smallmembers != null) {
+        if (smallmembers != null) {
             //---- First copy the complement
-            smallmembers = (Vector) f.smallmembers.clone();
+            c.smallmembers = (Vector) smallmembers.clone();
 
-            //---- Then complement
-            for (int i=0; i<smallmembers.size(); i++) {
-                smallmembers.setElementAt(
-                        smallmembers.elementAt(i).getComplement(), i);
+            //--- Then complement it
+            for (int i = 0; i < c.smallmembers.size(); i++) {
+                c.smallmembers.setElementAt(c.smallmembers.elementAt(i).getComplement(), i);
             }
         }
+
+        return c;
     }
 
     /**
