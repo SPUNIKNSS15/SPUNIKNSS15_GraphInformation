@@ -11,17 +11,12 @@
 package teo.isgci.smallgraph;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Vector;
 
 public class HMTGrammar{
-    /**
-     * @head constituent graph and his attachment/extension
-     * @mid constituent graph and his attachment/extension
-     * @tail constituent graph and his attachment/extension
-     * @type type of the grammar
-     * @name name of the grammar
-     */
+
     HMTGraph head, mid, tail;
     int type;
     String name;
@@ -67,8 +62,8 @@ public class HMTGrammar{
     /**
      * Set head (with attachment).
      *
-     * @param head
-     * @param atth attachment
+     * @param head head graph
+     * @param atth attachment nodes
      */
     public void setHead(Graph head, int[] atth){
         if (atth.length != type)
@@ -87,7 +82,7 @@ public class HMTGrammar{
     /**
      * Set mid (with attachment/extension)
      *
-     * @param mid
+     * @param mid mid graph
      * @param extm extension
      * @param attm attachment
      */
@@ -143,9 +138,9 @@ public class HMTGrammar{
         System.out.println(mid.getGraph().vertexSet().toString());
         System.out.println("qM: " + qM.toString());
 
-        loop: for (Integer v : qM) {
+        for (Integer v : qM) {
             if (mTr.contains(v)) {
-                continue loop;
+                continue;
             }
 
             Integer currentV = v;
@@ -172,7 +167,7 @@ public class HMTGrammar{
         /* Check if M[M_{tr}] is edgeless */
         for (Integer i : mTr) {
             for (Integer j : mTr) {
-                if (i != j && mid.getGraph().containsEdge(i, j)) {
+                if (!Objects.equals(i, j) && mid.getGraph().containsEdge(i, j)) {
                     System.out.println("Error in " + this.name + "M_tr contains edges!");
                     return false;
                 }
@@ -193,7 +188,7 @@ public class HMTGrammar{
 
     /**
      * set tail(with extension)
-     * @param tail
+     * @param tail tail graph
      * @param extt extension
      */
     public void setTail(Graph tail, int[] extt){
@@ -212,7 +207,7 @@ public class HMTGrammar{
 
     /**
      *
-     * @param n
+     * @param n element number
      * @return the graph Head Mid^n Tail
      */
     public Graph getElement(int n){
@@ -224,7 +219,7 @@ public class HMTGrammar{
 
     /**
      *
-     * @param n
+     * @param n get an instance of this grammar with n Mid graphs
      * @return the graphs Head Mid^i Tail, for 0 <= i <= n
      */
     public Vector getSmallElements(int n){
@@ -385,9 +380,9 @@ public class HMTGrammar{
         public String toString(){
             String s = super.toString()+"\n";
             if (ext != null)
-                s+="Extension: "+ext+"\n";
+                s+="Extension: "+ ext.toString() +"\n";
             if (att != null)
-                s+="Attachment: "+att+"\n";
+                s+="Attachment: "+ att.toString() +"\n";
             return s;
         }
     }
