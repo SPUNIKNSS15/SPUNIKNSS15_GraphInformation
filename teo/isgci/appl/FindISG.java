@@ -270,33 +270,47 @@ public class FindISG{
                 configurations, resultGraph);
     }
 
+    /**
+     * finds subgraph relations amongst known simple graphs
+     * (inside graphs)
+     * thereby building transitive hull in resultgraph
+     * of simple graph relations
+     * and saving the results in inducedTable
+     */
     public static void createSubgraphRelations() {
         /* add node to resultGraph for each graph in graphs */
-        for (int i=0; i<graphs.size(); i++) {
-            resultGraph.addVertex((Graph) graphs.elementAt(i));
+        for (Graph g : graphs) {
+            resultGraph.addVertex(g);
         }
 
         /* exclude bigger complements */
-        HashSet<Graph> thinComplements = new HashSet<>(graphs);
+        HashSet<Graph> thinnerCounterparts = new HashSet<>(graphs);
         for (Graph g : graphs) {
             Graph c = (Graph)g.getComplement();
-            if (g == c || !(thinComplements.contains(g) && thinComplements.contains(c))) {
+            if (g == c || !(thinnerCounterparts.contains(g) && thinnerCounterparts.contains(c))) {
+                /* already excluded complement or graph is self-complementary */
                 continue;
             }
+            /* remove bigger counterpart from Hashset */
             if(g.getGraph().edgeSet().size() > c.getGraph().edgeSet().size()) {
-                thinComplements.remove(g);
+                thinnerCounterparts.remove(g);
             } else {
-                thinComplements.remove(c);
+                thinnerCounterparts.remove(c);
             }
         }
 
         ExecutorService poolExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
+        /* for synchronizing access to resultgraph data structure */
         Semaphore resultGraphSem = new Semaphore(1);
+        /* for synchronizing access to to induced table */
         Semaphore inducedTableSem = new Semaphore(1);
 
         /* start search for each thinner graph or complement */
-        for (Graph g : thinComplements) {
+        for (Graph g : thinnerCounterparts) {
+            /* search for induced subgraphs without using information
+             * about transitively subisomorphic graphs, thus building transitive hull
+             * in resultGraph */
             poolExecutor.execute(new AddSubgraphRelationsTask(graphs, g, (Graph)g.getComplement(),
                     resultGraph, inducedTable,
                     resultGraphSem, inducedTableSem, false));
@@ -305,8 +319,7 @@ public class FindISG{
         poolExecutor.shutdown();
         try {
             poolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-        }
+        } catch (InterruptedException e) {}
     }
 
     /**
@@ -585,7 +598,7 @@ public class FindISG{
     or induces an already known bigSmallgraph according to VF2
      */
     public static void addBigSmallmembers() throws
-            IOException, InterruptedException {
+            IOException {
 
         /* Contains graphs of size larger than maxCnt*/
         Vector<Graph> bigSmallmemb = new Vector();
@@ -651,8 +664,8 @@ public class FindISG{
         }
 
         /* prepare new result graph nodes:
-        *  add a vertex to resultGraph for every element of bigSmallmemb
-        */
+         *  add a vertex to resultGraph for every element of bigSmallmemb
+         */
         for (Graph g : bigSmallmemb) {
             resultGraph.addVertex(g);
         }
@@ -660,39 +673,44 @@ public class FindISG{
         System.out.println("All big smallmembers are added.");
 
         /* exclude bigger complements */
-        HashSet<Graph> thinComplements = new HashSet<>(bigSmallmemb);
+        HashSet<Graph> thinnerCounterparts = new HashSet<>(bigSmallmemb);
         for (Graph g : bigSmallmemb) {
             Graph c = (Graph)g.getComplement();
-            if (g == c || !(thinComplements.contains(g) && thinComplements.contains(c))) {
+            if (g == c || !(thinnerCounterparts.contains(g) && thinnerCounterparts.contains(c))) {
+                /* already excluded complement or graph is self-complementary */
                 continue;
             }
+            /* remove bigger counterpart from Hashset */
             if(g.getGraph().edgeSet().size() > c.getGraph().edgeSet().size()) {
-                thinComplements.remove(g);
+                thinnerCounterparts.remove(g);
             } else {
-                thinComplements.remove(c);
+                thinnerCounterparts.remove(c);
             }
         }
 
-        /*
-         * check for every of the bigSmallgraphs whether it induces any one of
-         * the already known graphs in resultGraph
-         * (topological order is provided by jgrapht)
-         */
         ExecutorService poolExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
+        /* for synchronizing access to resultgraph data structure */
         Semaphore resultGraphSem = new Semaphore(1);
+        /* for synchronizing access to to induced table */
         Semaphore inducedTableSem = new Semaphore(1);
 
         /* start search for each thinner graph or complement */
-        for (Graph g : thinComplements) {
+        for (Graph g : thinnerCounterparts) {
+            /* check for every of the bigSmallgraphs whether it induces any one of
+             * the already known graphs in resultGraph
+             * without building transitive relations in resultGraph
+             */
             poolExecutor.execute(new AddSubgraphRelationsTask(topo, g, (Graph)g.getComplement(),
                     resultGraph, inducedTable,
                     resultGraphSem, inducedTableSem, true));
         }
         poolExecutor.shutdown();
-        poolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+        try {
+            poolExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {}
 
-        //Add all graphs from bigSmallmemb to graphs
+        /* Add all graphs from bigSmallmemb to the global graph list */
         for (int i=0; i<bigSmallmemb.size(); i++) {
             graphs.addElement(bigSmallmemb.elementAt(i));
         }
