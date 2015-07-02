@@ -10,9 +10,6 @@
 
 package teo.isgci.smallgraph;
 
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.ListenableUndirectedGraph;
-
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +43,7 @@ public abstract class SmallGraph {
     /** Adds a new name */
     public void addName(String parsedName){
         if (names == null)
-            names = new ArrayList<String>(2);
+            names = new ArrayList<>(2);
         names.add(parsedName);
     }
     
@@ -63,7 +60,7 @@ public abstract class SmallGraph {
     /** Returns a string between [] with all the names of this. */
     protected String namesToString() {
         int i, j;
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         if (names != null) {
             s.append("[");
             j = names.size();
@@ -135,7 +132,7 @@ public abstract class SmallGraph {
 
         SmallGraph c = null;
         try {
-            c = (SmallGraph) getClass().newInstance();
+            c = getClass().newInstance();
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
@@ -148,5 +145,5 @@ public abstract class SmallGraph {
     }
     
 }
-    
+
 /* EOF */
