@@ -12,31 +12,19 @@ package teo.isgci.smallgraph;
 
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.ConnectivityInspector;
-import org.jgrapht.alg.VertexCovers;
 import org.jgrapht.alg.isomorphism.VF2GraphIsomorphismInspector;
 import org.jgrapht.alg.isomorphism.VF2SubgraphIsomorphismInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.ListenableUndirectedGraph;
 import org.jgrapht.graph.SimpleGraph;
-
 import java.util.ArrayList;
-import java.util.Set;
+
 
 public class Graph extends SmallGraph {
 
-
-    /**
-     * to retrieve component count and mask
-     * TODO: describe connectivityInspector, graph, is_bottom
-     * @connectivityInspector takes care of connected components
-     * @graph
-     * @is_bottom
-     */
     private ConnectivityInspector<Integer, DefaultEdge> connectivityInspector;
     private ListenableUndirectedGraph<Integer, DefaultEdge> graph;
     private boolean is_bottom;
-
-
 
     /**
      * Creates a new graph without nodes.
@@ -52,7 +40,7 @@ public class Graph extends SmallGraph {
      */
     public Graph(int n){
         super();
-        graph = new ListenableUndirectedGraph<Integer, DefaultEdge>( new SimpleGraph<Integer, DefaultEdge>(DefaultEdge.class));
+        graph = new ListenableUndirectedGraph<>( new SimpleGraph<>(DefaultEdge.class));
 
         connectivityInspector = new ConnectivityInspector<>(this.graph);
         /* make connectivity inspector be notified at changes */
@@ -83,13 +71,13 @@ public class Graph extends SmallGraph {
     private void copyFrom(Graph gs){
 
         /* bottom graphs are empty */
-        if ( ((Graph)gs).is_bottom ) {
+        if ( gs.is_bottom ) {
             is_bottom = true;
             return;
         }
 
         clear();
-        Graphs.addGraph(graph, ((Graph)gs).graph);
+        Graphs.addGraph(graph, gs.graph);
     }
 
     /**
@@ -112,13 +100,6 @@ public class Graph extends SmallGraph {
     }
 
 
-
-    /**
-     *
-     * @return a vertexCover of the graph
-     */
-    public Set<Integer> getVertexCover() { return VertexCovers.findGreedyCover(graph); }
-
     /**
      * Set the nodecount of this to <tt>n</tt> .
      * Any previous nodes/edges are lost!
@@ -126,7 +107,7 @@ public class Graph extends SmallGraph {
      */
     public void addNodesCount(int n) {
         is_bottom = false;
-        graph = new ListenableUndirectedGraph<Integer, DefaultEdge>( new SimpleGraph<Integer, DefaultEdge>(DefaultEdge.class));
+        graph = new ListenableUndirectedGraph<>( new SimpleGraph<>(DefaultEdge.class));
         clear();
 
         /* fill it with n nodes */
@@ -153,7 +134,7 @@ public class Graph extends SmallGraph {
      * @param x node 1
      * @param y node 2
      */
-    public void addEdge(int x, int y) { graph.addEdge(new Integer(x), new Integer(y)); }
+    public void addEdge(int x, int y) { graph.addEdge(x, y); }
 
     /**
      * checks if the edge between the two given nodes exists
@@ -190,9 +171,8 @@ public class Graph extends SmallGraph {
     }
 
     /**
-     *
-     * @param g
-     * @return
+     * @param g graph to be compared against this for isomorphy
+     * @return true, if g and this are isomorphic
      */
     public boolean isIsomorphic(Graph g){
 
@@ -228,17 +208,6 @@ public class Graph extends SmallGraph {
      */
     public int getComponents(){
         return connectivityInspector.connectedSets().size();
-    }
-
-
-    /**
-     * returns the set of nodes in the <tt>num</tt>-th component
-     *
-     * @param num number of component
-     * @return set of nodes in the <tt>num</tt>-th component
-     */
-    public Set<Integer> getComponent(int num){
-        return connectivityInspector.connectedSets().get(num);
     }
 
     /**
