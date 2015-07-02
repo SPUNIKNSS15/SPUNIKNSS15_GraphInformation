@@ -14,13 +14,6 @@ import java.util.Vector;
 
 public class HMTFamily extends Family{
 
-
-    /**
-     *
-     * @hmtg Head-Mid-Tail grammar defining Family
-     * @index Index of the Head-Mid-Tail grammar defining Family
-     * @smallmembers Smallmembers of this Family
-     */
     private HMTGrammar hmtg;
     private String index;
     private Vector<SmallGraph> smallmembers;
@@ -46,7 +39,7 @@ public class HMTFamily extends Family{
 
         if (smallmembers != null) {
             //---- First copy the complement
-            c.smallmembers = (Vector) smallmembers.clone();
+            c.smallmembers = (Vector<SmallGraph>) smallmembers.clone();
 
             //--- Then complement it
             for (int i = 0; i < c.smallmembers.size(); i++) {
@@ -83,7 +76,7 @@ public class HMTFamily extends Family{
         if (index == null)
             smallmembers = hmtg.getSmallElements(smSize);
         else {
-            smallmembers = new Vector();
+            smallmembers = new Vector<>();
             IndexExpr ie = new IndexExpr(index);
             for (int i=0; i<=smSize; i++)
                 smallmembers.addElement(hmtg.getElement(ie.eval(i)));
@@ -101,7 +94,7 @@ public class HMTFamily extends Family{
     /**
      * Sets index of the Head-Mid-Tail grammar defining Family
      *
-     * @param index
+     * @param index index of the HMT grammar defining Family
      */
     public void setIndex(String index){
         this.index = index;
@@ -131,31 +124,33 @@ public class HMTFamily extends Family{
      */
     public void addSmallmember(SmallGraph sm) {
         if (smallmembers == null)
-            smallmembers = new Vector<SmallGraph>();
+            smallmembers = new Vector<>();
         smallmembers.addElement(sm);
     }
 
     /**
      *
-     * @return
+     * @return string representation of this family
      */
     public String toString(){
         int i, j;
-        Vector v = null;
+        Vector v;
         String s = "Name: "+getName();
         if (hmtg != null) {
-            if (index != null)
-                if (hmtg.getName() != null)
-                    s+="\n"+index+"\n"+hmtg.getName();
-                else
+            if (index != null) {
+                if (hmtg.getName() != null) {
+                    s += "\n" + index + "\n" + hmtg.getName();
+                } else {
                     System.err.println("\nIndex for a grammar without name!");
-            else
-                s+="\nHMTGrammar:\n"+hmtg.toString();
+                }
+            } else {
+                s += "\nHMTGrammar:\n" + hmtg.toString();
+            }
         }
         if (smallmembers != null) {
             s+="\nSmallmembers: ";
             for (i=0; i<smallmembers.size(); i++) {
-                s+=((Graph)smallmembers.elementAt(i)).getName()+", ";
+                s+= smallmembers.elementAt(i).getName()+", ";
             }
         }
         if (induced != null) {
