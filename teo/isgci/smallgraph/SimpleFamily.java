@@ -46,7 +46,7 @@ public class SimpleFamily extends Family{
         else
             contains = null;
         if (getInducedRest() != null) {
-            c.inducedRest = new Vector<Vector<SmallGraph> >();
+            c.inducedRest = new Vector<>();
             for (Vector v : getInducedRest())
                 c.inducedRest.addElement((Vector) v.clone());
         }
@@ -77,7 +77,7 @@ public class SimpleFamily extends Family{
      */
     public void addContains(SmallGraph parsedContains){
         if (contains == null)
-            contains = new Vector<SmallGraph>(2,2);
+            contains = new Vector<>(2,2);
         contains.addElement(parsedContains);
     }
 
@@ -96,7 +96,7 @@ public class SimpleFamily extends Family{
      */
     public void addInducedRest(Vector<SmallGraph> parsedInducedRest){
         if (inducedRest == null)
-            inducedRest = new Vector<Vector<SmallGraph> >(2,2);
+            inducedRest = new Vector<>(2,2);
         inducedRest.addElement(parsedInducedRest);
     }
 
@@ -110,11 +110,11 @@ public class SimpleFamily extends Family{
 
     /**
      *
-     * @return
+     * @return string representation of this Family
      */
     public String toString(){
         int i, j;
-        Vector v = null;
+        Vector v;
         String s = "Name: "+getName();
         if (contains != null) {
             s+="\nContains: ";
