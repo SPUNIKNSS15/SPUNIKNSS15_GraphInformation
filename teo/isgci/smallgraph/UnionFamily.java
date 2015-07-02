@@ -14,9 +14,6 @@ import java.util.Vector;
 
 public class UnionFamily extends Family{
 
-    /**
-     * @subfamilies Subfamilies of UnionFamily
-     */
     Vector<SmallGraph> subfamilies;
 
     /**
@@ -52,7 +49,7 @@ public class UnionFamily extends Family{
      */
     public void addSubfamily(SmallGraph subf){
         if (subfamilies == null)
-            subfamilies = new Vector<SmallGraph>(2,2);
+            subfamilies = new Vector<>(2,2);
         subfamilies.addElement(subf);
     }
 
@@ -66,13 +63,13 @@ public class UnionFamily extends Family{
 
     /**
      *
-     * @return 
+     * @return string representation of this UnionFamily
      */
     public String toString(){
         int i;
         String s = "Name: "+getName()+"\nSubfamilies: ";
         for (i=0; i<subfamilies.size(); i++)
-            s+=((SmallGraph) subfamilies.elementAt(i)).getName()+"; ";
+            s+=(subfamilies.elementAt(i)).getName()+"; ";
         s+="\nLink: "+link+"\nComplement: "+complement.getName();
         return s;
     }
