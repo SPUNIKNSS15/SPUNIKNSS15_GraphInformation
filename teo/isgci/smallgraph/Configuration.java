@@ -304,7 +304,6 @@ public class Configuration extends SmallGraph{
     public int degree(int v, int type, boolean mask[]){
         if (v<0 || v>=base.vertexSet().size()) return -1; // illegal argument
 
-        int n = 0;
         if (type == EDGE) {
             /* EDGE degree is just v's degree in base */
             return base.degreeOf(v);
@@ -428,7 +427,7 @@ public class Configuration extends SmallGraph{
      *
      */
     public void addInduced(Graph g){
-        Vector<SmallGraph> innerVec = new Vector<SmallGraph>();
+        Vector<SmallGraph> innerVec = new Vector<>();
         innerVec.addElement(g);
         this.addInduced(innerVec);
     }
@@ -459,7 +458,7 @@ public class Configuration extends SmallGraph{
         top down. */
         int optEdgeList[][] = new int[maxOptEdges][2];// x=[][0], y=[][1]
         int i, j, cntOpt = 0, allOptionalEdges;
-        Vector<Graph> confGraphs = new Vector<Graph>();
+        Vector<Graph> confGraphs = new Vector<>();
 
         long ta = 0, te;
 
@@ -671,13 +670,13 @@ public class Configuration extends SmallGraph{
      * @return Vector containing the automorphisms of this configuration
      */
     public Vector<Integer[]> getAutomorphisms(){
-        final boolean DEBUG = false;
+
 
         SimpleGraph<Integer, DefaultEdge> allEdgeGraph = new SimpleGraph<>(DefaultEdge.class);
         Graphs.addGraph(allEdgeGraph, base);
         Graphs.addGraph(allEdgeGraph, optEdges);
 
-        VF2GraphIsomorphismInspector<Integer, DefaultEdge> inspector = new VF2GraphIsomorphismInspector<>(allEdgeGraph, allEdgeGraph, new DefaultComparator<>(), configurationEdgeComperator(this));
+        VF2GraphIsomorphismInspector<Integer, DefaultEdge> inspector = new VF2GraphIsomorphismInspector<>(allEdgeGraph, allEdgeGraph, new DefaultComparator<>(), configurationEdgeComparator(this));
 
         Vector<IsomorphicGraphMapping<Integer, DefaultEdge>> automorphisms = new Vector();
         VF2GraphMappingIterator mappingIterator =  inspector.getMappings();
@@ -696,7 +695,7 @@ public class Configuration extends SmallGraph{
         return permutations;
     }
 
-    private Comparator<DefaultEdge> configurationEdgeComperator(Configuration other) {
+    private Comparator<DefaultEdge> configurationEdgeComparator(Configuration other) {
         return new Comparator<DefaultEdge>() {
             @Override
             public int compare(DefaultEdge o1, DefaultEdge o2) {
@@ -723,7 +722,7 @@ public class Configuration extends SmallGraph{
         Graphs.addGraph(allEdgeGraphOther, c.optEdges);
 
         VF2GraphIsomorphismInspector<Integer, DefaultEdge> inspector = new VF2GraphIsomorphismInspector<>(
-                allEdgeGraph, allEdgeGraphOther, new DefaultComparator<>(), configurationEdgeComperator(c));
+                allEdgeGraph, allEdgeGraphOther, new DefaultComparator<>(), configurationEdgeComparator(c));
 
         return inspector.isomorphismExists();
     }
