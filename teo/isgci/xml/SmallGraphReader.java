@@ -62,11 +62,11 @@ public class SmallGraphReader extends DefaultHandler {
     
     public SmallGraphReader() {
         super();
-        graphs = new HashMap<String,SmallGraph>();
-        grammars = new HashMap<String,HMTGrammar>();
-        current = new ArrayDeque<Wrapper>();
-        todo = new ArrayList<Wrapper>();
-        inclusions = new ArrayList<Pair<String,String> >();
+        graphs = new HashMap<>();
+        grammars = new HashMap<>();
+        current = new ArrayDeque<>();
+        todo = new ArrayList<>();
+        inclusions = new ArrayList<>();
         curgrammar = null;
         smallgraphs = null;
     }
@@ -74,7 +74,7 @@ public class SmallGraphReader extends DefaultHandler {
 
     /** Return the parsed graphsets */
     public Collection<SmallGraph> getGraphs() {
-        HashSet<SmallGraph> gs = new HashSet<SmallGraph>(graphs.values());
+        HashSet<SmallGraph> gs = new HashSet<>(graphs.values());
         return Collections.unmodifiableSet(gs);
     }
 
@@ -174,7 +174,7 @@ public class SmallGraphReader extends DefaultHandler {
 
         else if (qName.equals(SmallGraphTags.INDUCED)  ||
                 qName.equals(SmallGraphTags.INDUCEDREST)) {
-            smallgraphs = new ArrayList<String>();
+            smallgraphs = new ArrayList<>();
         }
         
         else if (qName.equals(SmallGraphTags.ALIAS)) {
@@ -253,7 +253,7 @@ public class SmallGraphReader extends DefaultHandler {
         }
 
         else if (qName.equals(SmallGraphTags.INCL)) {
-            inclusions.add( new Pair(
+            inclusions.add( new Pair<>(
                     atts.getValue(SmallGraphTags.SUPER),
                     atts.getValue(SmallGraphTags.SUB) ));
         }
@@ -491,18 +491,18 @@ public class SmallGraphReader extends DefaultHandler {
         xr.parse(input);
 
 
-        Vector graphs = new Vector();
-        Vector grams = new Vector();
-        Vector fams = new Vector();
-        Vector confs = new Vector();
+        Vector<Graph> graphs = new Vector<>();
+        Vector<HMTGrammar> grams = new Vector<>();
+        Vector<Family> fams = new Vector<>();
+        Vector<Configuration> confs = new Vector<>();
 
         for (SmallGraph g : handler.getGraphs()) {
             if (g instanceof Graph)
-                graphs.addElement(g);
+                graphs.addElement((Graph)g);
             else if (g instanceof Configuration)
-                confs.addElement(g);
+                confs.addElement((Configuration)g);
             else if (g instanceof Family)
-                fams.addElement(g);
+                fams.addElement((Family)g);
         }
 
         for (HMTGrammar g : handler.getGrammars())
@@ -531,11 +531,11 @@ public class SmallGraphReader extends DefaultHandler {
 
         public Wrapper(SmallGraph g) {
             graph = g;
-            contains = new ArrayList<String>();
-            induced = new ArrayList<ArrayList<String> >();
-            inducedRest = new ArrayList<ArrayList<String> >();
-            subfamily = new ArrayList<String>();
-            smallmembers = new ArrayList<String>();
+            contains = new ArrayList<>();
+            induced = new ArrayList<>();
+            inducedRest = new ArrayList<>();
+            subfamily = new ArrayList<>();
+            smallmembers = new ArrayList<>();
         }
 
         public void addContains(String g) {
@@ -543,7 +543,7 @@ public class SmallGraphReader extends DefaultHandler {
         }
 
         public void addInduced(String graph) {
-            ArrayList<String> graphs = new ArrayList<String>();
+            ArrayList<String> graphs = new ArrayList<>();
             graphs.add(graph);
             addInduced(graphs);
         }
@@ -553,7 +553,7 @@ public class SmallGraphReader extends DefaultHandler {
         }
 
         public void addInducedRest(String graph) {
-            ArrayList<String> graphs = new ArrayList<String>();
+            ArrayList<String> graphs = new ArrayList<>();
             graphs.add(graph);
             addInducedRest(graphs);
         }
@@ -597,7 +597,7 @@ public class SmallGraphReader extends DefaultHandler {
             }
 
             for (ArrayList<String> ss : induced) {
-                Vector<SmallGraph> v = new Vector<SmallGraph>();
+                Vector<SmallGraph> v = new Vector<>();
                 for (String s : ss) {
                     if (s == null)
                         continue;
@@ -611,7 +611,7 @@ public class SmallGraphReader extends DefaultHandler {
             }
 
             for (ArrayList<String>  ss : inducedRest) {
-                Vector<SmallGraph> v = new Vector<SmallGraph>();
+                Vector<SmallGraph> v = new Vector<>();
                 for (String s : ss) {
                     if (s == null)
                         continue;
