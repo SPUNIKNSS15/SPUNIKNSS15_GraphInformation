@@ -9,11 +9,11 @@
  */
 
 package teo.isgci.smallgraph;
+
+import org.jgrapht.GraphMapping;
 import org.jgrapht.Graphs;
-import org.jgrapht.alg.isomorphism.DefaultComparator;
-import org.jgrapht.alg.isomorphism.IsomorphicGraphMapping;
 import org.jgrapht.alg.isomorphism.VF2GraphIsomorphismInspector;
-import org.jgrapht.alg.isomorphism.VF2GraphMappingIterator;
+import org.jgrapht.alg.util.AlwaysEqualComparator;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.ListenableUndirectedGraph;
 import org.jgrapht.graph.SimpleGraph;
@@ -676,16 +676,16 @@ public class Configuration extends SmallGraph{
         Graphs.addGraph(allEdgeGraph, base);
         Graphs.addGraph(allEdgeGraph, optEdges);
 
-        VF2GraphIsomorphismInspector<Integer, DefaultEdge> inspector = new VF2GraphIsomorphismInspector<>(allEdgeGraph, allEdgeGraph, new DefaultComparator<>(), configurationEdgeComparator(this));
+        VF2GraphIsomorphismInspector<Integer, DefaultEdge> inspector = new VF2GraphIsomorphismInspector<>(allEdgeGraph, allEdgeGraph, new AlwaysEqualComparator<>(), configurationEdgeComparator(this));
 
-        Vector<IsomorphicGraphMapping<Integer, DefaultEdge>> automorphisms = new Vector();
-        VF2GraphMappingIterator mappingIterator =  inspector.getMappings();
+        Vector<GraphMapping<Integer, DefaultEdge>> automorphisms = new Vector();
+        Iterator<GraphMapping<Integer, DefaultEdge>> mappingIterator =  inspector.getMappings();
         while (mappingIterator.hasNext()) {
             automorphisms.add(mappingIterator.next());
         }
 
         Vector<Integer[]> permutations = new Vector<>();
-        for (IsomorphicGraphMapping<Integer, DefaultEdge> mapping : automorphisms) {
+        for (GraphMapping<Integer, DefaultEdge> mapping : automorphisms) {
             permutations.add(new Integer[base.vertexSet().size()]);
             for (Integer vertex : base.vertexSet()) {
                 permutations.lastElement()[vertex] = mapping.getVertexCorrespondence(vertex, true);
@@ -722,7 +722,7 @@ public class Configuration extends SmallGraph{
         Graphs.addGraph(allEdgeGraphOther, c.optEdges);
 
         VF2GraphIsomorphismInspector<Integer, DefaultEdge> inspector = new VF2GraphIsomorphismInspector<>(
-                allEdgeGraph, allEdgeGraphOther, new DefaultComparator<>(), configurationEdgeComparator(c));
+                allEdgeGraph, allEdgeGraphOther, new AlwaysEqualComparator<>(), configurationEdgeComparator(c));
 
         return inspector.isomorphismExists();
     }
